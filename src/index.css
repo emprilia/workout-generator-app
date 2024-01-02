@@ -1,19 +1,25 @@
 :root {
     --colorPrimary: #00456a;
+    --colorSecondary: #022d44;
+    --colorTertiary: #ffd38d;
     --opacityPrimary: rgba(0, 69, 106, 0.4);
     --shade1: #f0f8ff;
+    --shade2: #3e93c0;
 
     --white: #ffffff;
     --black: #000000;
+
+    --fontPrimary: 'Jost', sans-serif;
 }
 
 body {
   margin: 0;
-  font-family: 'Source Code Pro', monospace;
+  font-family: var(--fontPrimary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
-  background: #022d44;;
+  background: var(--colorSecondary);
+  color: var(--white);
 }
 
 code {

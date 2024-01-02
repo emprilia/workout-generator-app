@@ -1,12 +1,13 @@
-import { makeAutoObservable } from 'mobx';
-import { action, computed, observable } from 'mobx';
+import { makeAutoObservable, action, computed, observable } from 'mobx';
 import { exercises } from './assets/mockData/exercises';
 
-interface ExerciseType {
-    id: number,
-    title: string,
-    url: string,
-    bothSides: boolean
+export interface ExerciseType {
+    id: number;
+    title: string;
+    url: string;
+    bothSides: boolean;
+    isSelected: boolean;
+    isFavorite: boolean
 }
 
 const defaultGeneratorSettings = {
@@ -18,7 +19,9 @@ const defaultGeneratorSettings = {
 }
 
 export class AppState {
-    private exercises: Array<ExerciseType> = exercises;
+    @observable public exercises: Array<ExerciseType> = exercises;
+    @observable public selectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
+    @observable public favoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
     @observable public currentExercise: number = 1;
     @observable prepTime: number = defaultGeneratorSettings.prepTime;
     @observable workoutTime: number = defaultGeneratorSettings.workoutTime;
@@ -32,8 +35,18 @@ export class AppState {
         makeAutoObservable(this);
     }
 
+    @action setSelectCheckbox = (type: 'all' | 'none') => {
+        if (type === 'all') {
+            this.selectedExercises = this.exercises;
+            this.exercises.forEach((exercise) => exercise.isSelected = true)
+        } else {
+            this.selectedExercises = [];
+            this.exercises.forEach((exercise) => exercise.isSelected = false)
+        }
+    }
+
     @computed private get exercisesShuffled(): Array<ExerciseType> {
-        return [...this.exercises].sort(() => 0.5 - Math.random());
+        return [...this.selectedExercises].sort(() => 0.5 - Math.random());
     }
 
     @computed private get exercisesSliced(): Array<ExerciseType> {
@@ -72,19 +85,11 @@ export class AppState {
             // return exercisesSet;
             // ??? for
         }
-        console.log(exercisesSet.flatMap((exercise) => {
-            return [
-                {
-                    ...exercise,
-                    displayOrder: exercise.id
-                }
-            ]
-        }))
         return exercisesSet;
     }
 
     @action generateNewWorkout = (): void => {
         // fix it to use same logic as initialExerciseSuggestions
-        this.generatedWorkout = [...this.exercises].sort(() => 0.5 - Math.random()).slice(0, this.exercisesCount);
+        this.generatedWorkout = [...this.selectedExercises].sort(() => 0.5 - Math.random()).slice(0, this.exercisesCount);
     }
 }

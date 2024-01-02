@@ -60,7 +60,6 @@ export const ExerciseThumbnailImg = styled('img')`
 export const ExerciseNumber = styled('span')`
     font-size: 16px;
     font-weight: 700;
-    color: var(--white);
     position: absolute;
     text-shadow: 5px 2px 5px rgba(0, 0, 0, 0.6);
 `;

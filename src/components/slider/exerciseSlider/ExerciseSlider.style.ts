@@ -9,8 +9,8 @@ interface ExercisePropsType {
 export const ExerciseContainer = styled('div')<ExercisePropsType>`
     width:  ${({ width }): string => `${width}px`};
     overflow: hidden;
-    margin: 16px;
-    border-radius: 16px;
+    margin-bottom: 16px;
+    border-radius: 8px;
 
     &::-webkit-scrollbar {
         display: none;
@@ -38,8 +38,8 @@ export const Exercise = styled('li')<ExercisePropsType>`
     background-color: var(--colorPrimary);
     flex: 0 0 100%;
     // *** width and left/right padding have to sum up to width ***
+    max-width: ${({ width }): string => `calc(${width}px - 64px)`};
     padding: 32px;
-    max-width: ${({ width }): string => `calc(${width} - 64px)`};
 `;
 
 export const ExerciseImg = styled('img')`
@@ -58,7 +58,6 @@ export const ExerciseHeader = styled('div')`
 export const ExerciseLabel = styled('span')`
     font-size: 20px;
     font-weight: 700;
-    color: var(--white);
     text-transform: uppercase;
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
 `;
