@@ -45,9 +45,11 @@ interface StarIconPropsType {
 
 export const StarIconWrapper = styled(StarIcon)<StarIconPropsType>`
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 0;
+    right: 0;
     width: 12px;
     height: 12px;
-    fill: var(--colorTertiary);
+    fill: var(--shade2);
+    padding: 4px;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
 `;
