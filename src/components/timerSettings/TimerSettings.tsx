@@ -18,28 +18,33 @@ import {
     InfoWrapper,
     InfoIconWrapper
 } from './TimerSettings.style';
+import { WorkoutGeneratorState } from '../WorkoutGeneratorState';
 
 interface TimerSettingsPropsType {
     appState: AppState;
+    workoutGeneratorState: WorkoutGeneratorState;
+    timerSettingsState: TimerSettingsState
 }
 
 export const TimerSettings = observer((props: TimerSettingsPropsType) => {
-    const { appState } = props;
+    const { appState, workoutGeneratorState, timerSettingsState } = props;
     const {
-        totalRoundTime,
-        prepTime, // ??? move to timer settings state?
-        workoutTime,
-        breakTime,
-        minRounds,
-        maxRounds,
         focusedInput,
         onDivFocus,
         onInputFocus,
         onBlur
     } = appState;
     
-    const [timerSettingsState] = React.useState(() => new TimerSettingsState());
+    // const [timerSettingsState] = React.useState(() => new TimerSettingsState(workoutGeneratorState.maxRounds));
     const {
+        totalRoundTime,
+        prepTime, // ??? move to timer settings state?
+        workoutTime,
+        breakTime,
+        minRounds,
+        // maxRounds,
+        maxRoundsmaxx,
+        maxRoundsMax,
         openInfo,
         setOpenInfo
     } = timerSettingsState;
@@ -77,8 +82,8 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
             label: 'Max rounds',
             value: 'maxRounds', // ???
             icon: <MinMaxIconWrapper />,
-            info: `Max rounds is the maximum number of rounds. Cannot be higher than current number of available exercises (${appState.selectedExercises.length}).`,
-            stateValue: maxRounds,
+            info: `Max rounds is the maximum number of rounds. Cannot be higher than current number of available exercises (${workoutGeneratorState.selectedExercises.length}).`,
+            stateValue: maxRoundsmaxx,
         },
     ]
 

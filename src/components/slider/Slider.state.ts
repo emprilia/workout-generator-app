@@ -1,11 +1,11 @@
 import { makeAutoObservable } from 'mobx';
-import { AppState } from '../../AppState.state';
+import { ExercisesState } from '../exerciseList/ExercisesState';
 
 export class SliderState {
     public mobileSliderWidth: number = 340;
 
 	public constructor(
-        private readonly appState: AppState
+        private readonly exercisesState: ExercisesState
     ) {
 		makeAutoObservable(this);
 	}
@@ -17,7 +17,7 @@ export class SliderState {
     public get thumbnailsCount(): Array<number> {
         const thumbnailsCount: Array<number> = [];
         
-        for (let i = 0; i < this.appState.generatedWorkout.length; i++) {
+        for (let i = 0; i < this.exercisesState.generatedWorkout.length; i++) {
             thumbnailsCount.push(i + 1);
         }
 
@@ -25,27 +25,27 @@ export class SliderState {
     }
     
     public getActiveSlide = (slideId: number): void => {
-        this.appState.currentExercise = slideId;
+        this.exercisesState.currentExercise = slideId;
     };
     
     public get isFirstSlide(): boolean {
-        return this.appState.currentExercise === 1;
+        return this.exercisesState.currentExercise === 1;
     }
 
     public get isLastSlide(): boolean {
-        return this.appState.currentExercise === this.thumbnailsCount.length;
+        return this.exercisesState.currentExercise === this.thumbnailsCount.length;
     }
 
     public nextSlide = (): void => {
-        this.appState.currentExercise = this.appState.currentExercise + 1;
+        this.exercisesState.currentExercise = this.exercisesState.currentExercise + 1;
     };
     
     public previousSlide = (): void => {
-        this.appState.currentExercise = this.appState.currentExercise - 1;
+        this.exercisesState.currentExercise = this.exercisesState.currentExercise - 1;
     };
 
     public get translateSlide(): string | null {
-        const activeSlide = this.appState.currentExercise - 2;
+        const activeSlide = this.exercisesState.currentExercise - 2;
         const translate = activeSlide * 100;
 
         return `calc( -${translate}% - ${this.sliderWidth}px )`;
@@ -54,16 +54,16 @@ export class SliderState {
     public get translateThumbnailMobile(): string {
         const lastTwo = this.thumbnailsCount.slice(-2);
 
-        if (this.appState.currentExercise <= 3) {
+        if (this.exercisesState.currentExercise <= 3) {
             return ``;
         }
 
-        if (lastTwo.includes(this.appState.currentExercise)) {
+        if (lastTwo.includes(this.exercisesState.currentExercise)) {
             // 168 = 56 * 3 (thumbnail width * 3)
             return `calc(-${(lastTwo[0]-1)*56}px + 168px)`;
         }
 
-        return `calc(-${this.appState.currentExercise*56}px + 168px)`;
+        return `calc(-${this.exercisesState.currentExercise*56}px + 168px)`;
     };
 
     public get translateThumbnail(): string {

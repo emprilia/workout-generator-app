@@ -5,20 +5,21 @@ import { SliderState } from '../slider/Slider.state';
 import { AppState } from '../../AppState.state';
 import { Header } from '../common/common.style';
 import { ExerciseSliderThumbnails } from '../slider/exerciseThumbnailsSlider/ExerciseSliderThumbnails';
+import { WorkoutGeneratorState } from '../WorkoutGeneratorState';
 
 interface WorkoutGeneratorWrapperPropsType {
-    appState: AppState;
+    workoutGeneratorState: WorkoutGeneratorState;
 }
 
 export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperPropsType) => {
-    const { appState } = props;
-    const [sliderState] = React.useState(() => new SliderState(appState));
+    const { workoutGeneratorState } = props;
+    const [sliderState] = React.useState(() => new SliderState(workoutGeneratorState.exercisesState));
 
     return (
         <>
             <Header>WORKOUT GENERATOR</Header>
-            <ExerciseSlider appState={appState} sliderState={sliderState} />
-            <ExerciseSliderThumbnails appState={appState} sliderState={sliderState} />
+            <ExerciseSlider exercisesState={workoutGeneratorState.exercisesState} sliderState={sliderState} />
+            <ExerciseSliderThumbnails exercisesState={workoutGeneratorState.exercisesState} sliderState={sliderState} />
         </>
     );
 });

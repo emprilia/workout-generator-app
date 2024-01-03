@@ -10,19 +10,20 @@ import {
     RefreshIconWrapper,
     ExerciseImg,
 } from './ExerciseSlider.style';
+import { ExercisesState } from '../../exerciseList/ExercisesState';
 
 interface ExerciseSliderPropsType {
-    appState: AppState;
+    exercisesState: ExercisesState;
     sliderState: SliderState;
 }
 
 export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
-    const { appState, sliderState } = props;
+    const { exercisesState, sliderState } = props;
 
     const {
         generatedWorkout,
         generateNewWorkout
-    } = appState;
+    } = exercisesState;
 
     const {
         sliderWidth,

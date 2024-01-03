@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { AppState, ExerciseType } from '../../AppState.state';
-import { ExerciseState } from '../exercise/ExerciseState';
+import { ExerciseState } from './ExerciseState';
 import {
     ExerciseWrapper,
     ExerciseInfo,
@@ -9,16 +8,19 @@ import {
     ExerciseImg,
     StarIconWrapper,
 } from './Exercise.style';
+import { ExercisesState, ExerciseType } from './ExercisesState';
+import { WorkoutGeneratorState } from '../WorkoutGeneratorState';
 
 interface ExercisePropsType {
     exercise: ExerciseType;
-    appState: AppState;
+    exercisesState: ExercisesState;
+    workoutGeneratorState: WorkoutGeneratorState;
 }
 
 export const Exercise = observer((props: ExercisePropsType) => {
-    const { exercise, appState } = props;
+    const { exercise, exercisesState, workoutGeneratorState } = props;
 
-    const [exerciseState] = React.useState(() => new ExerciseState(exercise, appState));
+    const [exerciseState] = React.useState(() => new ExerciseState(exercise, exercisesState, workoutGeneratorState));
 
     const { setSelected, setFavorite } = exerciseState;
     const { title, url, isSelected, isFavorite } = exercise;

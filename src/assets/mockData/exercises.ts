@@ -121,4 +121,12 @@ export const exercises: Array<ExerciseType> = [
         isSelected: true,
         isFavorite: false
     },
+    {
+        id: 16,
+        title: 'lunge2',
+        url: require('./exerciseImgs/lunge.png'),
+        bothSides: true,
+        isSelected: true,
+        isFavorite: false
+    },
 ]

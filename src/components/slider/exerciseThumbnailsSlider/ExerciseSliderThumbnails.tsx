@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite';
-import { AppState } from '../../../AppState.state';
 import { SliderState } from '../Slider.state';
 import {
     ExerciseThumbnailsWrapper,
@@ -13,14 +12,15 @@ import {
 } from './ExerciseSliderThumbnails.style';
 //@ts-ignore
 import ExerciseImage from '../../../assets/icons/rsz_yoga.png';
+import { ExercisesState } from '../../exerciseList/ExercisesState';
 
 interface ExerciseSliderThumbnailsPropsType {
-    appState: AppState;
+    exercisesState: ExercisesState;
     sliderState: SliderState;
 }
 
 export const ExerciseSliderThumbnails = observer((props: ExerciseSliderThumbnailsPropsType) => {
-    const { appState, sliderState } = props;
+    const { exercisesState, sliderState } = props;
 
     const {
         thumbnailsCount,
@@ -44,7 +44,7 @@ export const ExerciseSliderThumbnails = observer((props: ExerciseSliderThumbnail
                         <ExerciseThumbnail
                             key={thumbnailCount}
                             onClick={(): void => getActiveSlide(thumbnailCount)}
-                            isActive={appState.currentExercise === thumbnailCount}
+                            isActive={exercisesState.currentExercise === thumbnailCount}
                         >
                             <ExerciseNumber>{thumbnailCount}</ExerciseNumber>
                             {/* TODO: needs to be actual exercise image */}

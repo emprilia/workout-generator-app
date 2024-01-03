@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite';
-import { AppState } from '../../AppState.state';
 import {
     ExerciseListContainer,
     SelectedCount,
@@ -7,19 +6,22 @@ import {
 import { Header } from '../common/common.style';
 import { Exercise } from './Exercise';
 import { Checkbox } from '../checkbox/Checkbox';
+import { ExercisesState } from './ExercisesState';
+import { WorkoutGeneratorState } from '../WorkoutGeneratorState';
 
 interface ExerciseListPropsType {
-    appState: AppState;
+    exercisesState: ExercisesState;
+    workoutGeneratorState: WorkoutGeneratorState;
 }
 
 export const ExerciseList = observer((props: ExerciseListPropsType) => {
-    const { appState } = props;
+    const { exercisesState, workoutGeneratorState } = props;
 
     const {
         exercises,
         selectedExercises,
         setSelectCheckbox
-    } = appState;
+    } = exercisesState;
 
     return (
         <>
@@ -27,11 +29,11 @@ export const ExerciseList = observer((props: ExerciseListPropsType) => {
             <Checkbox label='Select all' isChecked={selectedExercises.length === exercises.length} onChange={() => setSelectCheckbox('all')}/>
             <Checkbox label='Select none' isChecked={selectedExercises.length === 0} onChange={() => setSelectCheckbox('none')}/>
             <ExerciseListContainer>
-                {exercises.map((exercise) => (
-                    <Exercise key={exercise.id} exercise={exercise} appState={appState} />
+                {workoutGeneratorState.exercises.map((exercise) => (
+                    <Exercise key={exercise.id} exercise={exercise} exercisesState={exercisesState} workoutGeneratorState={workoutGeneratorState} />
                     ))}
             </ExerciseListContainer>
-            <SelectedCount>Selected: {`${selectedExercises.length}/${exercises.length}`}</SelectedCount>
+            <SelectedCount>Selected: {`${workoutGeneratorState.selectedExercises.length}/${exercises.length}`}</SelectedCount>
         </>
     );
 });
