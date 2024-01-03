@@ -1,4 +1,5 @@
 import { makeAutoObservable, action, computed, observable } from 'mobx';
+import { InputState } from './components/input/InputState';
 import { exercises } from './assets/mockData/exercises';
 
 export interface ExerciseType {
@@ -23,13 +24,14 @@ export class AppState {
     @observable public selectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
     @observable public favoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
     @observable public currentExercise: number = 1;
-    @observable prepTime: number = defaultGeneratorSettings.prepTime;
-    @observable workoutTime: number = defaultGeneratorSettings.workoutTime;
-    @observable breakTime: number = defaultGeneratorSettings.breakTime;
-    @observable minRounds: number = defaultGeneratorSettings.minRounds;
-    @observable maxRounds: number = defaultGeneratorSettings.maxRounds;
-    @observable exercisesCount: number = Math.floor(Math.random() * (this.maxRounds - 10) + 10);
+    @observable prepTime: InputState<number> = new InputState(defaultGeneratorSettings.prepTime);
+    @observable workoutTime: InputState<number> = new InputState(defaultGeneratorSettings.workoutTime);
+    @observable breakTime: InputState<number> = new InputState(defaultGeneratorSettings.breakTime);
+    @observable minRounds: InputState<number> = new InputState(defaultGeneratorSettings.minRounds);
+    // @observable public maxRounds: InputState<number> = new InputState(this.selectedExercises.length);
+    @observable exercisesCount: number = Math.floor(Math.random() * (this.maxRounds.value - 10) + 10);
     @observable public generatedWorkout:  Array<ExerciseType> = this.initialExerciseSuggestions;
+    @observable public focusedInput: string = '';
 
 	public constructor() {
         makeAutoObservable(this);
@@ -43,6 +45,14 @@ export class AppState {
             this.selectedExercises = [];
             this.exercises.forEach((exercise) => exercise.isSelected = false)
         }
+    }
+
+    @computed public get maxRounds(): InputState<number> {
+        return new InputState(this.selectedExercises.length);
+    }
+
+    @computed public get totalRoundTime(): number {
+        return this.workoutTime.value + this.breakTime.value;
     }
 
     @computed private get exercisesShuffled(): Array<ExerciseType> {
@@ -72,7 +82,7 @@ export class AppState {
             return exercise;
         });
 
-        if (exercisesSet.length > this.maxRounds) {
+        if (exercisesSet.length > this.maxRounds.value) {
             const singleSide = exercisesSet.find(e => e.bothSides === false);
             if (singleSide === undefined) {
                 // TODO if no single side exercise - get as close as possible to min/max exercises
@@ -91,5 +101,17 @@ export class AppState {
     @action generateNewWorkout = (): void => {
         // fix it to use same logic as initialExerciseSuggestions
         this.generatedWorkout = [...this.selectedExercises].sort(() => 0.5 - Math.random()).slice(0, this.exercisesCount);
+    }
+
+    @action onDivFocus = (value: string) => {
+        this.focusedInput = value;
+    }
+
+    @action onInputFocus = (value: string) => {
+        this.focusedInput = value;
+    }
+
+    @action onBlur = () => {
+        this.focusedInput = '';
     }
 }

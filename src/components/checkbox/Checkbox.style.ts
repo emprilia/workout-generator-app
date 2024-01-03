@@ -15,7 +15,7 @@ export const buildCheckbox = (isChecked: boolean): SerializedStyles => {
     `;
     }
     return css`
-        border: 1px solid var(--shade2);
+        border: 1px solid var(--shade3);
         background: transparent;
     `;
 };
