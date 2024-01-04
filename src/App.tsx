@@ -13,7 +13,7 @@ export const App = observer(() => {
     <AppWrapper>
         <TimerSettings appState={appState} />
         <ExerciseList appState={appState} />
-        <WorkoutGeneratorWrapper exercisesState={appState.exercisesState}></WorkoutGeneratorWrapper>
+        <WorkoutGeneratorWrapper appState={appState}></WorkoutGeneratorWrapper>
     </AppWrapper>
   )
 })

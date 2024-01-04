@@ -34,19 +34,18 @@ interface InputDataPropsType {
 }
 
 export class TimerSettingsState {
-    @observable public selectedCount: number = 0;
     @observable public prepTime: InputState<number> = new InputState(defaultGeneratorSettings.prepTime);
     @observable public workoutTime: InputState<number> = new InputState(defaultGeneratorSettings.workoutTime);
     @observable public breakTime: InputState<number> = new InputState(defaultGeneratorSettings.breakTime);
     @observable public minRounds: InputState<number> = new InputState(defaultGeneratorSettings.minRounds);
-    @observable public maxRounds: InputState<number> = new InputState(defaultGeneratorSettings.maxRounds > this.selectedCount2 ? this.selectedCount2 : defaultGeneratorSettings.maxRounds);
+    @observable public maxRounds: InputState<number> = new InputState(defaultGeneratorSettings.maxRounds > this.selectedCount ? this.selectedCount : defaultGeneratorSettings.maxRounds);
     public initialMaxRounds: number = this.maxRounds.value;
     @observable public focusedInput: string = '';
     @observable public openInfo: string = '';
 
     
     public constructor(
-        private readonly selectedCount2: number
+        private readonly selectedCount: number
     ) {
         makeAutoObservable(this);
     }

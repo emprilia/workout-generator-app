@@ -17,7 +17,7 @@ export class ExercisesState {
     @observable public currentExercise: number = 1;
     @observable public minRounds: number = 12;
     @observable public maxRounds: number = this.selectedExercises.length;
-    @observable public generatedWorkout:  Array<ExerciseType> = this.initialExerciseSuggestions;
+    @observable public generatedWorkout: Array<ExerciseType> = this.initialExerciseSuggestions;
 
 	public constructor() {
         makeAutoObservable(this);
