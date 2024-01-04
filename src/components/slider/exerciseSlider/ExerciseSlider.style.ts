@@ -1,6 +1,9 @@
 import { SerializedStyles, css } from '@emotion/react';
 import styled from '@emotion/styled';
+import { PlayIcon } from '../../../assets/icons/PlayIcon';
 import { RefreshIcon } from '../../../assets/icons/RefreshIcon';
+import { SpeakerIcon } from '../../../assets/icons/SpeakerIcon';
+import { SpeakerMuteIcon } from '../../../assets/icons/SpeakerMuteIcon';
 
 interface ExercisePropsType {
     width: number;
@@ -11,6 +14,7 @@ export const ExerciseContainer = styled('div')<ExercisePropsType>`
     overflow: hidden;
     margin-bottom: 16px;
     border-radius: 8px;
+    background-color: var(--colorPrimary);
 
     &::-webkit-scrollbar {
         display: none;
@@ -39,7 +43,7 @@ export const Exercise = styled('li')<ExercisePropsType>`
     flex: 0 0 100%;
     // *** width and left/right padding have to sum up to width ***
     max-width: ${({ width }): string => `calc(${width}px - 64px)`};
-    padding: 32px;
+    padding: 0 32px 32px;
 `;
 
 export const ExerciseImg = styled('img')`
@@ -48,11 +52,11 @@ export const ExerciseImg = styled('img')`
 
 export const ExerciseHeader = styled('div')`
     display: flex;
-    align-items: center;
-    justify-content: space-between;
     flex-flow: row nowrap;
-    width: 100%;
-    height: 24px;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 8px 16px 0;
 `;
 
 export const ExerciseLabel = styled('span')`
@@ -62,6 +66,19 @@ export const ExerciseLabel = styled('span')`
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
 `;
 
+export const NextLabel = styled('span')`
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--shade1);
+    text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
+`;
+
+export const ControlsWrapper = styled('div')`
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+`;
+
 const setIcon = (): SerializedStyles => {
     return css`
         flex: 0 0 20px;
@@ -69,10 +86,23 @@ const setIcon = (): SerializedStyles => {
         height: 20px;
         fill: var(--white);
         filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
+        margin-left: 8px;
     `;
 };
 
+export const PlayIconWrapper = styled(PlayIcon)`
+    ${(): SerializedStyles => setIcon()};
+    margin-left: 0;
+`;
+
 export const RefreshIconWrapper = styled(RefreshIcon)`
     ${(): SerializedStyles => setIcon()};
-    margin-left: 8px;
+`;
+
+export const SpeakerIconWrapper = styled(SpeakerIcon)`
+    ${(): SerializedStyles => setIcon()};
+`;
+
+export const SpeakerMuteIconWrapper = styled(SpeakerMuteIcon)`
+    ${(): SerializedStyles => setIcon()};
 `;
