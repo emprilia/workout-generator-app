@@ -1,7 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { AppState, ExerciseType } from '../../AppState.state';
+import { AppState } from '../../AppState.state';
 import { ExerciseState } from '../exercise/ExerciseState';
+import { ExerciseType } from './ExercisesState';
 import {
     ExerciseWrapper,
     ExerciseInfo,

@@ -14,12 +14,13 @@ interface ExerciseListPropsType {
 
 export const ExerciseList = observer((props: ExerciseListPropsType) => {
     const { appState } = props;
+    const { exercisesState } = appState;
 
     const {
         exercises,
         selectedExercises,
         setSelectCheckbox
-    } = appState;
+    } = exercisesState;
 
     return (
         <>
@@ -29,7 +30,7 @@ export const ExerciseList = observer((props: ExerciseListPropsType) => {
             <ExerciseListContainer>
                 {exercises.map((exercise) => (
                     <Exercise key={exercise.id} exercise={exercise} appState={appState} />
-                    ))}
+                ))}
             </ExerciseListContainer>
             <SelectedCount>Selected: {`${selectedExercises.length}/${exercises.length}`}</SelectedCount>
         </>

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { AppState } from '../../../AppState.state';
+import { ExercisesState } from '../../exerciseList/ExercisesState';
 import { SliderState } from '../Slider.state';
 import {
     ExerciseContainer,
@@ -12,17 +12,17 @@ import {
 } from './ExerciseSlider.style';
 
 interface ExerciseSliderPropsType {
-    appState: AppState;
+    exercisesState: ExercisesState;
     sliderState: SliderState;
 }
 
 export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
-    const { appState, sliderState } = props;
+    const { exercisesState, sliderState } = props;
 
     const {
         generatedWorkout,
-        generateNewWorkout
-    } = appState;
+        generateWorkout
+    } = exercisesState;
 
     const {
         sliderWidth,
@@ -35,7 +35,7 @@ export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
                 {generatedWorkout.map((exercise) => (
                     <Exercise key={exercise.title} width={sliderWidth}>
                         <ExerciseHeader>
-                            <RefreshIconWrapper onClick={generateNewWorkout} />
+                            <RefreshIconWrapper onClick={generateWorkout} />
                         </ExerciseHeader>
                         <ExerciseImg src={exercise.url} alt={`Picture of ${exercise.title} exercise`} />
                         <ExerciseLabel>{exercise.title}</ExerciseLabel>
