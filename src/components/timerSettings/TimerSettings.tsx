@@ -1,7 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppState } from '../../AppState.state';
-import { TimerSettingsState } from './TimerSettingsState';
 import { Input } from '../input/Input';
 import { Header } from '../common/common.style';
 import {
@@ -9,10 +8,6 @@ import {
     TimerInputWrapper,
     TimerSettingsWrapper,
     StopwatchIconWrapper,
-    PrepIconWrapper,
-    WorkoutIconWrapper,
-    BreakIconWrapper,
-    MinMaxIconWrapper,
     FakeInput,
     FakeInputWrapper,
     InfoWrapper,
@@ -25,62 +20,22 @@ interface TimerSettingsPropsType {
 
 export const TimerSettings = observer((props: TimerSettingsPropsType) => {
     const { appState } = props;
+
+    const {
+        timerSettingsState,
+        updateExercisesStateRoundsCount
+    } = appState;
+
     const {
         totalRoundTime,
-        prepTime, // ??? move to timer settings state?
-        workoutTime,
-        breakTime,
-        minRounds,
-        maxRounds,
+        inputData,
         focusedInput,
         onDivFocus,
         onInputFocus,
-        onBlur
-    } = appState;
-    
-    const [timerSettingsState] = React.useState(() => new TimerSettingsState());
-    const {
+        onBlur,
         openInfo,
         setOpenInfo
     } = timerSettingsState;
-
-    const inputData = [ // ??? move to timer state?
-        {
-            label: 'Prep time',
-            value: 'prepTime',
-            icon: <PrepIconWrapper />,
-            info: 'Prep time is the initial countdown time before the workout begins.',
-            stateValue: prepTime,
-        },
-        {
-            label: 'Workout time',
-            value: 'workoutTime',
-            icon: <WorkoutIconWrapper />,
-            info: 'Workout time is the time spent doing the exercise.',
-            stateValue: workoutTime,
-        },
-        {
-            label: 'Break time',
-            value: 'breakTime',
-            icon: <BreakIconWrapper />,
-            info: 'Break time is the time between each exercise to get some rest or adjust your position.',
-            stateValue: breakTime,
-        },
-        {
-            label: 'Min rounds',
-            value: 'minRounds',
-            icon: <MinMaxIconWrapper isMin={true} />,
-            info: 'Min rounds is the minimum number of full rounds.',
-            stateValue: minRounds,
-        },
-        {
-            label: 'Max rounds',
-            value: 'maxRounds', // ???
-            icon: <MinMaxIconWrapper />,
-            info: `Max rounds is the maximum number of rounds. Cannot be higher than current number of available exercises (${appState.selectedExercises.length}).`,
-            stateValue: maxRounds,
-        },
-    ]
 
     return (
         <>
@@ -113,7 +68,7 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
                                 type='number'
                                 stateValue={input.stateValue}
                                 onFocusCB={() => onInputFocus(input.value)}
-                                onBlurCB={onBlur}
+                                onBlurCB={updateExercisesStateRoundsCount}
                             />
                             {input.label}
                         </InputWrapper>

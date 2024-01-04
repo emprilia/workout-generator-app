@@ -5,7 +5,7 @@ import { InputWrapper, InputElement, InputLabel } from './Input.style';
 
 type InputType = 'text' | 'number' | 'file' | 'url';
 
-interface InputProps {
+interface InputPropsType {
     className?: string,
     stateValue: InputState<string | number>;
     type?: InputType,
@@ -14,13 +14,14 @@ interface InputProps {
     readOnly?: boolean,
     autoFocus?: boolean,
     min?: string,
+    max?: string,
     maxLength?: number,
     value?: string,
     onFocusCB: (value: string) => void;
     onBlurCB: () => void;
 }
 
-export const Input = observer((props: InputProps) => {
+export const Input = observer((props: InputPropsType) => {
     const {
         className,
         stateValue,
@@ -30,6 +31,7 @@ export const Input = observer((props: InputProps) => {
         readOnly,
         autoFocus,
         min,
+        max,
         maxLength,
         value,
         onFocusCB,
@@ -53,8 +55,13 @@ export const Input = observer((props: InputProps) => {
                 readOnly={readOnly}
                 autoFocus={autoFocus}
                 min={min}
+                max={max}
                 maxLength={maxLength}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value)}
+                // onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                //     const value = type === 'number' ? parseInt(e.target.value, 10) : e.target.value;
+                //     stateValue.setValue(value);
+                // }}
                 onFocus={() => onFocusCB(value ?? '')}
                 onBlur={onBlurCB}
             />

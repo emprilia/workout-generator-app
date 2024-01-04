@@ -7,13 +7,13 @@ import { ExerciseList } from './components/exerciseList/ExerciseList';
 import { WorkoutGeneratorWrapper } from './components/generatorWrapper/GeneratorWrapper';
 
 export const App = observer(() => {
-  const [appState] = React.useState(() => new AppState());
+    const [appState] = React.useState(() => new AppState());
 
-  return (
+    return (
     <AppWrapper>
         <TimerSettings appState={appState} />
         <ExerciseList appState={appState} />
-        <WorkoutGeneratorWrapper appState={appState}></WorkoutGeneratorWrapper>
+        <WorkoutGeneratorWrapper exercisesState={appState.exercisesState}></WorkoutGeneratorWrapper>
     </AppWrapper>
   )
 })

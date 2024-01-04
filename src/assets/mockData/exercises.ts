@@ -1,4 +1,4 @@
-import { ExerciseType } from "../../AppState.state";
+import { ExerciseType } from "../../components/exerciseList/ExercisesState";
 
 export const exercises: Array<ExerciseType> = [
     {
