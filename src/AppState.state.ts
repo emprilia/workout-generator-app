@@ -7,7 +7,7 @@ export class AppState {
     @observable public timerSettingsState: TimerSettingsState;
     @observable public currentView: 'generator' | 'exercises-list' | 'timer-settings' = 'generator';
 
-	public constructor() {
+    public constructor() {
         makeAutoObservable(this);
         this.exercisesState = new ExercisesState(this.setSelectedExercisesCount);
         this.timerSettingsState = new TimerSettingsState(this.exercisesState.selectedExercises.length, this.setMinMaxRoundsLimits);
@@ -19,9 +19,7 @@ export class AppState {
     }
 
     @action setMinMaxRoundsLimits = () => {
-        if (this.timerSettingsState.savedMinRounds !== this.timerSettingsState.minRounds.value || this.timerSettingsState.savedMaxRounds !== this.timerSettingsState.maxRounds.value) {
-            this.exercisesState.setMinMaxRoundsLimits(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
-        }
+        this.exercisesState.setMinMaxRoundsLimits(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
     }
 
     @action setSelectedExercisesCount = (value: number) => {
@@ -32,3 +30,4 @@ export class AppState {
         this.currentView = view;
     }
 }
+

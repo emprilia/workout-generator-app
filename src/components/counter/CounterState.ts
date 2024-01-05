@@ -75,22 +75,22 @@ export class CounterState {
 
     @action public startTimer = async (): Promise<void> => {
         if (this.hasStarted) {
-            return; // TODO: temporary workaround - add stop and pause method
+            return; // TODO: temporary workaround - add stop/refresh and pause method
         }
 
-        await this.startOfCountdown();
+        await this.startOfCountdown(this.prepTime);
 
         for (let i = 0; i < this.exercisesState.initialExerciseSuggestions.length + 1; i++) {
             await this.workoutTimer(i, this.workoutTime);
 
             if (i !== this.exercisesState.initialExerciseSuggestions.length) {
-                await this.breakTimer();
+                await this.breakTimer(this.breakTime);
             }
         }
     }
 
-    @action private startOfCountdown(): Promise<number> {
-        const prepDuration = this.prepTime * 1000;
+    @action private startOfCountdown(prepTime: number): Promise<number> {
+        const prepDuration = prepTime * 1000;
 
         setTimeout(() => {
             this.setIsBreakTime();
@@ -99,7 +99,7 @@ export class CounterState {
 
         return new Promise((resolve) => {
             const timer = setInterval(() => {
-                this.setTime(this.prepTime--);
+                this.setTime(prepTime--);
                 this.playSound();
             }, 1000);
 
@@ -108,8 +108,7 @@ export class CounterState {
     }
 
     @action private workoutTimer(i: number, workoutTime: number): Promise<number> {
-        this.workoutTime = this.timerSettingsState.workoutTime.value;
-        const workoutDuration = this.workoutTime * 1000;
+        const workoutDuration = workoutTime * 1000;
 
         setTimeout(() => {
             this.setIsBreakTime();
@@ -119,27 +118,24 @@ export class CounterState {
         return new Promise((resolve) => {
             const timer = setInterval(() => {
                 this.currentRound = i + 1;
-                this.setTime(this.workoutTime--);
+                this.setTime(workoutTime--);
                 this.playSound();
             }, 1000);
-
-            setTimeout(() => { clearInterval(timer); resolve(this.workoutTime) }, workoutDuration);
+            setTimeout(() => { clearInterval(timer); resolve(workoutTime) }, workoutDuration);
         });
     }
 
-    @action private breakTimer(): Promise<number> {
-        this.breakTime = this.timerSettingsState.breakTime.value;
-        const breakDuration = this.breakTime * 1000;
+    @action private breakTimer(breakTime: number): Promise<number> {
+        const breakDuration = breakTime * 1000;
         this.setIsBreakTime();
         this.nextSlide();
 
         return new Promise((resolve) => {
             const timer = setInterval(() => {
-                this.setTime(this.breakTime--);
+                this.setTime(breakTime--);
                 this.playSound();
             }, 1000);
-
-            setTimeout(() => { clearInterval(timer); resolve(this.breakTime) }, breakDuration);
+            setTimeout(() => { clearInterval(timer); resolve(breakTime) }, breakDuration);
         });
     }
 

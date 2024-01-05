@@ -57,11 +57,7 @@ export const Input = observer((props: InputPropsType) => {
                 min={min}
                 max={max}
                 maxLength={maxLength}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value)}
-                // onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                //     const value = type === 'number' ? parseInt(e.target.value, 10) : e.target.value;
-                //     stateValue.setValue(value);
-                // }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value !== '' ? +e.target.value : '')}
                 onFocus={() => onFocusCB(value ?? '')}
                 onBlur={onBlurCB}
             />
