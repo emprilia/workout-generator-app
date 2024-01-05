@@ -36,9 +36,11 @@ export class ExercisesState {
     @action setSelectCheckbox = (type: 'all' | 'none') => {
         if (type === 'all') {
             this.selectedExercises = this.exercises;
+            this.tempSelectedExercises = this.exercises;
             this.exercises.forEach((exercise) => exercise.isSelected = true)
         } else {
             this.selectedExercises = [];
+            this.tempSelectedExercises = [];
             this.exercises.forEach((exercise) => exercise.isSelected = false)
         }
     }
@@ -80,7 +82,6 @@ export class ExercisesState {
             return exercise;
         });
 
-        // if (exercisesSet.length > 15) {
         if (exercisesSet.length > this.maxRounds) {
             const singleSide = exercisesSet.find(e => e.bothSides === false);
             if (singleSide === undefined) {
@@ -91,7 +92,7 @@ export class ExercisesState {
             const exerciseIndex = exercisesSet.indexOf(singleSide);
             exercisesSet.splice(exerciseIndex, 1);
 
-            // return exercisesSet;
+            return exercisesSet;
             // ??? for
         }
         return exercisesSet;

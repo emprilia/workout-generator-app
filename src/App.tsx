@@ -11,11 +11,12 @@ export const App = observer(() => {
 
     return (
         <AppWrapper>
-            {appState.currentView === 'timer-settings' ? <>
+            {appState.timerSettingsState.timerSettings.label !== 'default' && <>
+                {appState.currentView === 'timer-settings' ? <>
                     <div onClick={() => appState.setView('generator')}>generator</div>
                     <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
                     <TimerSettings appState={appState} />
-                </> : appState.currentView === 'exercises-list' ?                 <>
+                </> : appState.currentView === 'exercises-list' ? <>
                     <div onClick={() => appState.setView('generator')}>generator</div>
                     <div onClick={() => appState.setView('timer-settings')}>timer settings</div>
                     <ExerciseList appState={appState} />
@@ -23,8 +24,8 @@ export const App = observer(() => {
                     <div onClick={() => appState.setView('timer-settings')}>timer settings</div>
                     <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
                     <WorkoutGeneratorWrapper appState={appState} />
-                </>
-            }
+                </>}
+            </>}
     </AppWrapper>
   )
 })
