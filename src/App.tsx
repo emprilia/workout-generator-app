@@ -11,7 +11,7 @@ export const App = observer(() => {
 
     return (
         <AppWrapper>
-            {appState.timerSettingsState.timerSettings.label !== 'default' && <>
+            {appState.timerSettingsState.timerSettings.label === 'default' ? <div>Loading</div> : <>
                 {appState.currentView === 'timer-settings' ? <>
                     <div onClick={() => appState.setView('generator')}>generator</div>
                     <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
