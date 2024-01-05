@@ -10,10 +10,21 @@ export const App = observer(() => {
     const [appState] = React.useState(() => new AppState());
 
     return (
-    <AppWrapper>
-        <TimerSettings appState={appState} />
-        <ExerciseList appState={appState} />
-        <WorkoutGeneratorWrapper appState={appState}></WorkoutGeneratorWrapper>
+        <AppWrapper>
+            {appState.currentView === 'timer-settings' ? <>
+                    <div onClick={() => appState.setView('generator')}>generator</div>
+                    <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
+                    <TimerSettings appState={appState} />
+                </> : appState.currentView === 'exercises-list' ?                 <>
+                    <div onClick={() => appState.setView('generator')}>generator</div>
+                    <div onClick={() => appState.setView('timer-settings')}>timer settings</div>
+                    <ExerciseList appState={appState} />
+                </> : <>
+                    <div onClick={() => appState.setView('timer-settings')}>timer settings</div>
+                    <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
+                    <WorkoutGeneratorWrapper appState={appState} />
+                </>
+            }
     </AppWrapper>
   )
 })

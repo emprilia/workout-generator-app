@@ -2,7 +2,8 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppState } from '../../AppState.state';
 import { Input } from '../input/Input';
-import { Header } from '../common/common.style';
+import { Button } from '../button/Button';
+import { DiskIconWrapper, Header } from '../common/common.style';
 import {
     InputWrapper,
     TimerInputWrapper,
@@ -21,10 +22,7 @@ interface TimerSettingsPropsType {
 export const TimerSettings = observer((props: TimerSettingsPropsType) => {
     const { appState } = props;
 
-    const {
-        timerSettingsState,
-        updateExercisesStateRoundsCount
-    } = appState;
+    const { timerSettingsState } = appState;
 
     const {
         totalRoundTime,
@@ -34,7 +32,8 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
         onInputFocus,
         onBlur,
         openInfo,
-        setOpenInfo
+        setOpenInfo,
+        saveTimer
     } = timerSettingsState;
 
     return (
@@ -68,7 +67,7 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
                                 type='number'
                                 stateValue={input.stateValue}
                                 onFocusCB={() => onInputFocus(input.value)}
-                                onBlurCB={updateExercisesStateRoundsCount}
+                                onBlurCB={onBlur}
                             />
                             {input.label}
                         </InputWrapper>
@@ -82,6 +81,10 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
                     </TimerInputWrapper>
                 ))}
             </TimerSettingsWrapper>
+            <Button onClick={saveTimer}>
+                <DiskIconWrapper />
+                SAVE SETTINGS
+            </Button>
         </>
     )
 })

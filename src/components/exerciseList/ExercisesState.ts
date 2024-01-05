@@ -12,6 +12,7 @@ export interface ExerciseType {
 
 export class ExercisesState {
     @observable public exercises: Array<ExerciseType> = exercises;
+    @observable public tempSelectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
     @observable public selectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
     @observable public favoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
     @observable public currentExercise: number = 1;
@@ -19,11 +20,13 @@ export class ExercisesState {
     @observable public maxRounds: number = this.selectedExercises.length;
     @observable public generatedWorkout: Array<ExerciseType> = this.initialExerciseSuggestions;
 
-	public constructor() {
+    public constructor(
+        private readonly setSelectedExercisesCount: (value: number) => void
+    ) {
         makeAutoObservable(this);
     }
 
-    @action setMinMaxRounds = (minRounds: number, maxRounds: number) => {
+    @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
         if (maxRounds <= this.selectedExercises.length) {
             this.maxRounds = maxRounds;
         }
@@ -38,6 +41,12 @@ export class ExercisesState {
             this.selectedExercises = [];
             this.exercises.forEach((exercise) => exercise.isSelected = false)
         }
+    }
+
+    @action saveExercises = () => {
+        this.selectedExercises = this.exercises.filter((exercise) => exercise.isSelected === true);
+        this.favoriteExercises = this.exercises.filter((exercise) => exercise.isFavorite === true);
+        this.setSelectedExercisesCount(this.selectedExercises.length);
     }
 
     @computed public get exercisesCount(): number {

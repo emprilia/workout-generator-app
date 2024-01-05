@@ -3,25 +3,32 @@ import { TimerSettingsState } from './components/timerSettings/TimerSettingsStat
 import { ExercisesState } from './components/exerciseList/ExercisesState';
 
 export class AppState {
-    @observable public exercisesState: ExercisesState = new ExercisesState();
-    @observable public timerSettingsState: TimerSettingsState = new TimerSettingsState(this.exercisesState.selectedExercises.length);
+    @observable public exercisesState: ExercisesState;
+    @observable public timerSettingsState: TimerSettingsState;
+    @observable public currentView: 'generator' | 'exercises-list' | 'timer-settings' = 'generator';
 
 	public constructor() {
         makeAutoObservable(this);
+        this.exercisesState = new ExercisesState(this.setSelectedExercisesCount);
+        this.timerSettingsState = new TimerSettingsState(this.exercisesState.selectedExercises.length, this.setMinMaxRoundsLimits);
         this.initializeStates();
     }
 
     private initializeStates() {
-        this.exercisesState.setMinMaxRounds(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
+        this.exercisesState.setMinMaxRoundsLimits(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
     }
 
-    @action updateExercisesStateRoundsCount = () => { 
-        this.timerSettingsState.onBlur();
-        // TODO: only if rounds counts have changed
-        this.exercisesState.setMinMaxRounds(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
+    @action setMinMaxRoundsLimits = () => {
+        if (this.timerSettingsState.savedMinRounds !== this.timerSettingsState.minRounds.value || this.timerSettingsState.savedMaxRounds !== this.timerSettingsState.maxRounds.value) {
+            this.exercisesState.setMinMaxRoundsLimits(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
+        }
     }
 
     @action setSelectedExercisesCount = (value: number) => {
         this.timerSettingsState.setSelectedExercisesCount(value);
+    }
+
+    @action setView = (view: 'generator' | 'exercises-list' | 'timer-settings') => {
+        this.currentView = view;
     }
 }
