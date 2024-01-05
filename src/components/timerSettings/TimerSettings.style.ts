@@ -15,6 +15,7 @@ export const TimerSettingsWrapper = styled('div')`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 10px;
+    margin: 16px 0;
 `;
 
 export const InputWrapper = styled('div')<InputWrapperPropsType>`
@@ -32,6 +33,7 @@ export const InputWrapper = styled('div')<InputWrapperPropsType>`
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
     text-transform: lowercase;
     ${({ isFocused }): string => isFocused ? '' : 'opacity: .4'};
+    transition: opacity .2 ease;
 `;
 
 export const TimerInputWrapper = styled('div')`

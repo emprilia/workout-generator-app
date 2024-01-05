@@ -21,7 +21,7 @@ const defaultGeneratorSettings: WorkoutGeneratorPropsType = {
     prepTime: 5,
     workoutTime: 45,
     breakTime: 15,
-    maxRounds: 13,
+    maxRounds: 20,
     minRounds: 10,
 }
 
@@ -34,18 +34,23 @@ interface InputDataPropsType {
 }
 
 export class TimerSettingsState {
+    @observable public savedPrepTime: number = defaultGeneratorSettings.prepTime;
+    @observable public savedWorkoutTime: number = defaultGeneratorSettings.workoutTime;
+    @observable public savedBreakTime: number = defaultGeneratorSettings.breakTime;
+    @observable public savedMinRounds: number = defaultGeneratorSettings.minRounds;
+    @observable public savedMaxRounds: number = defaultGeneratorSettings.maxRounds;
     @observable public prepTime: InputState<number> = new InputState(defaultGeneratorSettings.prepTime);
     @observable public workoutTime: InputState<number> = new InputState(defaultGeneratorSettings.workoutTime);
     @observable public breakTime: InputState<number> = new InputState(defaultGeneratorSettings.breakTime);
     @observable public minRounds: InputState<number> = new InputState(defaultGeneratorSettings.minRounds);
     @observable public maxRounds: InputState<number> = new InputState(defaultGeneratorSettings.maxRounds > this.selectedCount ? this.selectedCount : defaultGeneratorSettings.maxRounds);
-    public initialMaxRounds: number = this.maxRounds.value;
     @observable public focusedInput: string = '';
-    @observable public openInfo: string = '';
+    @observable public openInfo: string = '';;
 
     
     public constructor(
-        private readonly selectedCount: number
+        private readonly selectedCount: number,
+        private readonly setMinMaxRoundsLimits: () => void
     ) {
         makeAutoObservable(this);
     }
@@ -96,9 +101,22 @@ export class TimerSettingsState {
     }
 
     @action setSelectedExercisesCount = (value: number) => {
-        if (this.initialMaxRounds >= value) {
+        if (this.savedMaxRounds >= value) {
             this.maxRounds.setValue(value);
+            this.savedMaxRounds = value;
         }
+    }
+
+    @action saveTimer = () => {
+        if (this.savedMinRounds !== this.minRounds.value || this.savedMaxRounds !== this.maxRounds.value) { 
+            this.setMinMaxRoundsLimits();
+        }
+
+        this.savedPrepTime = this.prepTime.value;
+        this.savedWorkoutTime = this.workoutTime.value;
+        this.savedBreakTime = this.breakTime.value;
+        this.savedMinRounds = this.minRounds.value;
+        this.savedMaxRounds = this.maxRounds.value;
     }
 
     @action onDivFocus = (value: string) => {

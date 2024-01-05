@@ -15,12 +15,10 @@ export class CounterState {
     @observable public isWorkoutTime: boolean = false;
     @observable public isBreakTime: boolean = false;
     @observable public isMuted: boolean = false;
-    @observable public prepTime: number = this.timerSettingsState.prepTime.value;
-    @observable public workoutTime: number = this.timerSettingsState.workoutTime.value;
-    @observable public breakTime: number = this.timerSettingsState.breakTime.value;
-    @observable public time: number = this.timerSettingsState.prepTime.value;
-    private currentTimer: NodeJS.Timeout | null = null;
-
+    @observable public prepTime: number = this.timerSettingsState.savedPrepTime;
+    @observable public workoutTime: number = this.timerSettingsState.savedWorkoutTime;
+    @observable public breakTime: number = this.timerSettingsState.savedBreakTime;
+    @observable public time: number = this.prepTime;
 
     public constructor(
         private timerSettingsState: TimerSettingsState,
