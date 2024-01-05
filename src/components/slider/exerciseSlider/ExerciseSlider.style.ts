@@ -1,6 +1,7 @@
 import { SerializedStyles, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { PlayIcon } from '../../../assets/icons/PlayIcon';
+import { SquareIcon } from '../../../assets/icons/SquareIcon';
 import { RefreshIcon } from '../../../assets/icons/RefreshIcon';
 import { SpeakerIcon } from '../../../assets/icons/SpeakerIcon';
 import { SpeakerMuteIcon } from '../../../assets/icons/SpeakerMuteIcon';
@@ -91,6 +92,11 @@ const setIcon = (): SerializedStyles => {
 };
 
 export const PlayIconWrapper = styled(PlayIcon)`
+    ${(): SerializedStyles => setIcon()};
+    margin-left: 0;
+`;
+
+export const StopIconWrapper = styled(SquareIcon)`
     ${(): SerializedStyles => setIcon()};
     margin-left: 0;
 `;

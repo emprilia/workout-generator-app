@@ -19,6 +19,9 @@ export class CounterState {
     @observable public workoutTime: number = this.timerSettingsState.savedWorkoutTime;
     @observable public breakTime: number = this.timerSettingsState.savedBreakTime;
     @observable public time: number = this.prepTime;
+    @observable private prepTimeCounterReference: NodeJS.Timeout | undefined = undefined;
+    @observable private breakTimeCounterReference: NodeJS.Timeout | undefined = undefined;
+    @observable private workoutTimeCounterReference: NodeJS.Timeout | undefined = undefined;
 
     public constructor(
         private timerSettingsState: TimerSettingsState,
@@ -73,19 +76,41 @@ export class CounterState {
         this.isWorkoutTime = !this.isWorkoutTime;
     }
 
-    @action public startTimer = async (): Promise<void> => {
-        if (this.hasStarted) {
-            return; // TODO: temporary workaround - add stop/refresh and pause method
+    @action public stopTimer = (): void => {
+        this.hasStarted = false;
+        clearInterval(this.prepTimeCounterReference);
+        clearInterval(this.workoutTimeCounterReference);
+        clearInterval(this.breakTimeCounterReference);
+        this.time = this.prepTime;
+        this.prepTimeCounterReference = undefined;
+        this.workoutTimeCounterReference = undefined;
+        this.breakTimeCounterReference = undefined;
+
+        this.currentExercise = 1;
+        this.currentRound = 1;
+        this.isBreakTime = false;
+        this.isWorkoutTime = false;
+    }
+
+    @action public runTimer = async (): Promise<void> => {
+        this.setHasStarted();
+
+        if (this.hasStarted === false) {
+            this.stopTimer();
         }
 
         await this.startOfCountdown(this.prepTime);
 
-        for (let i = 0; i < this.exercisesState.initialExerciseSuggestions.length + 1; i++) {
-            await this.workoutTimer(i, this.workoutTime);
-
-            if (i !== this.exercisesState.initialExerciseSuggestions.length) {
-                await this.breakTimer(this.breakTime);
+        for (let i = 0; i < this.exercisesState.generatedWorkout.length + 1; i++) {
+            if (this.hasStarted === true) {
+                await this.workoutTimer(i, this.workoutTime);
             }
+
+            if (i !== this.exercisesState.generatedWorkout.length) {
+                    if (this.hasStarted === true) {
+                        await this.breakTimer(this.breakTime);
+                    }
+                }
         }
     }
 
@@ -94,7 +119,6 @@ export class CounterState {
 
         setTimeout(() => {
             this.setIsBreakTime();
-            this.setHasStarted();
         }, 1000);
 
         return new Promise((resolve) => {
@@ -102,8 +126,8 @@ export class CounterState {
                 this.setTime(prepTime--);
                 this.playSound();
             }, 1000);
-
-            setTimeout(() => { clearInterval(timer); resolve(this.prepTime) }, prepDuration);
+            this.prepTimeCounterReference = timer;
+            setTimeout(() => { clearInterval(timer); resolve(prepTime) }, prepDuration);
         });
     }
 
@@ -121,6 +145,7 @@ export class CounterState {
                 this.setTime(workoutTime--);
                 this.playSound();
             }, 1000);
+            this.workoutTimeCounterReference = timer;
             setTimeout(() => { clearInterval(timer); resolve(workoutTime) }, workoutDuration);
         });
     }
@@ -135,6 +160,7 @@ export class CounterState {
                 this.setTime(breakTime--);
                 this.playSound();
             }, 1000);
+            this.breakTimeCounterReference = timer;
             setTimeout(() => { clearInterval(timer); resolve(breakTime) }, breakDuration);
         });
     }
@@ -143,3 +169,4 @@ export class CounterState {
         this.exercisesState.currentExercise = this.exercisesState.currentExercise + 1;
     };
 }
+

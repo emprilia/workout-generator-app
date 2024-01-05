@@ -11,8 +11,6 @@ import {
     ArrowButtonWrapper,
     ArrowWrapper,
 } from './ExerciseSliderThumbnails.style';
-//@ts-ignore
-import ExerciseImage from '../../../assets/icons/rsz_yoga.png';
 
 interface ExerciseSliderThumbnailsPropsType {
     exercisesState: ExercisesState;
@@ -23,7 +21,7 @@ export const ExerciseSliderThumbnails = observer((props: ExerciseSliderThumbnail
     const { exercisesState, sliderState } = props;
 
     const {
-        thumbnailsCount,
+        sliderThumbnails,
         getActiveSlide,
         nextSlide,
         previousSlide,
@@ -40,15 +38,14 @@ export const ExerciseSliderThumbnails = observer((props: ExerciseSliderThumbnail
 
             <ExerciseThumbnailsContainer>
                 <ExerciseThumbnailsList translateX={translateThumbnail}>
-                    {thumbnailsCount.map((thumbnailCount) => ( // TODO: needs to be displayOrder
+                    {sliderThumbnails.map((thumbnail) => (
                         <ExerciseThumbnail
-                            key={thumbnailCount}
-                            onClick={(): void => getActiveSlide(thumbnailCount)}
-                            isActive={exercisesState.currentExercise === thumbnailCount}
+                            key={thumbnail.title} // label or something else thats unique
+                            onClick={(): void => getActiveSlide(thumbnail.tempId)}
+                            isActive={exercisesState.currentExercise === thumbnail.tempId}
                         >
-                            <ExerciseNumber>{thumbnailCount}</ExerciseNumber>
-                            {/* TODO: needs to be actual exercise image */}
-                            <ExerciseThumbnailImg src={ExerciseImage} />
+                            <ExerciseNumber>{thumbnail.tempId}</ExerciseNumber>
+                            <ExerciseThumbnailImg src={thumbnail.url} />
                         </ExerciseThumbnail>
                     ))}
                 </ExerciseThumbnailsList>

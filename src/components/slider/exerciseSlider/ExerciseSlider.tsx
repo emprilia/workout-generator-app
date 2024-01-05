@@ -11,6 +11,7 @@ import {
     ExerciseImg,
     ControlsWrapper,
     PlayIconWrapper,
+    StopIconWrapper,
     RefreshIconWrapper,
     SpeakerIconWrapper,
     SpeakerMuteIconWrapper,
@@ -22,16 +23,17 @@ import { AppState } from '../../../AppState.state';
 interface ExerciseSliderPropsType {
     appState: AppState;
     sliderState: SliderState;
+    counterState: CounterState;
 }
 
 export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
-    const { appState, sliderState } = props;
-    const { timerSettingsState, exercisesState } = appState;
-    const [counterState] = React.useState(() => new CounterState(timerSettingsState, exercisesState));
+    const { appState, sliderState, counterState } = props;
+    const { exercisesState } = appState;
 
     const { 
         time,
-        startTimer,
+        runTimer,
+        hasStarted,
         isMuted,
         setIsMuted
     } = counterState;
@@ -52,7 +54,7 @@ export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
                 <CounterIconWrapper time={time} />
                 {counterState.isBreakTime ? <NextLabel>NEXT</NextLabel>: null}
                 <ControlsWrapper>
-                    <PlayIconWrapper onClick={startTimer} />
+                    {hasStarted ? <StopIconWrapper onClick={runTimer} /> : <PlayIconWrapper onClick={runTimer} />}
                     <RefreshIconWrapper onClick={generateWorkout} />
                     {isMuted ? <SpeakerMuteIconWrapper onClick={setIsMuted} /> : <SpeakerIconWrapper onClick={setIsMuted} />}
                 </ControlsWrapper>

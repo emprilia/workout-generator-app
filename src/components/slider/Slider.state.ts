@@ -1,8 +1,13 @@
 import { makeAutoObservable } from 'mobx';
-import { ExercisesState } from '../exerciseList/ExercisesState';
+import { ExerciseType, ExercisesState } from '../exerciseList/ExercisesState';
+
+interface ExerciseTypeTemp extends ExerciseType {
+    tempId: number;
+}
 
 export class SliderState {
     public mobileSliderWidth: number = 340;
+    public mobileThumbnailWidth: number = 56;
 
 	public constructor(
         private readonly exercisesState: ExercisesState
@@ -14,14 +19,11 @@ export class SliderState {
         return this.mobileSliderWidth;
     }
 
-    public get thumbnailsCount(): Array<number> {
-        const thumbnailsCount: Array<number> = [];
-        
-        for (let i = 0; i < this.exercisesState.generatedWorkout.length; i++) {
-            thumbnailsCount.push(i + 1);
-        }
-
-        return thumbnailsCount;
+    public get sliderThumbnails(): Array<ExerciseTypeTemp> {
+        return this.exercisesState.generatedWorkout.map((exercise, index) => ({
+            ...exercise,
+            tempId: index + 1
+        }));
     }
     
     public getActiveSlide = (slideId: number): void => {
@@ -33,7 +35,7 @@ export class SliderState {
     }
 
     public get isLastSlide(): boolean {
-        return this.exercisesState.currentExercise === this.thumbnailsCount.length;
+        return this.exercisesState.currentExercise === this.sliderThumbnails.length;
     }
 
     public nextSlide = (): void => {
@@ -52,15 +54,16 @@ export class SliderState {
     }
 
     public get translateThumbnailMobile(): string {
-        const lastTwo = this.thumbnailsCount.slice(-2);
+        const lastTwo = this.sliderThumbnails.slice(-2);
 
         if (this.exercisesState.currentExercise <= 3) {
             return ``;
         }
 
-        if (lastTwo.includes(this.exercisesState.currentExercise)) {
+        if (lastTwo.some(exercise => exercise.tempId === this.exercisesState.currentExercise)) {
             // 168 = 56 * 3 (thumbnail width * 3)
-            return `calc(-${(lastTwo[0]-1)*56}px + 168px)`;
+            const position = `calc(-${(lastTwo[0].tempId - 1) * 56}px + 168px)`;
+            return position;
         }
 
         return `calc(-${this.exercisesState.currentExercise*56}px + 168px)`;
