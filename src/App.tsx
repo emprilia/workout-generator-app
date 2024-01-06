@@ -5,12 +5,14 @@ import { AppWrapper } from './App.style';
 import { TimerSettings } from './components/timerSettings/TimerSettings';
 import { ExerciseList } from './components/exerciseList/ExerciseList';
 import { WorkoutGeneratorWrapper } from './components/generatorWrapper/GeneratorWrapper';
+import { ImgUpload } from './components/imgUpload/ImgUpload';
 
 export const App = observer(() => {
     const [appState] = React.useState(() => new AppState());
 
     return (
         <AppWrapper>
+            {/* <ImgUpload /> */}
             {appState.timerSettingsState.timerSettings.label === 'default' ? <div>Loading</div> : <>
                 {appState.currentView === 'timer-settings' ? <>
                     <div onClick={() => appState.setView('generator')}>generator</div>
