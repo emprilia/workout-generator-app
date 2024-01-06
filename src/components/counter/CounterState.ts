@@ -9,8 +9,7 @@ import { TimerSettingsState } from '../timerSettings/TimerSettingsState';
 import { ExercisesState } from '../exerciseList/ExercisesState';
 
 export class CounterState {
-    @observable public currentExercise: number = 1;
-    @observable public currentRound: number = 1;
+    @observable public currentSlide: number = 1;
     @observable public hasStarted: boolean = false;
     @observable public isWorkoutTime: boolean = false;
     @observable public isBreakTime: boolean = false;
@@ -86,8 +85,8 @@ export class CounterState {
         this.workoutTimeCounterReference = undefined;
         this.breakTimeCounterReference = undefined;
 
-        this.currentExercise = 1;
-        this.currentRound = 1;
+        this.currentSlide = 1;
+        this.exercisesState.currentExercise = 1;
         this.isBreakTime = false;
         this.isWorkoutTime = false;
     }
@@ -97,6 +96,7 @@ export class CounterState {
 
         if (this.hasStarted === false) {
             this.stopTimer();
+            return;
         }
 
         await this.startOfCountdown(this.prepTime);
@@ -133,6 +133,7 @@ export class CounterState {
 
     @action private workoutTimer(i: number, workoutTime: number): Promise<number> {
         const workoutDuration = workoutTime * 1000;
+        this.nextSlide();
 
         setTimeout(() => {
             this.setIsBreakTime();
@@ -141,7 +142,6 @@ export class CounterState {
 
         return new Promise((resolve) => {
             const timer = setInterval(() => {
-                this.currentRound = i + 1;
                 this.setTime(workoutTime--);
                 this.playSound();
             }, 1000);
@@ -166,7 +166,8 @@ export class CounterState {
     }
 
     @action public nextSlide = (): void => {
-        this.exercisesState.currentExercise = this.exercisesState.currentExercise + 1;
-    };
+        this.currentSlide = this.currentSlide + 1;
+        this.exercisesState.currentExercise = this.currentSlide;
+     };
 }
 

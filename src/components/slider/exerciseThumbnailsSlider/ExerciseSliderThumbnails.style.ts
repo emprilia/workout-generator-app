@@ -61,6 +61,7 @@ export const ExerciseNumber = styled('span')`
     font-size: 16px;
     font-weight: 700;
     position: absolute;
+    left: 4px;
     text-shadow: 5px 2px 5px rgba(0, 0, 0, 0.6);
 `;
 
