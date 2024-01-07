@@ -1,5 +1,6 @@
 import { makeAutoObservable, action, computed, observable } from 'mobx';
 import { exercises } from '../../assets/mockData/exercises';
+import { getAllExercises } from '../../api/exercises';
 
 export interface ExerciseType {
     id: number;
@@ -11,21 +12,43 @@ export interface ExerciseType {
 }
 
 export class ExercisesState {
-    @observable public exercises: Array<ExerciseType> = exercises;
-    @observable public tempSelectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
-    @observable public selectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
-    @observable public tempFavoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
-    @observable public favoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
+    @observable public exercises: Array<ExerciseType> | null = [];
+    @observable public tempSelectedExercises: Array<ExerciseType> = [];
+    @observable public selectedExercises: Array<ExerciseType> = [];
+    @observable public tempFavoriteExercises: Array<ExerciseType> = [];
+    @observable public favoriteExercises: Array<ExerciseType> = [];
     @observable public currentExercise: number = 1;
-    @observable public minRounds: number = 12;
-    @observable public maxRounds: number = this.selectedExercises.length;
-    @observable public generatedWorkout: Array<ExerciseType> = this.initialExerciseSuggestions;
+    @observable public minRounds: number = 1;
+    @observable public maxRounds: number = 1;
+    @observable public generatedWorkout: Array<ExerciseType> = [];
     @observable public isAddNewView: boolean = false;
 
     public constructor(
         private readonly setSelectedExercisesCount: (value: number) => void
     ) {
         makeAutoObservable(this);
+        this.initializeExerciseList();
+    }
+
+    @action private async initializeExerciseList(): Promise<void> {
+        try {
+            const data = await getAllExercises();
+            this.setExercises(data);
+            this.generateWorkout();
+        } catch (error) {
+            console.error('Error fetching timer settings', error);
+        }
+    }
+
+    @action private setExercises = (data: Array<ExerciseType>) => {
+        this.exercises = [...exercises, ...data];
+        this.selectedExercises = this.allExercises.filter(exercise => exercise.isSelected === true);
+        this.favoriteExercises = this.allExercises.filter(exercise => exercise.isFavorite === true);
+        this.maxRounds = this.selectedExercises.length;
+    }
+
+    @computed public get allExercises(): Array<ExerciseType> {
+        return this.exercises === null ? [] : this.exercises;
     }
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
@@ -37,19 +60,19 @@ export class ExercisesState {
 
     @action setSelectCheckbox = (type: 'all' | 'none') => {
         if (type === 'all') {
-            this.selectedExercises = this.exercises;
-            this.tempSelectedExercises = this.exercises;
-            this.exercises.forEach((exercise) => exercise.isSelected = true)
+            this.selectedExercises = this.allExercises;
+            this.tempSelectedExercises = this.allExercises;
+            this.allExercises.forEach((exercise) => exercise.isSelected = true)
         } else {
             this.selectedExercises = [];
             this.tempSelectedExercises = [];
-            this.exercises.forEach((exercise) => exercise.isSelected = false)
+            this.allExercises.forEach((exercise) => exercise.isSelected = false)
         }
     }
 
     @action saveExercises = () => {
-        this.selectedExercises = this.exercises.filter((exercise) => exercise.isSelected === true);
-        this.favoriteExercises = this.exercises.filter((exercise) => exercise.isFavorite === true);
+        this.selectedExercises = this.allExercises.filter((exercise) => exercise.isSelected === true);
+        this.favoriteExercises = this.allExercises.filter((exercise) => exercise.isFavorite === true);
         this.setSelectedExercisesCount(this.selectedExercises.length);
     }
 
@@ -85,17 +108,20 @@ export class ExercisesState {
         });
 
         if (exercisesSet.length > this.maxRounds) {
-            const singleSide = exercisesSet.find(e => e.isBothSides === false);
-            if (singleSide === undefined) {
-                // TODO if no single side exercise - get as close as possible to min/max exercises
-                return exercisesSet;
+            const diff = exercisesSet.length - this.maxRounds;
+
+            for (let i = 0; i < diff; i++) {
+                const singleSide = exercisesSet.find(e => e.isBothSides === false);
+                if (singleSide === undefined) {
+                    // TODO if no single side exercise - get as close as possible to min/max exercises
+                    return exercisesSet;
+                }
+                // if single side exercise exists - remove it
+                const exerciseIndex = exercisesSet.indexOf(singleSide);
+                exercisesSet.splice(exerciseIndex, 1);
             }
-            // if single side exercise exists - remove it
-            const exerciseIndex = exercisesSet.indexOf(singleSide);
-            exercisesSet.splice(exerciseIndex, 1);
 
             return exercisesSet;
-            // ??? for
         }
         return exercisesSet;
     }

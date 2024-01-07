@@ -12,11 +12,11 @@ export class ExerciseState {
 
     @action setSelected = () => {
         this.exercise.isSelected = !this.exercise.isSelected;
-        this.exercisesState.tempSelectedExercises = this.exercisesState.exercises.filter((exercise) => exercise.isSelected === true)
+        this.exercisesState.tempSelectedExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isSelected === true)
     }
 
     @action setFavorite = () => {
         this.exercise.isFavorite = !this.exercise.isFavorite;
-        this.exercisesState.tempFavoriteExercises = this.exercisesState.exercises.filter((exercise) => exercise.isFavorite === true)
+        this.exercisesState.tempFavoriteExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isFavorite === true)
     }
 }

@@ -20,7 +20,7 @@ export const ExerciseList = observer((props: ExerciseListPropsType) => {
     const { exercisesState } = props;
 
     const {
-        exercises,
+        allExercises,
         tempSelectedExercises,
         setSelectCheckbox,
         saveExercises,
@@ -37,14 +37,14 @@ export const ExerciseList = observer((props: ExerciseListPropsType) => {
             </>}
             <Header>EXERCISES LIST</Header>
             <Button onClick={setAddNew}>+ Create new</Button>
-            <Checkbox label='Select all' isChecked={tempSelectedExercises.length === exercises.length} onChange={() => setSelectCheckbox('all')}/>
+            <Checkbox label='Select all' isChecked={tempSelectedExercises.length === allExercises.length} onChange={() => setSelectCheckbox('all')}/>
             <Checkbox label='Select none' isChecked={tempSelectedExercises.length === 0} onChange={() => setSelectCheckbox('none')}/>
             <ExerciseListContainer>
-                {exercises.map((exercise) => (
+                {allExercises.map((exercise) => (
                     <Exercise key={exercise.id} exercise={exercise} exercisesState={exercisesState} />
                 ))}
             </ExerciseListContainer>
-            <SelectedCount>Selected: {`${tempSelectedExercises.length}/${exercises.length}`}</SelectedCount>
+            <SelectedCount>Selected: {`${tempSelectedExercises.length}/${allExercises.length}`}</SelectedCount>
             <Button onClick={saveExercises}>
                 <DiskIconWrapper />
                 SAVE EXERCISES
