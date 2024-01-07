@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { Button } from '../button/Button';
 
 export const ExerciseListContainer = styled('div')`
     display: grid;
@@ -9,4 +10,11 @@ export const ExerciseListContainer = styled('div')`
 
 export const SelectedCount = styled('span')`
     font-size: 16px;
+`;
+
+export const BackButton = styled(Button)`
+    position: fixed;
+    top: 24px;
+    left: 42px;
+    z-index: 2;
 `;

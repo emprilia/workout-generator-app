@@ -6,19 +6,18 @@ import { InputWrapper, InputElement, InputLabel } from './Input.style';
 type InputType = 'text' | 'number' | 'file' | 'url';
 
 interface InputPropsType {
-    className?: string,
+    className?: string;
     stateValue: InputState<string | number>;
-    type?: InputType,
-    label?: string,
-    placeholder?: string,
-    readOnly?: boolean,
-    autoFocus?: boolean,
-    min?: string,
-    max?: string,
-    maxLength?: number,
-    value?: string,
-    onFocusCB: (value: string) => void;
-    onBlurCB: () => void;
+    type?: InputType;
+    label?: string;
+    placeholder?: string;
+    inputSize?: 'default' | 'large' | 'small';
+    readOnly?: boolean;
+    autoFocus?: boolean;
+    min?: string;
+    max?: string;
+    maxLength?: number;
+    value?: string;
 }
 
 export const Input = observer((props: InputPropsType) => {
@@ -28,14 +27,13 @@ export const Input = observer((props: InputPropsType) => {
         type,
         label,
         placeholder,
+        inputSize,
         readOnly,
         autoFocus,
         min,
         max,
         maxLength,
-        value,
-        onFocusCB,
-        onBlurCB
+        value
     } = props;
 
     const [inputState] = useState(() => new InputState(stateValue));
@@ -52,14 +50,16 @@ export const Input = observer((props: InputPropsType) => {
                 type={type}
                 value={stateValue.value}
                 placeholder={placeholder}
+                inputSize={inputSize}
                 readOnly={readOnly}
                 autoFocus={autoFocus}
                 min={min}
                 max={max}
                 maxLength={maxLength}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value !== '' ? +e.target.value : '')}
-                onFocus={() => onFocusCB(value ?? '')}
-                onBlur={onBlurCB}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    const value = type === 'number' ? +e.target.value : e.target.value;
+                    stateValue.setValue(e.target.value !== '' ? value : '');
+                }}
             />
         </InputWrapper>
     );

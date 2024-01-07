@@ -3,9 +3,9 @@ import { exercises } from '../../assets/mockData/exercises';
 
 export interface ExerciseType {
     id: number;
-    title: string;
-    url: string;
-    bothSides: boolean;
+    label: string;
+    imgUrl: string;
+    isBothSides: boolean;
     isSelected: boolean;
     isFavorite: boolean
 }
@@ -14,11 +14,13 @@ export class ExercisesState {
     @observable public exercises: Array<ExerciseType> = exercises;
     @observable public tempSelectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
     @observable public selectedExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isSelected === true);
+    @observable public tempFavoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
     @observable public favoriteExercises: Array<ExerciseType> = exercises.filter(exercise => exercise.isFavorite === true);
     @observable public currentExercise: number = 1;
     @observable public minRounds: number = 12;
     @observable public maxRounds: number = this.selectedExercises.length;
     @observable public generatedWorkout: Array<ExerciseType> = this.initialExerciseSuggestions;
+    @observable public isAddNewView: boolean = false;
 
     public constructor(
         private readonly setSelectedExercisesCount: (value: number) => void
@@ -66,15 +68,15 @@ export class ExercisesState {
     @computed public get initialExerciseSuggestions(): Array<ExerciseType> {
         // if exercise is to be done on both sides, create it for other side
         const exercisesSet = this.exercisesSliced.flatMap((exercise) => {
-            if (exercise.bothSides === true) {
+            if (exercise.isBothSides === true) {
                 return [
                     {
                         ...exercise,
-                        title: `${exercise.title} (RIGHT)`,
+                        label: `${exercise.label} (RIGHT)`,
                     },
                     {
                         ...exercise,
-                        title: `${exercise.title} (LEFT)`,
+                        label: `${exercise.label} (LEFT)`,
                         bothSides: false,
                     }
                 ]
@@ -83,7 +85,7 @@ export class ExercisesState {
         });
 
         if (exercisesSet.length > this.maxRounds) {
-            const singleSide = exercisesSet.find(e => e.bothSides === false);
+            const singleSide = exercisesSet.find(e => e.isBothSides === false);
             if (singleSide === undefined) {
                 // TODO if no single side exercise - get as close as possible to min/max exercises
                 return exercisesSet;
@@ -101,5 +103,9 @@ export class ExercisesState {
     @action generateWorkout = (): void => {
         this.generatedWorkout = this.initialExerciseSuggestions;
         // TODO: fix generating empty array
+    }
+
+    @action setAddNew = (): void => {
+        this.isAddNewView = !this.isAddNewView;
     }
 }

@@ -40,12 +40,12 @@ export const ExerciseSliderThumbnails = observer((props: ExerciseSliderThumbnail
                 <ExerciseThumbnailsList translateX={translateThumbnail}>
                     {sliderThumbnails.map((thumbnail) => (
                         <ExerciseThumbnail
-                            key={thumbnail.title} // label or something else thats unique
+                            key={thumbnail.label}
                             onClick={(): void => getActiveSlide(thumbnail.tempId)}
                             isActive={exercisesState.currentExercise === thumbnail.tempId}
                         >
                             <ExerciseNumber>{thumbnail.tempId}</ExerciseNumber>
-                            <ExerciseThumbnailImg src={thumbnail.url} />
+                            <ExerciseThumbnailImg src={thumbnail.imgUrl} />
                         </ExerciseThumbnail>
                     ))}
                 </ExerciseThumbnailsList>

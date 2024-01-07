@@ -40,6 +40,7 @@ export const ButtonWrapper = styled('button')<ButtonPropsType>`
     cursor: pointer;
     transition: opacity 0.2s ease;
     ${({ version }): SerializedStyles => buildBtnVersion(version)};
+    ${({ width }): string => width === 'full' ? 'width: 100%' : ''};
 
     &:hover {
         opacity: .8;

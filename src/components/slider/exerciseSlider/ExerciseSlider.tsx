@@ -61,9 +61,9 @@ export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
             </ExerciseHeader>
             <ExerciseList translateX={translateSlide}>
                 {generatedWorkout.map((exercise) => (
-                    <Exercise key={exercise.title} width={sliderWidth}>
-                        <ExerciseImg src={exercise.url} alt={`Picture of ${exercise.title} exercise`} />
-                        <ExerciseLabel>{exercise.title}</ExerciseLabel>
+                    <Exercise key={exercise.label} width={sliderWidth}>
+                        <ExerciseImg src={exercise.imgUrl} alt={`Picture of ${exercise.label} exercise`} />
+                        <ExerciseLabel>{exercise.label}</ExerciseLabel>
                     </Exercise>
                 ))}
             </ExerciseList>

@@ -9,6 +9,7 @@ import { InfoIcon } from '../../assets/icons/InfoIcon';
 
 interface InputWrapperPropsType {
     isFocused: boolean;
+    isNoneFocused: boolean;
 }
 
 export const TimerSettingsWrapper = styled('div')`
@@ -18,7 +19,7 @@ export const TimerSettingsWrapper = styled('div')`
     margin: 16px 0;
 `;
 
-export const InputWrapper = styled('div')<InputWrapperPropsType>`
+export const InputWrapper = styled('label')<InputWrapperPropsType>`
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -29,15 +30,15 @@ export const InputWrapper = styled('div')<InputWrapperPropsType>`
     width: 150px;
     font-size: 14px;
     font-weight: 500;
-    color: var(--shade2);
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
     text-transform: lowercase;
-    ${({ isFocused }): string => isFocused ? '' : 'opacity: .4'};
     transition: opacity .2 ease;
 `;
 
-export const TimerInputWrapper = styled('div')`
+export const TimerInputWrapper = styled('div')<InputWrapperPropsType>`
     position: relative;
+    ${({ isNoneFocused, isFocused }): string => isNoneFocused || isFocused ? '' : 'opacity: .4'};
+    color: ${({ isFocused, isNoneFocused }): string => isNoneFocused || isFocused === false ? 'var(--shade2)' : 'var(--white)'};
 `;
 
 export const FakeInputWrapper = styled(InputWrapper)`
@@ -61,7 +62,7 @@ const setIcon = (): SerializedStyles => {
     return css`
         width: 40px;
         height: 40px;
-        fill: var(--shade2);
+        fill: currentcolor;
         margin: 4px 0;
         filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
     `;
@@ -105,7 +106,7 @@ export const InfoIconWrapper = styled(InfoIcon)`
     right: 0;
     width: 16px;
     height: 16px;
-    fill: var(--shade2);
-    padding: 8px; // TODO: do same for favorite stars
+    fill: currentcolor;
+    padding: 8px;
     filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
 `
