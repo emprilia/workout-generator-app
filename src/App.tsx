@@ -13,14 +13,15 @@ export const App = observer(() => {
     const {
         currentView,
         setView,
-        timerSettingsState
+        timerSettingsState,
+        exercisesState
     } = appState;
 
     // TODO: add loader
 
     return (
         <AppWrapper>
-            {timerSettingsState.timerSettings.label === 'default' ? <div>Loading</div> : <>
+            {timerSettingsState.timerSettings.label === 'default' || exercisesState.allExercises.length === 0 ? <div>Loading</div> : <>
                 <MenuWrapper>
                     <Button version={`${currentView === 'generator' ? 'secondary' : 'primary'}`} onClick={() => setView('generator')}>Main</Button>
                     <Button version={`${currentView === 'timer-settings' ? 'secondary' : 'primary'}`} onClick={() => setView('timer-settings')}>Timer Settings</Button>

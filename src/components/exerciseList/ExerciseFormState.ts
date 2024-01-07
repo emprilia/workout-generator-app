@@ -4,13 +4,13 @@ import { InputState } from '../input/InputState';
 import { createExercise } from '../../api/exercises';
 import { ExerciseType } from './ExercisesState';
 
-type ExerciseFormType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgFile: File | null };
+type ExerciseFormType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null };
 
 export type ExerciseCreateType = Omit<ExerciseFormType, 'id'>;
 
 export class ExerciseFormState {
     @observable public label: InputState<string> = new InputState('');
-    @observable public imgFile: InputState<File | null> = new InputState(null);
+    @observable public imgUrl: InputState<File | null> = new InputState(null);
     @observable public isBothSides: boolean = false;
     @observable public isSelected: boolean = true;
     @observable public isFavorite: boolean = false;
@@ -37,7 +37,7 @@ export class ExerciseFormState {
 
         if (file !== null) {
             formData.append('file', file);
-            this.imgFile.setValue(file);
+            this.imgUrl.setValue(file);
         }
     }
 
@@ -47,7 +47,7 @@ export class ExerciseFormState {
 
     @action clearForm = () => {
         this.label.setValue('');
-        this.imgFile.setValue(null);
+        this.imgUrl.setValue(null);
         this.isBothSides = false;
         this.isSelected = true;
         this.isFavorite = false;
@@ -57,7 +57,7 @@ export class ExerciseFormState {
     @action handleCreateExercise = async (): Promise<void> => {
         const data = {
             label: this.label.value,
-            imgFile: this.imgFile.value,
+            imgUrl: this.imgUrl.value,
             isBothSides: this.isBothSides,
             isSelected: this.isSelected,
             isFavorite: this.isFavorite
