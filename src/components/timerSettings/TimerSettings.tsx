@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { AppState } from '../../AppState.state';
+import { TimerSettingsState } from './TimerSettingsState';
 import { Input } from '../input/Input';
 import { Button } from '../button/Button';
 import { DiskIconWrapper, Header } from '../common/common.style';
@@ -16,20 +16,17 @@ import {
 } from './TimerSettings.style';
 
 interface TimerSettingsPropsType {
-    appState: AppState;
+    timerSettingsState: TimerSettingsState;
 }
 
 export const TimerSettings = observer((props: TimerSettingsPropsType) => {
-    const { appState } = props;
-
-    const { timerSettingsState } = appState;
+    const { timerSettingsState } = props;
 
     const {
         totalRoundTime,
         inputData,
         focusedInput,
         onDivFocus,
-        onInputFocus,
         onBlur,
         openInfo,
         setOpenInfo,
@@ -40,8 +37,8 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
         <>
             <Header>TIMER SETTINGS</Header>
             <TimerSettingsWrapper>
-                <TimerInputWrapper>
-                    <FakeInputWrapper isFocused={true}>
+                <TimerInputWrapper isFocused={false} isNoneFocused={true}>
+                    <FakeInputWrapper isFocused={false} isNoneFocused={true}>
                         <StopwatchIconWrapper />
                         <FakeInput>{totalRoundTime}</FakeInput>
                         Total round time
@@ -55,29 +52,32 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
                     {openInfo !== 'totalRounds' ? null : <InfoWrapper>Total round time is the combined workout and break time, calculated automatically.</InfoWrapper>}
                 </TimerInputWrapper>
                 {inputData.map((input) => (
-                    <TimerInputWrapper key={input.value}>
-                        <InputWrapper
-                            tabIndex={0}
-                            onClick={() => onDivFocus(input.value)}
-                            onBlur={onBlur}
-                            isFocused={focusedInput === '' ? true : input.value === focusedInput}
-                        >
-                            {input.icon}
-                            <Input
-                                type='number'
-                                stateValue={input.stateValue}
-                                onFocusCB={() => onInputFocus(input.value)}
-                                onBlurCB={onBlur}
-                            />
-                            {input.label}
-                        </InputWrapper>
-                        <div
-                            tabIndex={0}
-                            onClick={() => setOpenInfo(input.value)}
-                            onBlur={() => setOpenInfo(input.value)}>
-                            <InfoIconWrapper />
-                        </div>
-                        {openInfo !== input.value ? null : <InfoWrapper>{input.info}</InfoWrapper>}
+                    <TimerInputWrapper
+                        key={input.value}
+                        isFocused={input.value === focusedInput}
+                        isNoneFocused={focusedInput === ''}>
+                            <InputWrapper
+                                tabIndex={0}
+                                onClick={() => onDivFocus(input.value)}
+                                onBlur={onBlur}
+                                isFocused={input.value === focusedInput}
+                                isNoneFocused={focusedInput === ''}
+                            >
+                                {input.icon}
+                                <Input
+                                    type='number'
+                                    inputSize='large'
+                                    stateValue={input.stateValue}
+                                />
+                                {input.label}
+                            </InputWrapper>
+                            <div
+                                tabIndex={0}
+                                onClick={() => setOpenInfo(input.value)}
+                                onBlur={() => setOpenInfo(input.value)}>
+                                <InfoIconWrapper />
+                            </div>
+                            {openInfo !== input.value ? null : <InfoWrapper>{input.info}</InfoWrapper>}
                     </TimerInputWrapper>
                 ))}
             </TimerSettingsWrapper>

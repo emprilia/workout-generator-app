@@ -1,31 +1,35 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { AppState } from './AppState.state';
-import { AppWrapper } from './App.style';
+import { AppWrapper, MenuWrapper } from './App.style';
 import { TimerSettings } from './components/timerSettings/TimerSettings';
 import { ExerciseList } from './components/exerciseList/ExerciseList';
 import { WorkoutGeneratorWrapper } from './components/generatorWrapper/GeneratorWrapper';
+import { Button } from './components/button/Button';
 
 export const App = observer(() => {
     const [appState] = React.useState(() => new AppState());
 
+    const {
+        currentView,
+        setView,
+        timerSettingsState
+    } = appState;
+
+    // TODO: add loader
+
     return (
         <AppWrapper>
-            {appState.timerSettingsState.timerSettings.label === 'default' ? <div>Loading</div> : <>
-                {appState.currentView === 'timer-settings' ? <>
-                    <div onClick={() => appState.setView('generator')}>generator</div>
-                    <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
-                    <TimerSettings appState={appState} />
-                </> : appState.currentView === 'exercises-list' ? <>
-                    <div onClick={() => appState.setView('generator')}>generator</div>
-                    <div onClick={() => appState.setView('timer-settings')}>timer settings</div>
-                    <ExerciseList appState={appState} />
-                </> : <>
-                    <div onClick={() => appState.setView('timer-settings')}>timer settings</div>
-                    <div onClick={() => appState.setView('exercises-list')}>exercises list</div>
-                    <WorkoutGeneratorWrapper appState={appState} />
-                </>}
+            {timerSettingsState.timerSettings.label === 'default' ? <div>Loading</div> : <>
+                <MenuWrapper>
+                    <Button version={`${currentView === 'generator' ? 'secondary' : 'primary'}`} onClick={() => setView('generator')}>Main</Button>
+                    <Button version={`${currentView === 'timer-settings' ? 'secondary' : 'primary'}`} onClick={() => setView('timer-settings')}>Timer Settings</Button>
+                    <Button version={`${currentView === 'exercises-list' ? 'secondary' : 'primary'}`} onClick={() => setView('exercises-list')}>All Exercises</Button>
+                </MenuWrapper>
+                {currentView === 'timer-settings' && <TimerSettings timerSettingsState={appState.timerSettingsState} />}
+                {currentView === 'exercises-list' && <ExerciseList exercisesState={appState.exercisesState} />}
+                {currentView === 'generator' && <WorkoutGeneratorWrapper appState={appState} />}
             </>}
-    </AppWrapper>
+        </AppWrapper>
   )
 })

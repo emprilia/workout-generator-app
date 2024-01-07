@@ -183,11 +183,7 @@ export class TimerSettingsState {
         this.focusedInput = value;
     }
 
-    @action onInputFocus = (value: string) => { // ??? move to input state?
-        this.focusedInput = value;
-    }
-
-    @action onBlur = () => { // ??? move to input state?
+    @action onBlur = () => {
         this.focusedInput = '';
     }
 

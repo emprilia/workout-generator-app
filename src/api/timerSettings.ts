@@ -1,14 +1,6 @@
-interface GeneratorSettings {
-    id: number,
-    label: string,
-    prepTime: number,
-    workoutTime: number,
-    breakTime: number,
-    maxRounds: number,
-    minRounds: number,
-}
+import { WorkoutGeneratorPropsType } from "../components/timerSettings/TimerSettingsState";
 
-export const getAllGeneratorSettings = (): Promise<Array<GeneratorSettings>> => {
+export const getAllGeneratorSettings = (): Promise<Array<WorkoutGeneratorPropsType>> => {
     return fetch('http://localhost:5000/get-workout-generator-timer-settings').then((response) => { // default before adding more
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -23,7 +15,7 @@ export const getAllGeneratorSettings = (): Promise<Array<GeneratorSettings>> => 
     );
 };
 
-export const getSingleGeneratorSettings = (id: number): Promise<GeneratorSettings> => {
+export const getSingleGeneratorSettings = (id: number): Promise<WorkoutGeneratorPropsType> => {
     return fetch(`http://localhost:5000/get-workout-generator-timer-settings/${id}`)
         .then((response) => {
             if (!response.ok) {
@@ -43,7 +35,7 @@ export const getSingleGeneratorSettings = (id: number): Promise<GeneratorSetting
         });
 };
 
-export const updateSingleGeneratorSettings = (id: number, settings: Omit<GeneratorSettings, 'id'>): Promise<GeneratorSettings> => {
+export const updateSingleGeneratorSettings = (id: number, settings: Omit<WorkoutGeneratorPropsType, 'id'>): Promise<WorkoutGeneratorPropsType> => {
     return fetch(`http://localhost:5000/update-workout-generator-timer-settings/${id}`, {
         method: 'PUT',
         headers: {
@@ -58,7 +50,7 @@ export const updateSingleGeneratorSettings = (id: number, settings: Omit<Generat
         return response.json();
     })
     .then(data => {
-        return data as GeneratorSettings;
+        return data as WorkoutGeneratorPropsType;
     })
     .catch(error => {
         console.error('Error updating generator settings:', error);
