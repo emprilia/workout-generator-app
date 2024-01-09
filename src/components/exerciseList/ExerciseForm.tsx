@@ -1,14 +1,24 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { ExerciseFormState } from './ExerciseFormState';
-import { ExerciseFormWrapper, ExerciseFormFieldsWrapper, ExerciseInputWrapper, ExerciseFormHeader } from './ExerciseForm.style';
+import { ExerciseFormWrapper, ExerciseFormFieldsWrapper, ExerciseInputWrapper, ExerciseFormHeader, OverlayWrapper } from './ExerciseForm.style';
 import { ImgUpload } from '../imgUpload/ImgUpload';
 import { Input } from '../input/Input';
 import { Checkbox } from '../checkbox/Checkbox';
 import { Button } from '../button/Button';
+import { ExerciseType } from './ExercisesState';
+import { BackButton } from './ExerciseList.style';
 
-export const ExerciseForm = observer(() => {
-    const [exerciseFormState] = React.useState(() => new ExerciseFormState());
+interface ExerciseFormPropsType {
+    exercise?: ExerciseType;
+    isEditMode: boolean;
+    getExerciseList: () => Promise<void>;
+    closePopup: () => void;
+}
+
+export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
+    const { exercise, isEditMode, getExerciseList, closePopup } = props;
+    const [exerciseFormState] = React.useState(() => new ExerciseFormState(exercise ?? null, getExerciseList, closePopup));
 
     const {
         label,
@@ -20,14 +30,17 @@ export const ExerciseForm = observer(() => {
         setFavorite,
         onImgChangeCB,
         handleCreateExercise,
+        handleUpdateExercise,
         isClearImgForm,
-        onClearFormCB
+        onClearFormCB,
+        setClosePopup
     } = exerciseFormState;
 
     return (
         <>
+            <OverlayWrapper onClick={setClosePopup} />
             <ExerciseFormWrapper>
-                <ExerciseFormHeader>CREATE NEW EXERCISE</ExerciseFormHeader>
+                <ExerciseFormHeader>{isEditMode ? 'EDIT EXERCISE' : 'CREATE NEW EXERCISE'}</ExerciseFormHeader>
                 <ExerciseInputWrapper>
                     <Input
                         placeholder='Exercise name'
@@ -37,6 +50,7 @@ export const ExerciseForm = observer(() => {
                 <ExerciseFormFieldsWrapper>
                     <ImgUpload
                         previewSize='56'
+                        editImgUrl={exercise?.imgUrl}
                         isClearImgForm={isClearImgForm}
                         onChangeCB={onImgChangeCB}
                         onClearFormCB={onClearFormCB}
@@ -60,10 +74,11 @@ export const ExerciseForm = observer(() => {
                         />
                     </div>
                 </ExerciseFormFieldsWrapper>
-                <Button width='full' onClick={handleCreateExercise}>
-                    CREATE EXERCISE
+                <Button width='full' onClick={isEditMode ? handleUpdateExercise : handleCreateExercise}>
+                    {isEditMode ? 'UPDATE EXERCISE' : 'CREATE EXERCISE'}
                 </Button>
             </ExerciseFormWrapper>
+            <BackButton onClick={setClosePopup}>Back to all exercises</BackButton>
         </>
   );
 });

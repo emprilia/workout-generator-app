@@ -1,5 +1,4 @@
 import { makeAutoObservable, action, computed, observable } from 'mobx';
-import { exercises } from '../../assets/mockData/exercises';
 import { getAllExercises } from '../../api/exercises';
 
 export interface ExerciseType {
@@ -31,19 +30,25 @@ export class ExercisesState {
     }
 
     @action private async initializeExerciseList(): Promise<void> {
+        await this.getExerciseList();
+        this.generateWorkout();
+    }
+
+    @action public getExerciseList = async (): Promise<void> => {
         try {
             const data = await getAllExercises();
             this.setExercises(data);
-            this.generateWorkout();
         } catch (error) {
-            console.error('Error fetching timer settings', error);
+            console.error('Error fetching exercise list', error);
         }
-    }
+    };
 
     @action private setExercises = (data: Array<ExerciseType>) => {
-        this.exercises = [...exercises, ...data];
+        this.exercises = data;
         this.selectedExercises = this.allExercises.filter(exercise => exercise.isSelected === true);
+        this.tempSelectedExercises = this.allExercises.filter(exercise => exercise.isSelected === true);
         this.favoriteExercises = this.allExercises.filter(exercise => exercise.isFavorite === true);
+        this.tempFavoriteExercises = this.allExercises.filter(exercise => exercise.isFavorite === true);
         this.maxRounds = this.selectedExercises.length;
     }
 

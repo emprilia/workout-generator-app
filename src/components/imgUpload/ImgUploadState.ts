@@ -10,7 +10,7 @@ export class ImageUploadState {
         makeAutoObservable(this);
     }
 
-    @action public  setImageFile(file: File | null) {
+    @action public setImageFile = (file: File | null) => {
         this.imageFile = file;
         if (file) {
             this.imgUrl = URL.createObjectURL(file);

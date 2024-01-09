@@ -7,8 +7,10 @@ import {
     ExerciseInfo,
     ExerciseLabel,
     ExerciseImg,
-    StarIconWrapper,
+    EditIconWrapper,
+    StarIconWrapper
 } from './Exercise.style';
+import { ExerciseForm } from './ExerciseForm';
 
 interface ExercisePropsType {
     exercise: ExerciseType;
@@ -20,16 +22,21 @@ export const Exercise = observer((props: ExercisePropsType) => {
 
     const [exerciseState] = React.useState(() => new ExerciseState(exercise, exercisesState));
 
-    const { setSelected, setFavorite } = exerciseState;
+    const { getExerciseList } = exercisesState;
+    const { setSelected, setFavorite, setEditMode, isEditMode } = exerciseState;
     const { label, imgUrl, isSelected, isFavorite } = exercise;
 
     return (
-        <ExerciseWrapper isSelected={isSelected}>
-            <ExerciseInfo>
-                <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} onClick={setSelected} />
-                <ExerciseLabel>{label}</ExerciseLabel>
-            </ExerciseInfo>
-            <StarIconWrapper isFilled={isFavorite} onClick={setFavorite} />
-        </ExerciseWrapper>
+        <>
+            {isEditMode && <ExerciseForm exercise={exercise} isEditMode={true} getExerciseList={getExerciseList} closePopup={setEditMode} />}
+            <ExerciseWrapper isSelected={isSelected}>
+                <ExerciseInfo>
+                    <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} onClick={setSelected} />
+                    <ExerciseLabel>{label}</ExerciseLabel>
+                </ExerciseInfo>
+                <EditIconWrapper onClick={setEditMode} />
+                <StarIconWrapper isFilled={isFavorite} onClick={setFavorite} />
+            </ExerciseWrapper>
+        </>
     );
 });

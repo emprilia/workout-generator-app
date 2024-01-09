@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import { SerializedStyles, css } from '@emotion/react';
+import { EditIcon } from '../../assets/icons/EditIcon';
 import { StarIcon } from '../../assets/icons/StarIcon';
 
 interface ExercisePropsType {
@@ -16,6 +18,7 @@ export const ExerciseWrapper = styled('li')<ExercisePropsType>`
     padding: 8px;
     border-radius: 4px;
     background-color: var(--colorPrimary);
+    color: var(--shade2);
     ${({ isSelected }): string => isSelected ? '' : 'opacity: .4'};
     transition: opacity .2s ease;
 `;
@@ -39,17 +42,26 @@ export const ExerciseLabel = styled('span')`
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
 `;
 
-interface StarIconPropsType {
-    isFilled: boolean;
-}
+const setIcon = (): SerializedStyles => {
+    return css`
+        position: absolute;
+        top: 0;
+        width: 12px;
+        height: 12px;
+        fill: currentcolor;
+        padding: 4px;
+        filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
+    `;
+};
 
-export const StarIconWrapper = styled(StarIcon)<StarIconPropsType>`
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 12px;
-    height: 12px;
-    fill: var(--shade2);
-    padding: 4px;
-    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
+export const EditIconWrapper = styled(EditIcon)`
+    ${(): SerializedStyles => setIcon()};
+    left: 0;
 `;
+
+export const StarIconWrapper = styled(StarIcon)`
+    ${(): SerializedStyles => setIcon()};
+    right: 0;
+`;
+
+

@@ -5,13 +5,14 @@ import { ImgIconWrapper, ImgWrapper, UploadButtonWrapper } from './ImgUpload.sty
 
 interface ImgUploadPropsType {
     previewSize: string;
+    editImgUrl?: string;
     isClearImgForm: boolean;
     onChangeCB: (file: File | null) => void;
     onClearFormCB: () => void;
 }
 
 export const ImgUpload = observer((props: ImgUploadPropsType) => {
-    const { previewSize, isClearImgForm, onChangeCB, onClearFormCB } = props;
+    const { previewSize, editImgUrl, isClearImgForm, onChangeCB, onClearFormCB } = props;
     const [imageUploadState] = React.useState(() => new ImageUploadState(onChangeCB));
 
     if (isClearImgForm) {
@@ -21,8 +22,8 @@ export const ImgUpload = observer((props: ImgUploadPropsType) => {
 
     return (
         <UploadButtonWrapper previewSize={previewSize}>
-            {imageUploadState.imgUrl === '' ? <ImgIconWrapper /> : <ImgWrapper src={imageUploadState.imgUrl} alt="Uploaded exercise image preview" />}
-            <input type='file' accept='image/jpeg, image/png, image/gif, image/webp, image/svg+xml' onChange={imageUploadState.onChange} hidden />
+            {imageUploadState.imgUrl !== '' ? <ImgWrapper src={imageUploadState.imgUrl} alt="Uploaded exercise image preview" /> : editImgUrl !== undefined && editImgUrl !== '' ? <ImgWrapper src={editImgUrl} alt="Uploaded exercise image preview" /> : <ImgIconWrapper />}
+            <input type='file' accept='image/jpeg, image/png, image/gif, image/webp' onChange={imageUploadState.onChange} hidden />
         </UploadButtonWrapper>
     );
 });

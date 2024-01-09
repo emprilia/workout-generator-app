@@ -1,22 +1,25 @@
 import { makeAutoObservable, observable } from 'mobx';
 import { action } from 'mobx';
 import { InputState } from '../input/InputState';
-import { createExercise } from '../../api/exercises';
+import { createExercise, updateExercise } from '../../api/exercises';
 import { ExerciseType } from './ExercisesState';
 
-type ExerciseFormType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null };
-
-export type ExerciseCreateType = Omit<ExerciseFormType, 'id'>;
+export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null };
 
 export class ExerciseFormState {
-    @observable public label: InputState<string> = new InputState('');
-    @observable public imgUrl: InputState<File | null> = new InputState(null);
-    @observable public isBothSides: boolean = false;
-    @observable public isSelected: boolean = true;
-    @observable public isFavorite: boolean = false;
+    @observable public id: number | null = this.exercise?.id ?? null;
+    @observable public label: InputState<string> = new InputState(this.exercise?.label ?? '');
+    @observable public imgFile: InputState<File | null> = new InputState(null);
+    @observable public isBothSides: boolean = this.exercise?.isBothSides ?? false;
+    @observable public isSelected: boolean = this.exercise?.isSelected ?? true;
+    @observable public isFavorite: boolean = this.exercise?.isFavorite ?? false;
     @observable public isClearImgForm: boolean = false;
 
-    public constructor() {
+    public constructor(
+        private exercise: ExerciseType | null,
+        private getExerciseList: () => Promise<void>,
+        private closePopup: () => void
+    ) {
         makeAutoObservable(this);
     }
 
@@ -37,7 +40,7 @@ export class ExerciseFormState {
 
         if (file !== null) {
             formData.append('file', file);
-            this.imgUrl.setValue(file);
+            this.imgFile.setValue(file);
         }
     }
 
@@ -47,17 +50,22 @@ export class ExerciseFormState {
 
     @action clearForm = () => {
         this.label.setValue('');
-        this.imgUrl.setValue(null);
+        this.imgFile.setValue(null);
         this.isBothSides = false;
         this.isSelected = true;
         this.isFavorite = false;
         this.isClearImgForm = true;
     }
 
+    @action setClosePopup = () => {
+        this.clearForm();
+        this.closePopup();
+    }
+
     @action handleCreateExercise = async (): Promise<void> => {
         const data = {
             label: this.label.value,
-            imgUrl: this.imgUrl.value,
+            imgUrl: this.imgFile.value,
             isBothSides: this.isBothSides,
             isSelected: this.isSelected,
             isFavorite: this.isFavorite
@@ -65,8 +73,31 @@ export class ExerciseFormState {
         try {
             await createExercise(data);
             this.clearForm();
+            this.getExerciseList();
+            this.closePopup();
         } catch (error) {
             console.log('Error fetching data')
+        }
+    }
+
+    @action handleUpdateExercise = async (): Promise<void> => {
+        const data = {
+            label: this.label.value,
+            imgUrl: this.imgFile.value,
+            isBothSides: this.isBothSides,
+            isSelected: this.isSelected,
+            isFavorite: this.isFavorite
+        }
+
+        if (this.id !== null) {
+            try {
+                await updateExercise(this.id, data);
+                this.clearForm();
+                this.getExerciseList();
+                this.closePopup();
+            } catch (error) {
+                console.log('Error fetching data')
+            }
         }
     }
 }
