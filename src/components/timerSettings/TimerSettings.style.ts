@@ -98,6 +98,7 @@ export const InfoWrapper = styled('div')`
     border-radius: 4px;
     margin: 0 8px;
     padding: 8px;
+    color: var(--white);
 `;
 
 export const InfoIconWrapper = styled(InfoIcon)`

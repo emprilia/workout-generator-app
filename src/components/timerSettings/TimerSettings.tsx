@@ -42,13 +42,13 @@ export const TimerSettings = observer((props: TimerSettingsPropsType) => {
                         <StopwatchIconWrapper />
                         <FakeInput>{totalRoundTime}</FakeInput>
                         Total round time
+                        <div
+                            tabIndex={0}
+                            onClick={() => setOpenInfo('totalRounds')}
+                            onBlur={() => setOpenInfo('totalRounds')}>
+                            <InfoIconWrapper />
+                        </div>
                     </FakeInputWrapper>
-                    <div
-                        tabIndex={0}
-                        onClick={() => setOpenInfo('totalRounds')}
-                        onBlur={() => setOpenInfo('totalRounds')}>
-                        <InfoIconWrapper />
-                    </div>
                     {openInfo !== 'totalRounds' ? null : <InfoWrapper>Total round time is the combined workout and break time, calculated automatically.</InfoWrapper>}
                 </TimerInputWrapper>
                 {inputData.map((input) => (

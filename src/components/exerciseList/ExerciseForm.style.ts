@@ -2,11 +2,12 @@ import styled from '@emotion/styled';
 import { Header } from '../common/common.style';
 
 export const OverlayWrapper = styled('div')`
-    background-color: var(--opacityBlack68);
     position: fixed;
     top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
+    background-color: var(--opacityBlack68);
     z-index: 1;
 `;
 
