@@ -30,12 +30,7 @@ export class ExercisesState {
         private readonly setActiveExercisesCount: (value: number) => void
     ) {
         makeAutoObservable(this);
-        this.initializeExerciseList();
-    }
-
-    @action private async initializeExerciseList(): Promise<void> {
-        await this.getExerciseList();
-        this.generateWorkout();
+        this.getExerciseList();
     }
 
     @action public getExerciseList = async (): Promise<void> => {
@@ -67,10 +62,13 @@ export class ExercisesState {
     }
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
-        if (maxRounds <= this.activeExercises.length) {
-            this.maxRounds = maxRounds;
+        if (minRounds !== this.minRounds || maxRounds !== this.maxRounds) {
+            if (maxRounds <= this.activeExercises.length) {
+                this.maxRounds = maxRounds;
+            }
+            this.minRounds = minRounds;
+            this.generateWorkout();
         }
-        this.minRounds = minRounds;
     }
 
     @computed public get exercisesCount(): number {
