@@ -15,27 +15,30 @@ import { ExerciseForm } from './ExerciseForm';
 interface ExercisePropsType {
     exercise: ExerciseType;
     exercisesState: ExercisesState;
+    isEditMode: boolean;
+    setEditMode: () => void;
 }
 
 export const Exercise = observer((props: ExercisePropsType) => {
-    const { exercise, exercisesState } = props;
+    const { exercise, exercisesState, isEditMode } = props;
 
     const [exerciseState] = React.useState(() => new ExerciseState(exercise, exercisesState));
 
     const { getExerciseList } = exercisesState;
-    const { setSelected, setFavorite, setEditMode, isEditMode } = exerciseState;
-    const { label, imgUrl, isSelected, isFavorite } = exercise;
+    const { setSelected, setFavorite, isEditExercise, setEditExercise } = exerciseState;
+    const { label, imgUrl, isActive, isFavorite } = exercise;
+
+    const isSelected = exercisesState.selectedExercises.includes(exercise.id);
 
     return (
         <>
-            {isEditMode && <ExerciseForm exercise={exercise} isEditMode={true} getExerciseList={getExerciseList} closePopup={setEditMode} />}
-            <ExerciseWrapper isSelected={isSelected}>
-                <ExerciseInfo>
-                    <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} onClick={setSelected} />
+            {isEditExercise && <ExerciseForm exercise={exercise} isEditMode={true} getExerciseList={getExerciseList} closePopup={setEditExercise} />}
+            <ExerciseWrapper isActive={isActive} isEditMode={isEditMode} isSelected={isSelected}>
+                <ExerciseInfo isActive={isActive} isEditMode={isEditMode} isSelected={isSelected} onClick={setSelected}>
+                    <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} />
                     <ExerciseLabel>{label}</ExerciseLabel>
                 </ExerciseInfo>
-                <EditIconWrapper onClick={setEditMode} />
-                <StarIconWrapper isFilled={isFavorite} onClick={setFavorite} />
+                {isEditMode ? <EditIconWrapper onClick={setEditExercise} /> : <StarIconWrapper isFilled={isFavorite} onClick={setFavorite} />}
             </ExerciseWrapper>
         </>
     );

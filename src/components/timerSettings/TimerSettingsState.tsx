@@ -47,12 +47,12 @@ export class TimerSettingsState {
     @observable public workoutTime: InputState<number> = new InputState(this.timerSettings.workoutTime);
     @observable public breakTime: InputState<number> = new InputState(this.timerSettings.breakTime);
     @observable public minRounds: InputState<number> = new InputState(this.timerSettings.minRounds);
-    @observable public maxRounds: InputState<number> = new InputState(this.timerSettings.maxRounds > this.selectedCount ? this.selectedCount : this.timerSettings.maxRounds);
+    @observable public maxRounds: InputState<number> = new InputState(this.timerSettings.maxRounds > this.activeCount ? this.activeCount : this.timerSettings.maxRounds);
     @observable public focusedInput: string = '';
     @observable public openInfo: string = '';
 
     public constructor(
-        private readonly selectedCount: number,
+        private readonly activeCount: number,
         private readonly setMinMaxRoundsLimits: () => void,
     ) {
         makeAutoObservable(this);
@@ -142,14 +142,14 @@ export class TimerSettingsState {
                 label: 'Max rounds',
                 value: 'maxRounds',
                 icon: <MinMaxIconWrapper />,
-                info: `Max rounds is the maximum number of rounds. Cannot be higher than current number of available exercises (${this.selectedCount}).`,
+                info: `Max rounds is the maximum number of rounds. Cannot be higher than current number of available exercises: (${this.activeCount}).`,
                 stateValue: this.maxRounds,
             },
         ];
         return inputData;
     }
 
-    @action setSelectedExercisesCount = (value: number) => {
+    @action setActiveExercisesCount = (value: number) => {
         if (this.savedMaxRounds >= value) {
             this.maxRounds.setValue(value);
             this.savedMaxRounds = value;

@@ -1,6 +1,11 @@
 import { ExerciseCreateType } from "../components/exerciseList/ExerciseFormState";
 import { ExerciseType } from "../components/exerciseList/ExercisesState";
 
+interface QuickUpdateType {
+    isActive: boolean;
+    isFavorite: boolean;
+}
+
 export const getAllExercises = (): Promise<Array<ExerciseType>> => {
     return fetch('http://localhost:5000/get-exercise-list').then((response) => {
         if (!response.ok) {
@@ -23,7 +28,7 @@ export const createExercise = async (data: ExerciseCreateType): Promise<void> =>
         formData.append('imageFile', data.imgUrl);
     }
     formData.append('isBothSides', JSON.stringify(data.isBothSides));
-    formData.append('isSelected', JSON.stringify(data.isSelected));
+    formData.append('isActive', JSON.stringify(data.isActive));
     formData.append('isFavorite', JSON.stringify(data.isFavorite));
 
     try {
@@ -47,6 +52,29 @@ export const createExercise = async (data: ExerciseCreateType): Promise<void> =>
     }
 };
 
+export const quickUpdate = async (id: number, data: QuickUpdateType): Promise<void> => {
+    try {
+        const response = await fetch(`http://localhost:5000/quick-update-exercise/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('Success updating exercise');
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error('Failure:', error.message);
+        } else {
+            console.error('An unexpected error occurred');
+        }
+        throw new Error('Failed to update exercise');
+    }
+}
+
 export const updateExercise = async (id: number, data: ExerciseCreateType): Promise<void> => {
     let body;
 
@@ -55,14 +83,14 @@ export const updateExercise = async (id: number, data: ExerciseCreateType): Prom
         formData.append('imageFile', data.imgUrl);
         formData.append('label', data.label);
         formData.append('isBothSides', JSON.stringify(data.isBothSides));
-        formData.append('isSelected', JSON.stringify(data.isSelected));
+        formData.append('isActive', JSON.stringify(data.isActive));
         formData.append('isFavorite', JSON.stringify(data.isFavorite));
         body = formData;
     } else {
         body = JSON.stringify({
             label: data.label,
             isBothSides: data.isBothSides,
-            isSelected: data.isSelected,
+            isActive: data.isActive,
             isFavorite: data.isFavorite
         });
     }
@@ -88,3 +116,25 @@ export const updateExercise = async (id: number, data: ExerciseCreateType): Prom
         throw new Error('Failed to update exercise');
     }
 };
+
+export const deleteExercise = async (id: number): Promise<void> => {
+    try {
+        const response = await fetch(`http://localhost:5000/delete-exercise/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        console.log('Success deleting exercise');
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error('Failure:', error.message);
+        } else {
+            console.error('An unexpected error occurred');
+        }
+        throw new Error('Failed to delete exercise');
+    }
+  };

@@ -8,6 +8,7 @@ export interface ButtonPropsType {
     children: React.ReactNode;
     className?: string;
     version?: ButtonVersion;
+    size?: 'small' | 'default' | 'large';
     width?: 'full' | 'default';
     isDisabled?: boolean,
     onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
@@ -17,6 +18,7 @@ export const Button = observer((props: ButtonPropsType) => {
     const {
         children,
         className,
+        size = 'default',
         version = 'primary',
         width = 'default',
         isDisabled,
@@ -29,6 +31,7 @@ export const Button = observer((props: ButtonPropsType) => {
             disabled={isDisabled}
             onClick={onClick}
             width={width}
+            size={size}
             version={version}
         >
             {children}

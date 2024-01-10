@@ -5,6 +5,8 @@ export const AppWrapper = styled('div')`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    max-width: 350px;
+    margin: 0 auto;
     padding: 24px;
 `;
 

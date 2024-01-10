@@ -2,7 +2,8 @@ import { makeAutoObservable, observable, action } from 'mobx';
 import { ExerciseType, ExercisesState } from './ExercisesState';
 
 export class ExerciseState {
-    @observable public isEditMode: boolean = false;
+    @observable public isEditExercise: boolean = false;
+
     public constructor(
         private exercise: ExerciseType,
         private exercisesState: ExercisesState
@@ -11,16 +12,26 @@ export class ExerciseState {
     }
 
     @action setSelected = () => {
-        this.exercise.isSelected = !this.exercise.isSelected;
-        this.exercisesState.tempSelectedExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isSelected === true)
+        if (this.exercisesState.isEditMode) {
+            if (this.exercisesState.selectedExercises.includes(this.exercise.id)) {
+                this.exercisesState.selectedExercises = this.exercisesState.selectedExercises.filter((id) => id !== this.exercise.id)
+            } else {
+                this.exercisesState.selectedExercises.push(this.exercise.id)
+            }
+        } else {
+            this.exercise.isActive = !this.exercise.isActive;
+            this.exercisesState.tempActiveExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isActive === true);
+            this.exercisesState.setChanged(this.exercise);
+        }
     }
 
     @action setFavorite = () => {
         this.exercise.isFavorite = !this.exercise.isFavorite;
         this.exercisesState.tempFavoriteExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isFavorite === true)
+        this.exercisesState.setChanged(this.exercise);
     }
 
-    @action setEditMode = () => {
-        this.isEditMode = !this.isEditMode;
+    @action setEditExercise = () => {
+        this.isEditExercise = !this.isEditExercise;
     }
 }

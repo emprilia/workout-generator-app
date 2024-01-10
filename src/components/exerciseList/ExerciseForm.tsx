@@ -24,8 +24,8 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
         label,
         isBothSides,
         setBothSides,
-        isSelected,
-        setSelected,
+        isActive,
+        setActive,
         isFavorite,
         setFavorite,
         onImgChangeCB,
@@ -67,9 +67,9 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
                             onChange={setFavorite}
                         />
                         <Checkbox
-                            label='Add to selected'
-                            isChecked={isSelected}
-                            onChange={setSelected}
+                            label='Set as active'
+                            isChecked={isActive}
+                            onChange={setActive}
 
                         />
                     </div>

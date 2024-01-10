@@ -11,7 +11,7 @@ export class ExerciseFormState {
     @observable public label: InputState<string> = new InputState(this.exercise?.label ?? '');
     @observable public imgFile: InputState<File | null> = new InputState(null);
     @observable public isBothSides: boolean = this.exercise?.isBothSides ?? false;
-    @observable public isSelected: boolean = this.exercise?.isSelected ?? true;
+    @observable public isActive: boolean = this.exercise?.isActive ?? true;
     @observable public isFavorite: boolean = this.exercise?.isFavorite ?? false;
     @observable public isClearImgForm: boolean = false;
 
@@ -23,8 +23,8 @@ export class ExerciseFormState {
         makeAutoObservable(this);
     }
 
-    @action setSelected = () => {
-        this.isSelected = !this.isSelected;
+    @action setActive = () => {
+        this.isActive = !this.isActive;
     }
 
     @action setFavorite = () => {
@@ -52,7 +52,7 @@ export class ExerciseFormState {
         this.label.setValue('');
         this.imgFile.setValue(null);
         this.isBothSides = false;
-        this.isSelected = true;
+        this.isActive = true;
         this.isFavorite = false;
         this.isClearImgForm = true;
     }
@@ -67,7 +67,7 @@ export class ExerciseFormState {
             label: this.label.value,
             imgUrl: this.imgFile.value,
             isBothSides: this.isBothSides,
-            isSelected: this.isSelected,
+            isActive: this.isActive,
             isFavorite: this.isFavorite
         }
         try {
@@ -85,7 +85,7 @@ export class ExerciseFormState {
             label: this.label.value,
             imgUrl: this.imgFile.value,
             isBothSides: this.isBothSides,
-            isSelected: this.isSelected,
+            isActive: this.isActive,
             isFavorite: this.isFavorite
         }
 
