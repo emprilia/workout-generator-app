@@ -11,8 +11,8 @@ export class AppState {
 
     public constructor() {
         makeAutoObservable(this);
-        this.exercisesState = new ExercisesState(this.setSelectedExercisesCount);
-        this.timerSettingsState = new TimerSettingsState(this.exercisesState.selectedExercises.length, this.setMinMaxRoundsLimits);
+        this.exercisesState = new ExercisesState(this.setActiveExercisesCount);
+        this.timerSettingsState = new TimerSettingsState(this.exercisesState.activeExercises.length, this.setMinMaxRoundsLimits);
         this.initializeStates();
     }
 
@@ -24,8 +24,8 @@ export class AppState {
         this.exercisesState.setMinMaxRoundsLimits(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
     }
 
-    @action setSelectedExercisesCount = (value: number) => {
-        this.timerSettingsState.setSelectedExercisesCount(value);
+    @action setActiveExercisesCount = (value: number) => {
+        this.timerSettingsState.setActiveExercisesCount(value);
     }
 
     @action setView = (view: ViewType) => {

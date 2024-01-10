@@ -4,6 +4,8 @@ import { EditIcon } from '../../assets/icons/EditIcon';
 import { StarIcon } from '../../assets/icons/StarIcon';
 
 interface ExercisePropsType {
+    isActive: boolean;
+    isEditMode: boolean;
     isSelected: boolean;
 }
 
@@ -13,20 +15,22 @@ export const ExerciseWrapper = styled('li')<ExercisePropsType>`
     flex-flow: column nowrap;
     justify-content: space-evenly;
     align-items: center;
-    height: 84px;
-    width: 84px;
+    height: 94px;
+    width: 94px;
     padding: 8px;
     border-radius: 4px;
     background-color: var(--colorPrimary);
     color: var(--shade2);
-    ${({ isSelected }): string => isSelected ? '' : 'opacity: .4'};
+    ${({ isSelected }): string => isSelected === false ? '' : `outline: 2px solid var(--warning); outline-offset: -3px;`};
+    ${({ isEditMode, isActive }): string => isEditMode || isActive ? '' : 'opacity: .4'};
     transition: opacity .2s ease;
 `;
 
-export const ExerciseInfo = styled('div')`
+export const ExerciseInfo = styled('div')<ExercisePropsType>`
     display: flex;
     flex-flow: column nowrap;
     align-items: center;
+    gap: 4px;
 `;
 
 export const ExerciseImg = styled('img')`
@@ -46,8 +50,9 @@ const setIcon = (): SerializedStyles => {
     return css`
         position: absolute;
         top: 0;
-        width: 12px;
-        height: 12px;
+        right: 0;
+        width: 16px;
+        height: 16px;
         fill: currentcolor;
         padding: 4px;
         filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
@@ -56,12 +61,10 @@ const setIcon = (): SerializedStyles => {
 
 export const EditIconWrapper = styled(EditIcon)`
     ${(): SerializedStyles => setIcon()};
-    left: 0;
 `;
 
 export const StarIconWrapper = styled(StarIcon)`
     ${(): SerializedStyles => setIcon()};
-    right: 0;
 `;
 
 

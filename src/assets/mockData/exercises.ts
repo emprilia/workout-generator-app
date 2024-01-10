@@ -6,7 +6,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'high knees',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -14,7 +14,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'jumping jacks',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -22,7 +22,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'hold plank',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -30,7 +30,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'high plank low plank',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -38,7 +38,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'boxing and running',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -46,7 +46,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'worm',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -54,7 +54,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'scissors',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -62,7 +62,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'mountain climber',
         imgUrl: require('./exerciseImgs/mountainClimber.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -70,7 +70,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'brzuszki',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -78,7 +78,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'wdupki',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -86,7 +86,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'hold side plank',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: true,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -94,7 +94,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'jumping jack squats',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -102,7 +102,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'saw',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: false,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -110,7 +110,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'rainbow',
         imgUrl: require('./exerciseImgs/highKnees.png'),
         isBothSides: true,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
     {
@@ -118,7 +118,7 @@ export const exercises: Array<ExerciseType> = [
         label: 'lunge',
         imgUrl: require('./exerciseImgs/lunge.png'),
         isBothSides: true,
-        isSelected: true,
+        isActive: true,
         isFavorite: false
     },
 ]
