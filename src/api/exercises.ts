@@ -6,7 +6,7 @@ interface QuickUpdateType {
     isFavorite: boolean;
 }
 
-export const getAllExercises = (): Promise<Array<ExerciseType>> => {
+export const getAllExercises = async (): Promise<Array<ExerciseType>> => {
     return fetch('http://localhost:5000/get-exercise-list').then((response) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');

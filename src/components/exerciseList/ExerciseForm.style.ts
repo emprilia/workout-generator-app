@@ -8,7 +8,7 @@ export const OverlayWrapper = styled('div')`
     height: 100%;
     width: 100%;
     background-color: var(--opacityBlack68);
-    z-index: 1;
+    z-index: 2;
 `;
 
 export const ExerciseFormWrapper = styled('div')`
