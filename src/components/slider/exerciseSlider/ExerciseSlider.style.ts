@@ -49,6 +49,7 @@ export const Exercise = styled('li')<ExercisePropsType>`
 
 export const ExerciseImg = styled('img')`
     height: 240px;
+    width: 240px;
 `;
 
 export const ExerciseHeader = styled('div')`

@@ -20,14 +20,12 @@ export class ExerciseState {
             }
         } else {
             this.exercise.isActive = !this.exercise.isActive;
-            this.exercisesState.tempActiveExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isActive === true);
             this.exercisesState.setChanged(this.exercise);
         }
     }
 
     @action setFavorite = () => {
         this.exercise.isFavorite = !this.exercise.isFavorite;
-        this.exercisesState.tempFavoriteExercises = this.exercisesState.allExercises.filter((exercise) => exercise.isFavorite === true)
         this.exercisesState.setChanged(this.exercise);
     }
 

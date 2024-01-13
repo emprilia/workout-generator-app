@@ -1,11 +1,11 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled/macro";
 import { SerializedStyles, css } from '@emotion/react';
 import { Button } from '../button/Button';
 import { EditIcon } from '../../assets/icons/EditIcon';
 import { TrashIcon } from '../../assets/icons/TrashIcon';
 import { ExitIcon } from '../../assets/icons/ExitIcon';
 
-export const ExerciseListContainer = styled('div')`
+export const ExerciseListWrapper = styled('div')`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 8px;

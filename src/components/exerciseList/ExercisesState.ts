@@ -1,5 +1,6 @@
 import { makeAutoObservable, action, computed, observable } from 'mobx';
 import { getAllExercises, quickUpdate, deleteExercise } from '../../api/exercises';
+import { TabType } from '../filters/FiltersState';
 
 export interface ExerciseType {
     id: number;
@@ -13,13 +14,10 @@ export interface ExerciseType {
 export class ExercisesState {
     @observable private exercises: Array<ExerciseType> | null = [];
     public originalExercises: Array<ExerciseType> = [];
-    @observable public changedExercises: Array<ExerciseType> = [];
+    @observable public showingExercises: Array<ExerciseType> = [];
     @observable public selectedExercises: Array<number> = [];
-    @observable public tempActiveExercises: Array<ExerciseType> = [];
-    @observable public activeExercises: Array<ExerciseType> = [];
-    @observable public tempFavoriteExercises: Array<ExerciseType> = [];
-    @observable public favoriteExercises: Array<ExerciseType> = [];
-    @observable public currentExercise: number = 1;
+    @observable public changedExercises: Array<ExerciseType> = [];
+    @observable public currentExercise: number = 1; // TODO
     @observable public minRounds: number = 1;
     @observable public maxRounds: number = 1;
     @observable public generatedWorkout: Array<ExerciseType> = [];
@@ -45,10 +43,7 @@ export class ExercisesState {
 
     @action private setExercises = (data: Array<ExerciseType>) => {
         this.originalExercises = data;
-        this.activeExercises = this.allExercises.filter(exercise => exercise.isActive === true);
-        this.tempActiveExercises = this.activeExercises;
-        this.favoriteExercises = this.allExercises.filter(exercise => exercise.isFavorite === true);
-        this.tempFavoriteExercises = this.favoriteExercises;
+        this.showingExercises = this.allExercises;
         this.maxRounds = this.activeExercises.length;
         this.setActiveExercisesCount(this.activeExercises.length);
     }
@@ -57,8 +52,16 @@ export class ExercisesState {
         return this.exercises === null ? [] : this.exercises;
     }
 
-    @computed public get allExercisesSorted(): Array<ExerciseType> {
-        return this.allExercises.slice().sort((a, b) => b.id - a.id);;
+    @computed public get activeExercises(): Array<ExerciseType> {
+        return this.showingExercises.filter(exercise => exercise.isActive === true);
+    }
+
+    @action updateShowing = (showing: Array<ExerciseType>, type: TabType) => {
+        this.showingExercises = showing;
+
+        if (type === 'filter') {
+            this.selectedExercises = [];
+        }
     }
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
@@ -138,11 +141,14 @@ export class ExercisesState {
     @action setSelectCheckbox = (type: 'all' | 'none') => {
         if (type === 'all') {
             if (this.isEditMode) {
-                this.allExercises.map((exercise) => this.selectedExercises.push(exercise.id));
+                for (const exercise of this.showingExercises) {
+                    if (this.selectedExercises.includes(exercise.id) === false) {
+                        this.selectedExercises.push(exercise.id);
+                    }
+                }
             } else {
-                this.allExercises.forEach((exercise) => exercise.isActive = true)
-                this.tempActiveExercises = this.allExercises;
-                for (const exercise of this.allExercises) {
+                this.showingExercises.forEach((exercise) => exercise.isActive = true)
+                for (const exercise of this.showingExercises) {
                     this.setChanged(exercise);
                 }
             }
@@ -150,9 +156,8 @@ export class ExercisesState {
             if (this.isEditMode) {
                 this.selectedExercises = [];
             } else {
-                this.allExercises.forEach((exercise) => exercise.isActive = false)
-                this.tempActiveExercises = [];
-                for (const exercise of this.allExercises) {
+                this.showingExercises.forEach((exercise) => exercise.isActive = false)
+                for (const exercise of this.showingExercises) {
                     this.setChanged(exercise);
                 }
             }
