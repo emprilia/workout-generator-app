@@ -30,10 +30,12 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
         setFavorite,
         onImgChangeCB,
         handleCreateExercise,
+        handleCreateNewwwwwww,
         handleUpdateExercise,
         isClearImgForm,
         onClearFormCB,
-        setClosePopup
+        setClosePopup,
+        blabla
     } = exerciseFormState;
 
     return (
@@ -47,6 +49,7 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
                         stateValue={label}
                     />
                 </ExerciseInputWrapper>
+                <img src={blabla} alt='' />
                 <ExerciseFormFieldsWrapper>
                     <ImgUpload
                         previewSize='56'

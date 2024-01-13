@@ -33,6 +33,7 @@ export class ExercisesState {
 
     @action public getExerciseList = async (): Promise<void> => {
         try {
+            // const data = JSON.parse(localStorage.getItem('exercises') || '[]');
             const data = await getAllExercises();
             this.exercises = data;
             this.setExercises(data);
@@ -43,6 +44,7 @@ export class ExercisesState {
 
     @action private setExercises = (data: Array<ExerciseType>) => {
         this.originalExercises = data;
+        localStorage.setItem('exercisesLocal', JSON.stringify(data));
         this.showingExercises = this.allExercises;
         this.maxRounds = this.activeExercises.length;
         this.setActiveExercisesCount(this.activeExercises.length);
