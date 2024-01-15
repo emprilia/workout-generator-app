@@ -1,5 +1,5 @@
 import { makeAutoObservable, observable, computed, action } from 'mobx';
-import { getSingleGeneratorSettings, updateSingleGeneratorSettings } from '../../api/timerSettings';
+import { getTimerSettings, updateTimerSettings } from '../../api/supabaseTimerSettings';
 import { InputState } from '../input/InputState';
 import {
     PrepIconWrapper,
@@ -20,7 +20,7 @@ export interface WorkoutGeneratorPropsType {
 
 const defaultGeneratorSettings: WorkoutGeneratorPropsType = {
     id: 0,
-    label: 'default',
+    label: 'initial',
     prepTime: 5,
     workoutTime: 45,
     breakTime: 15,
@@ -56,22 +56,22 @@ export class TimerSettingsState {
         private readonly setMinMaxRoundsLimits: () => void,
     ) {
         makeAutoObservable(this);
-        this.initializeTimerSettings();
+        this.getTimerSettings();
     }
 
-    @action private async initializeTimerSettings(): Promise<void> {
+    @action public getTimerSettings = async (): Promise<void> => {
         try {
-            // temp fixed id since there is no way to add more timers to database
-            const data = await getSingleGeneratorSettings(1);
-            this.setTimerSettings(data);
-            this.setMinMaxRoundsLimits();
+            const data = await getTimerSettings();
+            if (data !== null) {
+                this.setTimerSettings(data);
+            }
         } catch (error) {
-            console.error('Error fetching timer settings', error);
+            console.log('Error fetching data')
         }
-    }
+    };
 
-    @action private setTimerSettings(settings: WorkoutGeneratorPropsType): void {
-        this.timerSettings = settings;
+    @action private setTimerSettings(settings: Array<WorkoutGeneratorPropsType>): void {
+        this.timerSettings = settings[0];
         this.prepTime.setValue(this.timerSettings.prepTime);
         this.workoutTime.setValue(this.timerSettings.workoutTime);
         this.breakTime.setValue(this.timerSettings.breakTime);
@@ -82,6 +82,7 @@ export class TimerSettingsState {
         this.savedBreakTime = this.timerSettings.breakTime;
         this.savedMinRounds = this.timerSettings.minRounds;
         this.savedMaxRounds = this.timerSettings.maxRounds;
+        this.setMinMaxRoundsLimits();
     }
 
     @computed public get defaultTimerSettings(): WorkoutGeneratorPropsType {
@@ -93,15 +94,6 @@ export class TimerSettingsState {
             minRounds: this.timerSettings.minRounds,
             maxRounds: this.timerSettings.maxRounds
         };
-    }
-
-    @action updateTimerSettings = async (): Promise<void> => {
-        try {
-            // temp fixed id since there is no way to add more timers to database
-            await updateSingleGeneratorSettings(1, this.timerSettings);
-        } catch (error) {
-            console.log('Error fetching data')
-        }
     }
 
     @computed public get totalRoundTime(): number {
@@ -176,7 +168,12 @@ export class TimerSettingsState {
             maxRounds: this.savedMaxRounds
         }
 
-        await this.updateTimerSettings();
+        try {
+            // temp fixed id since there is no way to add more timers to database
+            await updateTimerSettings(1, this.timerSettings);
+        } catch (error) {
+            console.log('Error fetching data')
+        }
     }
 
     @action onDivFocus = (value: string) => {
