@@ -26,7 +26,7 @@ export const ActionsContainer = observer((props: ActionsContainerPropsType) => {
         setEditMode,
         isEditMode,
         setSelectCheckbox,
-        saveExercises,
+        handleQuickUpdate,
         handleDeleteExercises
     } = exercisesState;
 
@@ -50,7 +50,7 @@ export const ActionsContainer = observer((props: ActionsContainerPropsType) => {
                     {isEditMode ? <><ExitIconWrapper /> Exit edit mode</> : <><EditIconWrapper /> Enter edit mode</>}
                 </Button>
                 {isEditMode ? <Button width='full' isDisabled={selectedExercises.length === 0} size='small' onClick={() => handleDeleteExercises(selectedExercises)}><TrashIconWrapper />Delete selected</Button> :
-                    <Button width='full' isDisabled={changedExercises.length === 0} size='small' onClick={saveExercises}>
+                    <Button width='full' isDisabled={changedExercises.length === 0} size='small' onClick={handleQuickUpdate}>
                         <DiskIconWrapper />{changedExercises.length === 0 ? 'No changes' : 'Save changes'}
                     </Button>
                 }

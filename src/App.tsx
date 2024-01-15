@@ -21,7 +21,7 @@ export const App = observer(() => {
 
     return (
         <AppWrapper>
-            {timerSettingsState.timerSettings.label === 'default' || exercisesState.allExercises.length === 0 ? <div>Loading</div> : <>
+            {timerSettingsState.timerSettings.label === 'initial' || exercisesState.allExercises.length === 0 ? <div>Loading</div> : <>
                 <MenuWrapper>
                     <Button version={`${currentView === 'generator' ? 'secondary' : 'primary'}`} onClick={() => setView('generator')}>Main</Button>
                     <Button version={`${currentView === 'timer-settings' ? 'secondary' : 'primary'}`} onClick={() => setView('timer-settings')}>Timer Settings</Button>

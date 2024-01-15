@@ -1,7 +1,6 @@
-import { makeAutoObservable, observable } from 'mobx';
-import { action } from 'mobx';
+import { makeAutoObservable, observable, action } from 'mobx';
+import { updateExercise, createExercise } from '../../api/supabaseExercises';
 import { InputState } from '../input/InputState';
-import { createExercise, updateExercise } from '../../api/exercises';
 import { ExerciseType } from './ExercisesState';
 
 export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null };
@@ -70,6 +69,7 @@ export class ExerciseFormState {
             isActive: this.isActive,
             isFavorite: this.isFavorite
         }
+
         try {
             await createExercise(data);
             this.clearForm();

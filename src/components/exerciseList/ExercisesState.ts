@@ -1,5 +1,5 @@
 import { makeAutoObservable, action, computed, observable } from 'mobx';
-import { getAllExercises, quickUpdate, deleteExercise } from '../../api/exercises';
+import { getExercises, quickUpdate, deleteExercise } from '../../api/supabaseExercises';
 import { TabType } from '../filters/FiltersState';
 
 export interface ExerciseType {
@@ -12,7 +12,7 @@ export interface ExerciseType {
 }
 
 export class ExercisesState {
-    @observable private exercises: Array<ExerciseType> | null = [];
+    @observable private exercises: Array<ExerciseType> | null = null;
     public originalExercises: Array<ExerciseType> = [];
     @observable public showingExercises: Array<ExerciseType> = [];
     @observable public selectedExercises: Array<number> = [];
@@ -33,35 +33,22 @@ export class ExercisesState {
 
     @action public getExerciseList = async (): Promise<void> => {
         try {
-            const data = await getAllExercises();
-            this.exercises = data;
-            this.setExercises(data);
+            const data = await getExercises();
+            if (data !== null) {
+                this.setExercises(data);
+            }
         } catch (error) {
-            console.error('Error fetching exercise list', error);
+            console.log('Error fetching data')
         }
     };
 
-    @action private setExercises = (data: Array<ExerciseType>) => {
-        this.originalExercises = data;
+    @action public setExercises = (data: Array<ExerciseType>) => {
+        // TODO: set sorting method
+        this.exercises = data;
+        this.originalExercises = this.allExercises;
         this.showingExercises = this.allExercises;
         this.maxRounds = this.activeExercises.length;
         this.setActiveExercisesCount(this.activeExercises.length);
-    }
-
-    @computed public get allExercises(): Array<ExerciseType> {
-        return this.exercises === null ? [] : this.exercises;
-    }
-
-    @computed public get activeExercises(): Array<ExerciseType> {
-        return this.showingExercises.filter(exercise => exercise.isActive === true);
-    }
-
-    @action updateShowing = (showing: Array<ExerciseType>, type: TabType) => {
-        this.showingExercises = showing;
-
-        if (type === 'filter') {
-            this.selectedExercises = [];
-        }
     }
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
@@ -72,6 +59,14 @@ export class ExercisesState {
             this.minRounds = minRounds;
             this.generateWorkout();
         }
+    }
+
+    @computed public get allExercises(): Array<ExerciseType> {
+        return this.exercises === null ? [] : this.exercises;
+    }
+
+    @computed public get activeExercises(): Array<ExerciseType> {
+        return this.showingExercises.filter(exercise => exercise.isActive === true);
     }
 
     @computed public get exercisesCount(): number {
@@ -118,7 +113,6 @@ export class ExercisesState {
                 const exerciseIndex = exercisesSet.indexOf(singleSide);
                 exercisesSet.splice(exerciseIndex, 1);
             }
-
             return exercisesSet;
         }
         return exercisesSet;
@@ -168,8 +162,19 @@ export class ExercisesState {
         this.selectedExercises.push(id);
     }
 
+    @action updateShowing = (showing: Array<ExerciseType>, type: TabType) => {
+        this.showingExercises = showing;
+
+        if (type === 'filter') {
+            this.selectedExercises = [];
+        }
+    }
+
     @action setChanged = (exercise: ExerciseType) => {
-        const originalExercise = this.originalExercises.find(e => e.id === exercise.id);
+        const showingIndex = this.showingExercises.findIndex(e => e.id === exercise.id);
+        this.showingExercises[showingIndex] = exercise;
+
+        const originalExercise = this.changedExercises.find(e => e.id === exercise.id);
 
         const isExerciseEqual = (exercise1: ExerciseType, exercise2: ExerciseType) => {
             return exercise1.isActive === exercise2.isActive && exercise1.isFavorite === exercise2.isFavorite;
@@ -184,16 +189,11 @@ export class ExercisesState {
                 } else {
                     this.changedExercises[changedIndex] = exercise;
                 }
-            } else if (isExerciseEqual(exercise, originalExercise) === false) {
-                this.changedExercises.push(exercise);
             }
+        } else {
+            this.changedExercises.push(exercise);
         }
     };
-
-    @action saveExercises = () => {
-        this.handleQuickUpdate();
-        this.changedExercises = [];
-    }
 
     @action handleQuickUpdate = async (): Promise<void> => {
         for (const exercise of this.changedExercises) {
@@ -204,31 +204,24 @@ export class ExercisesState {
                 }
                 try {
                     await quickUpdate(exercise.id, data);
-                    this.updateExerciseList();
                 } catch (error) {
                     console.log('Error fetching data')
                 }
             }
         }
+        this.getExerciseList();
+        this.changedExercises = [];
     }
-
-    @action public updateExerciseList = async (): Promise<void> => {
-        try {
-            const data = await getAllExercises();
-            this.setExercises(data);
-        } catch (error) {
-            console.error('Error fetching exercise list', error);
-        }
-    };
 
     @action handleDeleteExercises = async (exercises: Array<number>): Promise<void> => {
         for (const id of exercises) {
             try {
                 await deleteExercise(id);
-                this.getExerciseList();
             } catch (error) {
                 console.log('Error fetching data')
             }
         }
+        this.getExerciseList();
+        this.selectedExercises = [];
     }
 }
