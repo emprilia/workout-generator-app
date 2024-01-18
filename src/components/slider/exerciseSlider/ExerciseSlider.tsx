@@ -1,5 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { WorkoutGeneratorState } from '../../workoutGenerator/WorkoutGeneratorState';
 import { SliderState } from '../Slider.state';
 import { CounterState } from '../../counter/CounterState';
 import {
@@ -18,17 +19,16 @@ import {
     NextLabel
 } from './ExerciseSlider.style';
 import { CounterIconWrapper } from '../../counter/Counter.style';
-import { AppState } from '../../../AppState.state';
 
 interface ExerciseSliderPropsType {
-    appState: AppState;
+    workoutGeneratorState: WorkoutGeneratorState;
     sliderState: SliderState;
     counterState: CounterState;
 }
 
 export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
-    const { appState, sliderState, counterState } = props;
-    const { exercisesState } = appState;
+    const { workoutGeneratorState, sliderState, counterState } = props;
+    const { exercisesState } = workoutGeneratorState;
 
     const { 
         time,

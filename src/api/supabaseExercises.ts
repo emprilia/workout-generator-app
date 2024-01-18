@@ -1,13 +1,16 @@
-import { ExerciseCreateType } from '../components/exerciseList/ExerciseFormState';
 import { supabase } from './supabase';
 
+export type ExerciseInitialCreateType = Omit<ExerciseType, 'id'> & { userId: string };
+
+export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null, userId: string };
 export interface ExerciseType {
     id: number;
     label: string;
     imgUrl: string;
     isBothSides: boolean;
     isActive: boolean;
-    isFavorite: boolean
+    isFavorite: boolean;
+    isInitial?: boolean;
 }
 
 interface QuickUpdateType {
@@ -15,7 +18,21 @@ interface QuickUpdateType {
     isFavorite: boolean;
 }
 
-export const getExercises = async (): Promise<Array<ExerciseType> | null> => {
+export const getInitialExercises = async (): Promise<Array<ExerciseType> | null> => {
+    const { data, error } = await supabase
+    .from('initial-exercises-list')
+        .select('*')
+        .returns<Array<ExerciseType>>();
+
+    if (error) {
+        console.log('Error', error);
+        return null;
+    } else {
+        return data;
+    }
+};
+
+export const getUserExercises = async (): Promise<Array<ExerciseType> | null> => {
     const { data, error } = await supabase
     .from('exercises-list')
         .select('*')
@@ -28,6 +45,24 @@ export const getExercises = async (): Promise<Array<ExerciseType> | null> => {
         return data;
     }
 };
+
+export const createInitialExercise = async (data: ExerciseInitialCreateType): Promise<void> => {
+    const currentDate = new Date().toISOString();
+
+    const createData = {
+        label: data.label,
+        imgUrl: data.imgUrl,
+        isBothSides: data.isBothSides,
+        isActive: data.isActive,
+        isFavorite: data.isFavorite,
+        created_at: currentDate,
+        user_id: data.userId
+    };
+
+    const { error } = await supabase.from('exercises-list').insert(createData);
+
+    if (error) throw new Error(`Failed to create exercise: ${error.message}`);
+}
 
 export const createExercise = async (data: ExerciseCreateType): Promise<void> => {
     let imageUrl;
@@ -59,7 +94,8 @@ export const createExercise = async (data: ExerciseCreateType): Promise<void> =>
         isBothSides: data.isBothSides,
         isActive: data.isActive,
         isFavorite: data.isFavorite,
-        created_at: currentDate
+        created_at: currentDate,
+        user_id: data.userId
     };
 
     const { error } = await supabase.from('exercises-list').insert(createData);

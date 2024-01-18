@@ -10,10 +10,12 @@ import { Button } from '../button/Button';
 
 interface ExerciseListContainerPropsType {
     exercisesState: ExercisesState;
+    userId: string;
+    getExerciseList: () => Promise<void>;
 }
 
 export const ExerciseListContainer = observer((props: ExerciseListContainerPropsType) => {
-    const { exercisesState } = props;
+    const { exercisesState, userId, getExerciseList } = props;
 
     const {
         showingExercises,
@@ -31,7 +33,7 @@ export const ExerciseListContainer = observer((props: ExerciseListContainerProps
             </CreateExerciseWrapper>
             {showingExercises.map((exercise) => (
                 <React.Fragment key={exercise.id}>
-                    <Exercise setEditMode={setEditMode} isEditMode={isEditMode} exercise={exercise} exercisesState={exercisesState} />
+                    <Exercise getExerciseList={getExerciseList} userId={userId} setEditMode={setEditMode} isEditMode={isEditMode} exercise={exercise} exercisesState={exercisesState} />
                 </React.Fragment>
             ))}
         </ExerciseListWrapper>

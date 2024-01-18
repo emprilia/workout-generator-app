@@ -1,12 +1,12 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { ExerciseFormState } from './ExerciseFormState';
+import { ExerciseType } from '../../api/supabaseExercises';
 import { ExerciseFormWrapper, ExerciseFormFieldsWrapper, ExerciseInputWrapper, ExerciseFormHeader, OverlayWrapper } from './ExerciseForm.style';
 import { ImgUpload } from '../imgUpload/ImgUpload';
 import { Input } from '../input/Input';
 import { Checkbox } from '../checkbox/Checkbox';
 import { Button } from '../button/Button';
-import { ExerciseType } from './ExercisesState';
 import { BackButton } from './ExerciseList.style';
 
 interface ExerciseFormPropsType {
@@ -14,11 +14,12 @@ interface ExerciseFormPropsType {
     isEditMode: boolean;
     getExerciseList: () => Promise<void>;
     closePopup: () => void;
+    userId: string;
 }
 
 export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
-    const { exercise, isEditMode, getExerciseList, closePopup } = props;
-    const [exerciseFormState] = React.useState(() => new ExerciseFormState(exercise ?? null, getExerciseList, closePopup));
+    const { exercise, isEditMode, getExerciseList, closePopup, userId } = props;
+    const [exerciseFormState] = React.useState(() => new ExerciseFormState(exercise ?? null, getExerciseList, closePopup, userId));
 
     const {
         label,

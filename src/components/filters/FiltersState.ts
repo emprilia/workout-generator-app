@@ -1,5 +1,5 @@
 import { makeAutoObservable, action, observable } from 'mobx';
-import { ExerciseType } from '../exerciseList/ExercisesState';
+import { ExerciseType } from '../../api/supabaseExercises';
 
 export type TabType = 'sort' | 'filter' | '';
 type SortOptionType = 'alphabet' | 'newest' | 'oldest' | 'last-updated' | 'alphabet-reversed' | 'oldest' | 'default';

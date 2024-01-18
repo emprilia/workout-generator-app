@@ -1,5 +1,6 @@
 import { makeAutoObservable, observable, action } from 'mobx';
-import { ExerciseType, ExercisesState } from './ExercisesState';
+import { ExercisesState } from './ExercisesState';
+import { ExerciseType } from '../../api/supabaseExercises';
 
 export class ExerciseState {
     @observable public isEditExercise: boolean = false;

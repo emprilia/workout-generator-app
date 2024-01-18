@@ -1,15 +1,6 @@
 import { makeAutoObservable, action, computed, observable } from 'mobx';
-import { getExercises, quickUpdate, deleteExercise } from '../../api/supabaseExercises';
+import { quickUpdate, deleteExercise, ExerciseType } from '../../api/supabaseExercises';
 import { TabType } from '../filters/FiltersState';
-
-export interface ExerciseType {
-    id: number;
-    label: string;
-    imgUrl: string;
-    isBothSides: boolean;
-    isActive: boolean;
-    isFavorite: boolean
-}
 
 export class ExercisesState {
     @observable private exercises: Array<ExerciseType> | null = null;
@@ -25,22 +16,10 @@ export class ExercisesState {
     @observable public isEditMode: boolean = false;
 
     public constructor(
-        private readonly setActiveExercisesCount: (value: number) => void
+        private readonly getExerciseList: () => Promise<void>,
     ) {
         makeAutoObservable(this);
-        this.getExerciseList();
     }
-
-    @action public getExerciseList = async (): Promise<void> => {
-        try {
-            const data = await getExercises();
-            if (data !== null) {
-                this.setExercises(data);
-            }
-        } catch (error) {
-            console.log('Error fetching data')
-        }
-    };
 
     @action public setExercises = (data: Array<ExerciseType>) => {
         // TODO: set sorting method
@@ -48,7 +27,6 @@ export class ExercisesState {
         this.originalExercises = this.allExercises;
         this.showingExercises = this.allExercises;
         this.maxRounds = this.activeExercises.length;
-        this.setActiveExercisesCount(this.activeExercises.length);
     }
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
@@ -162,7 +140,7 @@ export class ExercisesState {
         this.selectedExercises.push(id);
     }
 
-    @action updateShowing = (showing: Array<ExerciseType>, type: TabType) => {
+    @action updateShowing = (showing: Array<ExerciseType>, type?: TabType) => {
         this.showingExercises = showing;
 
         if (type === 'filter') {

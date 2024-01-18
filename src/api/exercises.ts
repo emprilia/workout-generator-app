@@ -1,5 +1,4 @@
-import { ExerciseCreateType } from "../components/exerciseList/ExerciseFormState";
-import { ExerciseType } from "../components/exerciseList/ExercisesState";
+import { ExerciseCreateType, ExerciseType } from "./supabaseExercises";
 
 interface QuickUpdateType {
     isActive: boolean;

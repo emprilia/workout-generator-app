@@ -1,9 +1,8 @@
 import { makeAutoObservable, observable, action } from 'mobx';
-import { updateExercise, createExercise } from '../../api/supabaseExercises';
+import { updateExercise, createExercise, ExerciseType } from '../../api/supabaseExercises';
 import { InputState } from '../input/InputState';
-import { ExerciseType } from './ExercisesState';
 
-export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null };
+export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null, userId: string };
 
 export class ExerciseFormState {
     @observable public id: number | null = this.exercise?.id ?? null;
@@ -17,7 +16,8 @@ export class ExerciseFormState {
     public constructor(
         private exercise: ExerciseType | null,
         private getExerciseList: () => Promise<void>,
-        private closePopup: () => void
+        private closePopup: () => void,
+        private readonly userId: string
     ) {
         makeAutoObservable(this);
     }
@@ -67,7 +67,8 @@ export class ExerciseFormState {
             imgUrl: this.imgFile.value,
             isBothSides: this.isBothSides,
             isActive: this.isActive,
-            isFavorite: this.isFavorite
+            isFavorite: this.isFavorite,
+            userId: this.userId
         }
 
         try {
@@ -86,7 +87,8 @@ export class ExerciseFormState {
             imgUrl: this.imgFile.value,
             isBothSides: this.isBothSides,
             isActive: this.isActive,
-            isFavorite: this.isFavorite
+            isFavorite: this.isFavorite,
+            userId: this.userId
         }
 
         if (this.id !== null) {
