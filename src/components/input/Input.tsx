@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { InputState } from './InputState';
 import { InputWrapper, InputElement, InputLabel } from './Input.style';
 
-type InputType = 'text' | 'number' | 'file' | 'url';
+type InputType = 'text' | 'number' | 'file' | 'url' | 'password';
 
 interface InputPropsType {
     className?: string;

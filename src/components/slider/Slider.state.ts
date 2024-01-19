@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
-import { ExerciseType, ExercisesState } from '../exerciseList/ExercisesState';
+import { ExercisesState } from '../exerciseList/ExercisesState';
+import { ExerciseType } from '../../api/supabaseExercises';
 
 interface ExerciseTypeTemp extends ExerciseType {
     tempId: number;

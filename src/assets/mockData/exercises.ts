@@ -1,4 +1,4 @@
-import { ExerciseType } from "../../components/exerciseList/ExercisesState";
+import { ExerciseType } from "../../api/supabaseExercises";
 
 export const exercises: Array<ExerciseType> = [
     {
