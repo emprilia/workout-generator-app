@@ -27,6 +27,7 @@ export class ExercisesState {
         this.originalExercises = this.allExercises;
         this.showingExercises = this.allExercises;
         this.maxRounds = this.activeExercises.length;
+        this.generateWorkout();
     }
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
