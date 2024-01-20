@@ -151,10 +151,26 @@ export const quickUpdate = async (id: number, data: QuickUpdateType): Promise<vo
 };
 
 export const deleteExercise = async (id: number): Promise<void> => {
-    const { error } = await supabase
+    const { data: exercise, error: fetchError } = await supabase
+        .from('exercises-list')
+        .select('imgUrl')
+        .match({ id })
+        .single();
+
+    if (fetchError) throw new Error(`Failed to fetch exercise: ${fetchError.message}`);
+
+    const { error: deleteExerciseError } = await supabase
         .from('exercises-list')
         .delete()
         .match({ id });
 
-    if (error) throw new Error(`Failed to delete exercise: ${error.message}`);
+    if (deleteExerciseError) throw new Error(`Failed to delete exercise: ${deleteExerciseError.message}`);
+
+    const imageUrlPath = exercise.imgUrl.split('/').pop();
+
+    const { error: deleteImageError } = await supabase.storage
+        .from('exercise-images')
+        .remove([imageUrlPath]);
+
+    if (deleteImageError) throw new Error(`Failed to delete image: ${deleteImageError.message}`);
 };

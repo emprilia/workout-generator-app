@@ -5,8 +5,8 @@ import ding from '../../assets/audio/ding.mp3';
 import longDing from '../../assets/audio/longDing.mp3';
 // @ts-expect-error
 import tick from '../../assets/audio/tick.mp3'
-import { TimerSettingsState } from '../timerSettings/TimerSettingsState';
 import { ExercisesState } from '../exerciseList/ExercisesState';
+import { TimerSettingType } from '../../api/supabaseTimerSettings';
 
 export class CounterState {
     @observable public currentSlide: number = 1;
@@ -14,16 +14,16 @@ export class CounterState {
     @observable public isWorkoutTime: boolean = false;
     @observable public isBreakTime: boolean = false;
     @observable public isMuted: boolean = false;
-    @observable public prepTime: number = this.timerSettingsState.savedPrepTime;
-    @observable public workoutTime: number = this.timerSettingsState.savedWorkoutTime;
-    @observable public breakTime: number = this.timerSettingsState.savedBreakTime;
+    @observable public prepTime: number = this.currentSetting.prepTime;
+    @observable public workoutTime: number = this.currentSetting.workoutTime;
+    @observable public breakTime: number = this.currentSetting.breakTime;
     @observable public time: number = this.prepTime;
     @observable private prepTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable private breakTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable private workoutTimeCounterReference: NodeJS.Timeout | undefined = undefined;
 
     public constructor(
-        private timerSettingsState: TimerSettingsState,
+        private currentSetting: TimerSettingType,
         private exercisesState: ExercisesState
     ) {
         makeAutoObservable(this);

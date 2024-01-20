@@ -18,7 +18,7 @@ export const App = observer(() => {
             {userState.isAuth && userState.userId ? <>
                 <WorkoutGenerator userId={userState.userId} isSignedUp={userState.isSignedUp} currentView={currentView} setView={setView}/>
                 <Button onClick={userState.signOutUser}><LogoutIconWrapper /> Logout</Button>
-            </> : <UserForm userState={appState.userState} />}
+            </> : <UserForm userState={userState} />}
         </AppWrapper>
     );
 });

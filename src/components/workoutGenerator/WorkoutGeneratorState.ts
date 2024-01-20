@@ -1,8 +1,8 @@
 import { makeAutoObservable, observable, action} from 'mobx';
 import { ExercisesState } from '../exerciseList/ExercisesState';
-import { TimerSettingsState, WorkoutGeneratorPropsType } from '../timerSettings/TimerSettingsState';
-import { getUserExercises, getInitialExercises, createInitialExercise, ExerciseType } from '../../api/supabaseExercises';
-import { createTimerSettings, getInitialTimerSettings, getTimerSettings } from '../../api/supabaseTimerSettings';
+import { TimerSettingsState } from '../timerSettings/TimerSettingsState';
+import { ExerciseType, getInitialExercises, getUserExercises, createInitialExercise } from '../../api/supabaseExercises';
+import { TimerSettingType, getInitialTimerSettings, getTimerSettings, getCurrentTimerSettings, createTimerSettings } from '../../api/supabaseTimerSettings';
 
 export class WorkoutGeneratorState {
     @observable public exercisesState: ExercisesState;
@@ -13,21 +13,20 @@ export class WorkoutGeneratorState {
         private readonly isSignedUp: boolean
     ) {
         makeAutoObservable(this);
-        this.getExercisesList();
-        this.getTimerSettings();
+        this.getWorkoutGeneratorData();
         this.exercisesState = new ExercisesState(this.getUserExerciseList);
-        this.timerSettingsState = new TimerSettingsState(this.exercisesState.activeExercises.length, this.getUserTimerSettings);
+        this.timerSettingsState = new TimerSettingsState(this.getUserTimerSettings);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @action public getExercisesList = async (): Promise<void> => {
+    @action public getWorkoutGeneratorData = async (): Promise<void> => {
         if (this.isSignedUp) {
             await this.getInitialExerciseList();
+            await this.getInitialTimerSettings();
         } else {
             await this.getUserExerciseList();
+            await this.getUserTimerSettings();
         }
-    };
+    }
 
     getInitialExerciseList = async (): Promise<void> => {
         try {
@@ -37,7 +36,7 @@ export class WorkoutGeneratorState {
                 await this.getUserExerciseList();
             }
         } catch (error) {
-            console.log('Error fetching data')
+            console.log('Error fetching initial exercises')
         }
     };
 
@@ -50,7 +49,7 @@ export class WorkoutGeneratorState {
             try {
                 await createInitialExercise(exeData);
             } catch (error) {
-                console.log('Error fetching data')
+                console.log('Error creating initial exercises')
             }
         }
     }
@@ -63,15 +62,7 @@ export class WorkoutGeneratorState {
                 this.timerSettingsState.setActiveExercisesCount(data.filter(x => x.isActive).length);
             }
         } catch (error) {
-            console.log('Error fetching data')
-        }
-    };
-
-    @action public getTimerSettings = async (): Promise<void> => {
-        if (this.isSignedUp) {
-            await this.getInitialTimerSettings();
-        } else {
-            await this.getUserTimerSettings();
+            console.log('Error fetching user exercises')
         }
     };
 
@@ -83,32 +74,34 @@ export class WorkoutGeneratorState {
                 await this.getUserTimerSettings();
             }
         } catch (error) {
-            console.log('Error fetching data')
+            console.log('Error fetching initial timer settings')
         }
     };
 
     getUserTimerSettings = async (): Promise<void> => {
         try {
             const data = await getTimerSettings();
-            if (data !== null) {
+            const currentData = await getCurrentTimerSettings();
+            if (data !== null && currentData !== null) {
                 this.timerSettingsState.setTimerSettings(data);
-                this.exercisesState.setMinMaxRoundsLimits(this.timerSettingsState.minRounds.value, this.timerSettingsState.maxRounds.value);
+                this.timerSettingsState.setCurrentSettings(currentData);
             }
         } catch (error) {
-            console.log('Error fetching data')
+            console.log('Error fetching user timer settings')
         }
     };
 
-    handleCreateInitialTimerSettings = async (data: Array<WorkoutGeneratorPropsType>): Promise<void> => {
-        for (const exercise of data) {
-            const exeData = {
-                ...exercise,
+    handleCreateInitialTimerSettings = async (data: Array<TimerSettingType>): Promise<void> => {
+        for (const setting of data) {
+            const settingData = {
+                ...setting,
+                isActive: true,
                 user_id: this.userId
             }
             try {
-                await createTimerSettings(exeData);
+                await createTimerSettings(settingData);
             } catch (error) {
-                console.log('Error fetching data')
+                console.log('Error creating initial timer settings')
             }
         }
     }

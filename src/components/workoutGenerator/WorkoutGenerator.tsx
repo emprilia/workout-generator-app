@@ -29,7 +29,7 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
 
     return (
         <>
-            {timerSettingsState.timerSettings.label === 'initial' || exercisesState.allExercises.length === 0 ? <div>Loading</div> : <>
+            {timerSettingsState.currentSetting === null || exercisesState.allExercises.length === 0 ? <div>Loading</div> : <>
                 <MenuWrapper>
                     <Button version={`${currentView === 'generator' ? 'secondary' : 'primary'}`} onClick={() => setView('generator')}>Main</Button>
                     <Button version={`${currentView === 'timer-settings' ? 'secondary' : 'primary'}`} onClick={() => setView('timer-settings')}>Timer Settings</Button>
@@ -37,7 +37,7 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
                 </MenuWrapper>
                 {currentView === 'timer-settings' && <TimerSettings timerSettingsState={timerSettingsState} />} 
                 {currentView === 'exercises-list' && <ExerciseList getExerciseList={workoutGeneratorState.getUserExerciseList} userId={userId} exercisesState={exercisesState} />}
-                {currentView === 'generator' && <WorkoutGeneratorWrapper workoutGeneratorState={workoutGeneratorState} />}
+                {currentView === 'generator' && <WorkoutGeneratorWrapper currentSetting={timerSettingsState.currentSetting} exercisesState={exercisesState} />}
             </>}
         </>
   )
