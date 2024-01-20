@@ -1,4 +1,4 @@
-import { makeAutoObservable, observable, action} from 'mobx';
+import { makeAutoObservable, observable, action } from 'mobx';
 import { ExercisesState } from '../exerciseList/ExercisesState';
 import { TimerSettingsState } from '../timerSettings/TimerSettingsState';
 import { ExerciseType, getInitialExercises, getUserExercises, createInitialExercise } from '../../api/supabaseExercises';
