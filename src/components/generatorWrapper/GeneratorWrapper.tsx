@@ -1,26 +1,27 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { WorkoutGeneratorState } from '../workoutGenerator/WorkoutGeneratorState';
+import { ExercisesState } from '../exerciseList/ExercisesState';
 import { SliderState } from '../slider/Slider.state';
 import { CounterState } from '../counter/CounterState';
+import { TimerSettingType } from '../../api/supabaseTimerSettings';
 import { Header } from '../common/common.style';
 import { ExerciseSlider } from '../slider/exerciseSlider/ExerciseSlider';
 import { ExerciseSliderThumbnails } from '../slider/exerciseThumbnailsSlider/ExerciseSliderThumbnails';
 
 interface WorkoutGeneratorWrapperPropsType {
-    workoutGeneratorState: WorkoutGeneratorState;
+    exercisesState: ExercisesState;
+    currentSetting: TimerSettingType;
 }
 
 export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperPropsType) => {
-    const { workoutGeneratorState } = props;
-    const { timerSettingsState, exercisesState } = workoutGeneratorState;
+    const { exercisesState, currentSetting } = props;
     const [sliderState] = React.useState(() => new SliderState(exercisesState));
-    const [counterState] = React.useState(() => new CounterState(timerSettingsState, exercisesState));
+    const [counterState] = React.useState(() => new CounterState(currentSetting, exercisesState));
 
     return (
         <>
             <Header>WORKOUT GENERATOR</Header>
-            <ExerciseSlider workoutGeneratorState={workoutGeneratorState} counterState={counterState}  sliderState={sliderState} />
+            <ExerciseSlider exercisesState={exercisesState} counterState={counterState}  sliderState={sliderState} />
             <ExerciseSliderThumbnails exercisesState={exercisesState} sliderState={sliderState} />
         </>
     );

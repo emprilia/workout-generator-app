@@ -4,11 +4,7 @@ import { AuthError, Session } from '@supabase/supabase-js';
 export const isUserAuth = async (): Promise<Session | null> => {
     const { data: { session } } = await supabase.auth.getSession();
 
-    if (session === null) {
-        return null;
-    } else {
-        return session;
-    }
+    return session;
 }
 
 export const signUpUser = async (userEmail: string, userPassword: string): Promise<Session | null> => {
@@ -36,11 +32,7 @@ export const signInUser = async (userEmail: string, userPassword: string): Promi
         // TODO: error handling
     }
 
-    if (session) {
-        return session;
-    }
-
-    return null;
+    return session;
 };
 
 export const signOutUser = async (): Promise<boolean | AuthError> => {
