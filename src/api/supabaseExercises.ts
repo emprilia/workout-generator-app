@@ -1,8 +1,9 @@
-import { supabase } from './supabase';
+import { supabase, supabaseUrl } from './supabase';
 
 export type ExerciseInitialCreateType = Omit<ExerciseType, 'id'> & { userId: string };
 
 export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null, userId: string };
+
 export interface ExerciseType {
     id: number;
     label: string;
@@ -10,7 +11,6 @@ export interface ExerciseType {
     isBothSides: boolean;
     isActive: boolean;
     isFavorite: boolean;
-    isInitial?: boolean;
 }
 
 interface QuickUpdateType {
@@ -21,8 +21,8 @@ interface QuickUpdateType {
 export const getInitialExercises = async (): Promise<Array<ExerciseType> | null> => {
     const { data, error } = await supabase
     .from('initial-exercises-list')
-        .select('*')
-        .returns<Array<ExerciseType>>();
+    .select('*')
+    .returns<Array<ExerciseType>>();
 
     if (error) {
         console.log('Error', error);
@@ -35,8 +35,8 @@ export const getInitialExercises = async (): Promise<Array<ExerciseType> | null>
 export const getUserExercises = async (): Promise<Array<ExerciseType> | null> => {
     const { data, error } = await supabase
     .from('exercises-list')
-        .select('*')
-        .returns<Array<ExerciseType>>();
+    .select('*')
+    .returns<Array<ExerciseType>>();
 
     if (error) {
         console.log('Error', error);
@@ -46,12 +46,49 @@ export const getUserExercises = async (): Promise<Array<ExerciseType> | null> =>
     }
 };
 
+export const uploadImage = async (path: string, file: File | Blob) => {
+    const { error: uploadError } = await supabase.storage
+        .from('exercise-images')
+        .upload(path, file, {
+            cacheControl: '3600',
+            upsert: false
+        });
+
+    if (uploadError) {
+        throw new Error(`Failed to upload image to user folder: ${uploadError.message}`);
+    }
+}
+
+export const copyImageToUserFolder = async (userId: string, imgUrl: string) => {
+    const parts = imgUrl.split('/');
+    const fileName = parts[parts.length - 1];
+    
+    if (fileName) {
+        const { data: downloadData, error: downloadError } = await supabase.storage
+            .from('exercise-images')
+            .download(fileName);
+    
+        if (downloadError) {
+            throw new Error(`Failed to download image: ${downloadError.message}`);
+        }
+    
+        const userFolderPath = `${userId}/${fileName}`;
+        await uploadImage(userFolderPath, downloadData);
+    }
+};
+
 export const createInitialExercise = async (data: ExerciseInitialCreateType): Promise<void> => {
+    await copyImageToUserFolder(data.userId, data.imgUrl);
+
+    const parts = data.imgUrl.split('/');
+    parts[parts.length - 1] = `${data.userId}/${parts[parts.length - 1]}`;
+    const newImgUrl = parts.join('/');
+
     const currentDate = new Date().toISOString();
 
     const createData = {
         label: data.label,
-        imgUrl: data.imgUrl,
+        imgUrl: newImgUrl,
         isBothSides: data.isBothSides,
         isActive: data.isActive,
         isFavorite: data.isFavorite,
@@ -71,19 +108,11 @@ export const createExercise = async (data: ExerciseCreateType): Promise<void> =>
         const fileExt = data.imgUrl.name.split('.').pop();
         const randomId = Math.random().toString(36).substring(2);
         const fileName = `${randomId}.${fileExt}`;
+        const userFolderPath = `${data.userId}/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-            .from('exercise-images')
-            .upload(fileName, data.imgUrl, {
-                cacheControl: '3600', // or any other value as needed // ???
-                upsert: false // set to true if you want to overwrite existing files
-            });
+        await uploadImage(userFolderPath, data.imgUrl);
 
-        if (uploadError) {
-            throw new Error(`Failed to upload image: ${uploadError.message}`);
-        }
-
-        imageUrl = `https://ukqvxfggjkzoafpxvaur.supabase.co/storage/v1/object/public/exercise-images/${fileName}`;
+        imageUrl = `${supabaseUrl}/storage/v1/object/public/exercise-images/${userFolderPath}`;
     }
 
     const currentDate = new Date().toISOString();
@@ -118,19 +147,11 @@ export const updateExercise = async (id: number, data: ExerciseCreateType): Prom
         const fileExt = data.imgUrl.name.split('.').pop();
         const randomId = Math.random().toString(36).substring(2);
         const fileName = `${randomId}.${fileExt}`;
+        const userFolderPath = `${data.userId}/${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-            .from('exercise-images')
-            .upload(fileName, data.imgUrl, {
-                cacheControl: '3600',
-                upsert: false
-            });
+        await uploadImage(userFolderPath, data.imgUrl);
 
-        if (uploadError) {
-            throw new Error(`Failed to upload image: ${uploadError.message}`);
-        }
-
-        imgUrlUpdate = `https://ukqvxfggjkzoafpxvaur.supabase.co/storage/v1/object/public/exercise-images/${fileName}`;
+        imgUrlUpdate = `${supabaseUrl}/storage/v1/object/public/exercise-images/${userFolderPath}`;
     }
 
     const currentDate = new Date().toISOString();
@@ -149,7 +170,7 @@ export const updateExercise = async (id: number, data: ExerciseCreateType): Prom
     if (error) throw new Error(`Failed to update exercise: ${error.message}`);
 
     if (imgUrlUpdate !== undefined) {
-        deleteImage(exercise.imgUrl);
+        deleteImage(exercise.imgUrl, data.userId);
     }
 };
 
@@ -162,8 +183,8 @@ export const quickUpdate = async (id: number, data: QuickUpdateType): Promise<vo
     if (error) throw new Error(`Failed to update exercise: ${error.message}`);
 };
 
-export const deleteExercise = async (id: number): Promise<void> => {
-    const { data: exercise, error: fetchError } = await supabase
+export const deleteExercise = async (id: number, userId: string): Promise<void> => {
+    const { data, error: fetchError } = await supabase
         .from('exercises-list')
         .select('imgUrl')
         .match({ id })
@@ -178,18 +199,20 @@ export const deleteExercise = async (id: number): Promise<void> => {
 
     if (deleteExerciseError) throw new Error(`Failed to delete exercise: ${deleteExerciseError.message}`);
 
-    deleteImage(exercise.imgUrl);
+    deleteImage(data.imgUrl, userId);
 };
 
 
-export const deleteImage = async (imgUrl: string): Promise<void> => {
-    const imageUrlPath = imgUrl.split('/').pop();
+export const deleteImage = async (imgUrl: string, userId: string): Promise<void> => {
+    const fileName = imgUrl.split('/').pop();
 
-    if (imageUrlPath) {
+    if (fileName) {
+        const imagePath = `exercises-list/${userId}/${fileName}`;
+
         const { error: deleteImageError } = await supabase.storage
             .from('exercise-images')
-            .remove([imageUrlPath]);
-    
+            .remove([imagePath]);
+
         if (deleteImageError) throw new Error(`Failed to delete image: ${deleteImageError.message}`);
     }
 }
