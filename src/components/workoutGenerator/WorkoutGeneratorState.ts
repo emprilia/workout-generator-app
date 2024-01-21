@@ -14,7 +14,7 @@ export class WorkoutGeneratorState {
     ) {
         makeAutoObservable(this);
         this.getWorkoutGeneratorData();
-        this.exercisesState = new ExercisesState(this.getUserExerciseList);
+        this.exercisesState = new ExercisesState(this.userId, this.getUserExerciseList);
         this.timerSettingsState = new TimerSettingsState(this.getUserTimerSettings);
     }
 

@@ -17,6 +17,7 @@ export class ExercisesState {
     @observable public isLoading: boolean = false;
 
     public constructor(
+        private readonly userId: string,
         private readonly getExerciseList: () => Promise<void>,
     ) {
         makeAutoObservable(this);
@@ -198,7 +199,7 @@ export class ExercisesState {
         this.isLoading = true;
         for (const id of exercises) {
             try {
-                await deleteExercise(id);
+                await deleteExercise(id, this.userId);
             } catch (error) {
                 console.log('Error fetching data')
             }
