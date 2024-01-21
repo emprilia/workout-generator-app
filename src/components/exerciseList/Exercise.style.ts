@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { SerializedStyles, css } from '@emotion/react';
 import { EditIcon } from '../../assets/icons/EditIcon';
 import { StarIcon } from '../../assets/icons/StarIcon';
+import { ImgIcon } from '../../assets/icons/ImgIcon';
 
 interface ExercisePropsType {
     isActive: boolean;
@@ -67,4 +68,8 @@ export const StarIconWrapper = styled(StarIcon)`
     ${(): SerializedStyles => setIcon()};
 `;
 
-
+export const ImgPlaceholder = styled(ImgIcon)`
+    height: 56px;
+    width: 56px;
+    fill: currentcolor;
+`;

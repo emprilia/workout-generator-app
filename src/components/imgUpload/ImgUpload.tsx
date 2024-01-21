@@ -22,7 +22,7 @@ export const ImgUpload = observer((props: ImgUploadPropsType) => {
 
     return (
         <UploadButtonWrapper previewSize={previewSize}>
-            {imageUploadState.imgUrl !== '' ? <ImgWrapper src={imageUploadState.imgUrl} alt="Uploaded exercise image preview" /> : editImgUrl !== undefined && editImgUrl !== '' ? <ImgWrapper src={editImgUrl} alt="Uploaded exercise image preview" /> : <ImgIconWrapper />}
+            {imageUploadState.imgUrl !== '' ? <ImgWrapper src={imageUploadState.imgUrl} alt="Uploaded exercise image preview" /> : editImgUrl !== undefined && editImgUrl !== null ? <ImgWrapper src={editImgUrl} alt="Uploaded exercise image preview" /> : <ImgIconWrapper />}
             <input type='file' accept='image/jpeg, image/png, image/gif, image/webp' onChange={imageUploadState.onChange} hidden />
         </UploadButtonWrapper>
     );

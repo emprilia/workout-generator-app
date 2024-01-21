@@ -9,7 +9,8 @@ import {
     ExerciseLabel,
     ExerciseImg,
     EditIconWrapper,
-    StarIconWrapper
+    StarIconWrapper,
+    ImgPlaceholder
 } from './Exercise.style';
 import { ExerciseForm } from './ExerciseForm';
 
@@ -27,7 +28,6 @@ export const Exercise = observer((props: ExercisePropsType) => {
 
     const [exerciseState] = React.useState(() => new ExerciseState(exercise, exercisesState));
 
-    // const { getExerciseList } = exercisesState;
     const { setSelected, setFavorite, isEditExercise, setEditExercise } = exerciseState;
     const { label, imgUrl, isActive, isFavorite } = exercise;
 
@@ -38,7 +38,7 @@ export const Exercise = observer((props: ExercisePropsType) => {
             {isEditExercise && <ExerciseForm userId={userId} exercise={exercise} isEditMode={true} getExerciseList={getExerciseList} closePopup={setEditExercise} />}
             <ExerciseWrapper isActive={isActive} isEditMode={isEditMode} isSelected={isSelected}>
                 <ExerciseInfo isActive={isActive} isEditMode={isEditMode} isSelected={isSelected} onClick={setSelected}>
-                    <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} />
+                    {imgUrl === null ? <ImgPlaceholder /> : <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} />}
                     <ExerciseLabel>{label}</ExerciseLabel>
                 </ExerciseInfo>
                 {isEditMode ? <EditIconWrapper onClick={setEditExercise} /> : <StarIconWrapper isFilled={isFavorite} onClick={setFavorite} />}
