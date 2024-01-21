@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { ChevronIcon } from '../../../assets/icons/ChevronIcon';
+import { ImgIcon } from '../../../assets/icons/ImgIcon';
 
 export const ExerciseThumbnailsWrapper = styled('div')`
     display: flex;
@@ -94,4 +95,11 @@ export const ArrowWrapper = styled(ChevronIcon)<ArrowPropsType>`
     width: 16px;
     height: 16px;
     fill: ${({ isDisabled }): string => isDisabled ? 'var(--opacityPrimary)' : 'var(--white)'};
+`;
+
+export const ImgPlaceholder = styled(ImgIcon)`
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    fill: currentcolor;
 `;

@@ -5,7 +5,7 @@ import { ImgIconWrapper, ImgWrapper, UploadButtonWrapper } from './ImgUpload.sty
 
 interface ImgUploadPropsType {
     previewSize: string;
-    editImgUrl?: string;
+    editImgUrl?: string | null;
     isClearImgForm: boolean;
     onChangeCB: (file: File | null) => void;
     onClearFormCB: () => void;

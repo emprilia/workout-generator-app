@@ -7,9 +7,10 @@ import {
     ExerciseThumbnailsList,
     ExerciseThumbnail,
     ExerciseThumbnailImg,
+    ImgPlaceholder,
     ExerciseNumber,
     ArrowButtonWrapper,
-    ArrowWrapper,
+    ArrowWrapper
 } from './ExerciseSliderThumbnails.style';
 
 interface ExerciseSliderThumbnailsPropsType {
@@ -45,7 +46,7 @@ export const ExerciseSliderThumbnails = observer((props: ExerciseSliderThumbnail
                             isActive={exercisesState.currentExercise === thumbnail.tempId}
                         >
                             <ExerciseNumber>{thumbnail.tempId}</ExerciseNumber>
-                            <ExerciseThumbnailImg src={thumbnail.imgUrl} />
+                            {thumbnail.imgUrl === null ? <ImgPlaceholder /> : <ExerciseThumbnailImg src={thumbnail.imgUrl} />}
                         </ExerciseThumbnail>
                     ))}
                 </ExerciseThumbnailsList>

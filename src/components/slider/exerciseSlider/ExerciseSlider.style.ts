@@ -5,6 +5,7 @@ import { SquareIcon } from '../../../assets/icons/SquareIcon';
 import { RefreshIcon } from '../../../assets/icons/RefreshIcon';
 import { SpeakerIcon } from '../../../assets/icons/SpeakerIcon';
 import { SpeakerMuteIcon } from '../../../assets/icons/SpeakerMuteIcon';
+import { ImgIcon } from '../../../assets/icons/ImgIcon';
 
 interface ExercisePropsType {
     width: number;
@@ -16,6 +17,7 @@ export const ExerciseContainer = styled('div')<ExercisePropsType>`
     margin-bottom: 16px;
     border-radius: 8px;
     background-color: var(--colorPrimary);
+    color: var(--white);
 
     &::-webkit-scrollbar {
         display: none;
@@ -86,7 +88,7 @@ const setIcon = (): SerializedStyles => {
         flex: 0 0 20px;
         width: 20px;
         height: 20px;
-        fill: var(--white);
+        fill: currentcolor;
         filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
         margin-left: 8px;
     `;
@@ -112,4 +114,11 @@ export const SpeakerIconWrapper = styled(SpeakerIcon)`
 
 export const SpeakerMuteIconWrapper = styled(SpeakerMuteIcon)`
     ${(): SerializedStyles => setIcon()};
+`;
+
+export const ImgPlaceholder = styled(ImgIcon)`
+    height: 200px;
+    width: 200px;
+    fill: currentcolor;
+    margin-bottom: 40px;
 `;
