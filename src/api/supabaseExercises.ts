@@ -1,13 +1,13 @@
 import { supabase, supabaseUrl } from './supabase';
 
-export type ExerciseInitialCreateType = Omit<ExerciseType, 'id'> & { userId: string };
+type ExerciseInitialCreateType = Omit<ExerciseType, 'id'> & { userId: string };
 
 export type ExerciseCreateType = Omit<ExerciseType, 'id' | 'imgUrl'> & { imgUrl: File | null, userId: string };
 
 export interface ExerciseType {
     id: number;
     label: string;
-    imgUrl: string;
+    imgUrl: string | null;
     isBothSides: boolean;
     isActive: boolean;
     isFavorite: boolean;
@@ -46,7 +46,7 @@ export const getUserExercises = async (): Promise<Array<ExerciseType> | null> =>
     }
 };
 
-export const uploadImage = async (path: string, file: File | Blob) => {
+const uploadImage = async (path: string, file: File | Blob) => {
     const { error: uploadError } = await supabase.storage
         .from('exercise-images')
         .upload(path, file, {
@@ -59,7 +59,7 @@ export const uploadImage = async (path: string, file: File | Blob) => {
     }
 }
 
-export const copyImageToUserFolder = async (userId: string, imgUrl: string) => {
+const copyImageToUserFolder = async (userId: string, imgUrl: string) => {
     const parts = imgUrl.split('/');
     const fileName = parts[parts.length - 1];
     
@@ -78,27 +78,29 @@ export const copyImageToUserFolder = async (userId: string, imgUrl: string) => {
 };
 
 export const createInitialExercise = async (data: ExerciseInitialCreateType): Promise<void> => {
-    await copyImageToUserFolder(data.userId, data.imgUrl);
-
-    const parts = data.imgUrl.split('/');
-    parts[parts.length - 1] = `${data.userId}/${parts[parts.length - 1]}`;
-    const newImgUrl = parts.join('/');
-
-    const currentDate = new Date().toISOString();
-
-    const createData = {
-        label: data.label,
-        imgUrl: newImgUrl,
-        isBothSides: data.isBothSides,
-        isActive: data.isActive,
-        isFavorite: data.isFavorite,
-        created_at: currentDate,
-        user_id: data.userId
-    };
-
-    const { error } = await supabase.from('exercises-list').insert(createData);
-
-    if (error) throw new Error(`Failed to create exercise: ${error.message}`);
+    if (data.imgUrl !== null) {        
+        await copyImageToUserFolder(data.userId, data.imgUrl);
+    
+        const parts = data.imgUrl.split('/');
+        parts[parts.length - 1] = `${data.userId}/${parts[parts.length - 1]}`;
+        const newImgUrl = parts.join('/');
+    
+        const currentDate = new Date().toISOString();
+    
+        const createData = {
+            label: data.label,
+            imgUrl: newImgUrl,
+            isBothSides: data.isBothSides,
+            isActive: data.isActive,
+            isFavorite: data.isFavorite,
+            created_at: currentDate,
+            user_id: data.userId
+        };
+    
+        const { error } = await supabase.from('exercises-list').insert(createData);
+    
+        if (error) throw new Error(`Failed to create exercise: ${error.message}`);
+    }
 }
 
 export const createExercise = async (data: ExerciseCreateType): Promise<void> => {

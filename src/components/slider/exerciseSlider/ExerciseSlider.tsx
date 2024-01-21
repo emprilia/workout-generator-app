@@ -15,6 +15,7 @@ import {
     RefreshIconWrapper,
     SpeakerIconWrapper,
     SpeakerMuteIconWrapper,
+    ImgPlaceholder,
     NextLabel
 } from './ExerciseSlider.style';
 import { CounterIconWrapper } from '../../counter/Counter.style';
@@ -60,7 +61,7 @@ export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
             <ExerciseList translateX={translateSlide}>
                 {generatedWorkout.map((exercise) => (
                     <Exercise key={exercise.label} width={sliderWidth}>
-                        <ExerciseImg src={exercise.imgUrl} alt={`Picture of ${exercise.label} exercise`} />
+                        {exercise.imgUrl === null ? <ImgPlaceholder /> : <ExerciseImg src={exercise.imgUrl} alt={`Picture of ${exercise.label} exercise`} />}
                         <ExerciseLabel>{exercise.label}</ExerciseLabel>
                     </Exercise>
                 ))}
