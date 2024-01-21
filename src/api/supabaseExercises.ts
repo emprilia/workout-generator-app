@@ -104,7 +104,15 @@ export const createExercise = async (data: ExerciseCreateType): Promise<void> =>
 };
 
 export const updateExercise = async (id: number, data: ExerciseCreateType): Promise<void> => {
-    let imageUrl;
+    const { data: exercise, error: fetchError } = await supabase
+        .from('exercises-list')
+        .select('imgUrl')
+        .match({ id })
+        .single();
+
+    if (fetchError) throw new Error(`Failed to fetch exercise: ${fetchError.message}`);
+
+    let imgUrlUpdate;
 
     if (data.imgUrl && data.imgUrl instanceof File) {
         const fileExt = data.imgUrl.name.split('.').pop();
@@ -114,22 +122,22 @@ export const updateExercise = async (id: number, data: ExerciseCreateType): Prom
         const { error: uploadError } = await supabase.storage
             .from('exercise-images')
             .upload(fileName, data.imgUrl, {
-                cacheControl: '3600', // or any other value as needed
-                upsert: false // set to true if you want to overwrite existing files
+                cacheControl: '3600',
+                upsert: false
             });
 
         if (uploadError) {
             throw new Error(`Failed to upload image: ${uploadError.message}`);
         }
 
-        imageUrl = `https://ukqvxfggjkzoafpxvaur.supabase.co/storage/v1/object/public/exercise-images/${fileName}`;
+        imgUrlUpdate = `https://ukqvxfggjkzoafpxvaur.supabase.co/storage/v1/object/public/exercise-images/${fileName}`;
     }
 
     const currentDate = new Date().toISOString();
         
     const updateData = {
         label: data.label,
-        imgUrl: imageUrl || data.imgUrl || null,
+        imgUrl: imgUrlUpdate === undefined ? exercise.imgUrl : imgUrlUpdate,
         isBothSides: data.isBothSides,
         isActive: data.isActive,
         isFavorite: data.isFavorite,
@@ -139,6 +147,10 @@ export const updateExercise = async (id: number, data: ExerciseCreateType): Prom
     const { error } = await supabase.from('exercises-list').update(updateData).match({ id });
 
     if (error) throw new Error(`Failed to update exercise: ${error.message}`);
+
+    if (imgUrlUpdate !== undefined) {
+        deleteImage(exercise.imgUrl);
+    }
 };
 
 export const quickUpdate = async (id: number, data: QuickUpdateType): Promise<void> => {
@@ -166,11 +178,18 @@ export const deleteExercise = async (id: number): Promise<void> => {
 
     if (deleteExerciseError) throw new Error(`Failed to delete exercise: ${deleteExerciseError.message}`);
 
-    const imageUrlPath = exercise.imgUrl.split('/').pop();
-
-    const { error: deleteImageError } = await supabase.storage
-        .from('exercise-images')
-        .remove([imageUrlPath]);
-
-    if (deleteImageError) throw new Error(`Failed to delete image: ${deleteImageError.message}`);
+    deleteImage(exercise.imgUrl);
 };
+
+
+export const deleteImage = async (imgUrl: string): Promise<void> => {
+    const imageUrlPath = imgUrl.split('/').pop();
+
+    if (imageUrlPath) {
+        const { error: deleteImageError } = await supabase.storage
+            .from('exercise-images')
+            .remove([imageUrlPath]);
+    
+        if (deleteImageError) throw new Error(`Failed to delete image: ${deleteImageError.message}`);
+    }
+}

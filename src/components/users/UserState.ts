@@ -48,7 +48,6 @@ export class UserState {
     @action public signInUser = async (): Promise<void> => {
         try {
             const data = await signInUser(this.email.value, this.password.value);
-            console.log(data);
             if (data !== null) {
                 this.setIsAuth();
                 this.setUserId(data.user.id);
