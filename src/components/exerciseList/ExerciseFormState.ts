@@ -12,6 +12,7 @@ export class ExerciseFormState {
     @observable public isActive: boolean = this.exercise?.isActive ?? true;
     @observable public isFavorite: boolean = this.exercise?.isFavorite ?? false;
     @observable public isClearImgForm: boolean = false;
+    @observable public isLoading: boolean = false;
 
     public constructor(
         private exercise: ExerciseType | null,
@@ -72,12 +73,16 @@ export class ExerciseFormState {
         }
 
         try {
+            this.setIsLoading();
+
             await createExercise(data);
             this.clearForm();
             this.getExerciseList();
             this.closePopup();
         } catch (error) {
             console.log('Error fetching data')
+        } finally {
+            this.setIsLoading();
         }
     }
 
@@ -92,6 +97,8 @@ export class ExerciseFormState {
         }
 
         if (this.id !== null) {
+            this.setIsLoading();
+
             try {
                 await updateExercise(this.id, data);
                 this.clearForm();
@@ -99,7 +106,13 @@ export class ExerciseFormState {
                 this.closePopup();
             } catch (error) {
                 console.log('Error fetching data')
+            } finally {
+                this.setIsLoading();
             }
         }
+    }
+
+    @action private setIsLoading = (): void => {
+        this.isLoading = !this.isLoading;
     }
 }

@@ -14,6 +14,7 @@ export class ExercisesState {
     @observable public generatedWorkout: Array<ExerciseType> = [];
     @observable public isAddNewView: boolean = false;
     @observable public isEditMode: boolean = false;
+    @observable public isLoading: boolean = false;
 
     public constructor(
         private readonly getExerciseList: () => Promise<void>,
@@ -175,6 +176,7 @@ export class ExercisesState {
     };
 
     @action handleQuickUpdate = async (): Promise<void> => {
+        this.isLoading = true;
         for (const exercise of this.changedExercises) {
             if (exercise !== undefined) {
                 const data = {
@@ -188,11 +190,12 @@ export class ExercisesState {
                 }
             }
         }
-        this.getExerciseList();
-        this.changedExercises = [];
+        await this.getExerciseList();
+        this.handleChangeDelete();
     }
 
     @action handleDeleteExercises = async (exercises: Array<number>): Promise<void> => {
+        this.isLoading = true;
         for (const id of exercises) {
             try {
                 await deleteExercise(id);
@@ -200,7 +203,13 @@ export class ExercisesState {
                 console.log('Error fetching data')
             }
         }
-        this.getExerciseList();
+        await this.getExerciseList();
+        this.handleChangeDelete();
+    }
+
+    @action private handleChangeDelete = (): void => {
+        this.changedExercises = [];
         this.selectedExercises = [];
+        this.isLoading = false;
     }
 }

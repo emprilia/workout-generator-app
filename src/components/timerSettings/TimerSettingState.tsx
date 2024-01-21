@@ -35,6 +35,7 @@ export class TimerSettingState {
 
     @observable public focusedInput: string = '';
     @observable public openInfo: string = '';
+    @observable public isLoading: boolean = false;
 
     public constructor(
         private readonly timerSetting: TimerSettingType,
@@ -105,10 +106,14 @@ export class TimerSettingState {
         }
 
         try {
+            this.setIsLoading();
+
             await updateTimerSettings(this.id, data);
             await this.timerSettingsState.getTimerSettings();
         } catch (error) {
             console.log('Error fetching data')
+        } finally {
+            this.setIsLoading();
         }
     }
 
@@ -126,5 +131,9 @@ export class TimerSettingState {
         } else {
             this.openInfo = value;
         }
+    }
+
+    @action private setIsLoading = (): void => {
+        this.isLoading = !this.isLoading;
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { EmojiWrapper, Loader, LoaderWrapper } from './Loader.style';
+import { MainLoaderWrapper, MainLoader, MainEmojiWrapper } from './Loader.style';
 
 interface LoaderAppPropsType {
     isSignedUp: boolean;
@@ -10,19 +10,19 @@ export const LoaderApp = observer((props: LoaderAppPropsType) => {
     const { isSignedUp } = props;
 
     return (
-        <LoaderWrapper>
+        <MainLoaderWrapper>
             {isSignedUp ? 'Setting you up...' : 'Loading your workout...'}
-            <Loader>
-                <EmojiWrapper>🏋🏻‍♀️</EmojiWrapper>
-                <EmojiWrapper>🚴🏻</EmojiWrapper>
-                <EmojiWrapper>💃</EmojiWrapper>
-                <EmojiWrapper>🏃🏼</EmojiWrapper>
-                <EmojiWrapper>💪🏻</EmojiWrapper>
-                <EmojiWrapper>🤸🏼</EmojiWrapper>
-                <EmojiWrapper>🧘🏻‍♀️</EmojiWrapper>
-                <EmojiWrapper>🏇</EmojiWrapper>
-                <EmojiWrapper>🤾🏽</EmojiWrapper>
-            </Loader>
-        </LoaderWrapper>
+            <MainLoader>
+                <MainEmojiWrapper>🏋🏻‍♀️</MainEmojiWrapper>
+                <MainEmojiWrapper>🚴🏻</MainEmojiWrapper>
+                <MainEmojiWrapper>💃</MainEmojiWrapper>
+                <MainEmojiWrapper>🏃🏼</MainEmojiWrapper>
+                <MainEmojiWrapper>💪🏻</MainEmojiWrapper>
+                <MainEmojiWrapper>🤸🏼</MainEmojiWrapper>
+                <MainEmojiWrapper>🧘🏻‍♀️</MainEmojiWrapper>
+                <MainEmojiWrapper>🏇</MainEmojiWrapper>
+                <MainEmojiWrapper>🤾🏽</MainEmojiWrapper>
+            </MainLoader>
+        </MainLoaderWrapper>
     );
 });

@@ -8,6 +8,7 @@ import {
     ExitIconWrapper
 } from './ExerciseList.style';
 import { DiskIconWrapper } from '../common/common.style';
+import { Spinner } from '../loader/Loader.style';
 import { Checkbox } from '../checkbox/Checkbox';
 import { Button } from '../button/Button';
 
@@ -25,6 +26,7 @@ export const ActionsContainer = observer((props: ActionsContainerPropsType) => {
         changedExercises,
         setEditMode,
         isEditMode,
+        isLoading,
         setSelectCheckbox,
         handleQuickUpdate,
         handleDeleteExercises
@@ -46,11 +48,15 @@ export const ActionsContainer = observer((props: ActionsContainerPropsType) => {
                 {isEditMode ? `Delete: ${selectedExercises.length}/${showingExercises.length}` : `Active: ${activeExercises.length}/${showingExercises.length}`}
             </ActionsWrapper>
             <ActionsWrapper>
-                <Button width='full' size='small' onClick={setEditMode}>
+                <Button isDisabled={isLoading} width='full' size='small' onClick={setEditMode}>
                     {isEditMode ? <><ExitIconWrapper /> Exit edit mode</> : <><EditIconWrapper /> Enter edit mode</>}
                 </Button>
-                {isEditMode ? <Button width='full' isDisabled={selectedExercises.length === 0} size='small' onClick={() => handleDeleteExercises(selectedExercises)}><TrashIconWrapper />Delete selected</Button> :
-                    <Button width='full' isDisabled={changedExercises.length === 0} size='small' onClick={handleQuickUpdate}>
+                {isEditMode ? <Button width='full' isDisabled={isLoading || selectedExercises.length === 0} size='small' onClick={() => handleDeleteExercises(selectedExercises)}>
+                    {isLoading && <Spinner />}
+                    <TrashIconWrapper />Delete selected
+                </Button> :
+                    <Button width='full' isDisabled={isLoading || changedExercises.length === 0} size='small' onClick={handleQuickUpdate}>
+                        {isLoading && <Spinner />}
                         <DiskIconWrapper />{changedExercises.length === 0 ? 'No changes' : 'Save changes'}
                     </Button>
                 }

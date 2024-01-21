@@ -1,8 +1,7 @@
-
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react'
 
-export const LoaderWrapper = styled('div')`
+export const MainLoaderWrapper = styled('div')`
     position: absolute;
     top: 50%;
     left: 50%;
@@ -13,13 +12,12 @@ export const LoaderWrapper = styled('div')`
     align-items: center;
 `;
 
-export const Loader = styled('div')`
+export const MainLoader = styled('div')`
 	display: grid;
     grid-template-columns: repeat(3, 1fr);
 	grid-gap: 2px;
 	width: 200px;
 	height: 200px;
-
 `;
 
 const animateScale = keyframes`
@@ -29,7 +27,7 @@ const animateScale = keyframes`
 	100% { transform: scale(0.0); }
 `;
 
-export const EmojiWrapper = styled('div')`
+export const MainEmojiWrapper = styled('div')`
 		width: 100%;
 		height: 100%;
 		animation: ${animateScale} 2s infinite ease-in-out;
@@ -65,4 +63,15 @@ export const EmojiWrapper = styled('div')`
 		}
 `;
 
+const spinnerAnimation = keyframes`to { transform: rotate(1turn) }`;
+
+export const Spinner = styled('div')`
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    background:conic-gradient(#0000 10%,var(--colorPrimary));
+    mask:radial-gradient(farthest-side,#0000 calc(100% - 4px),#000 0);
+    -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 4px),#000 0);
+    animation: ${spinnerAnimation} 1s infinite linear;
+`;
 
