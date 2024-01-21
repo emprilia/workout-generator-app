@@ -2,6 +2,7 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { ExerciseFormState } from './ExerciseFormState';
 import { ExerciseType } from '../../api/supabaseExercises';
+import { Spinner } from '../loader/Loader.style';
 import { ExerciseFormWrapper, ExerciseFormFieldsWrapper, ExerciseInputWrapper, ExerciseFormHeader, OverlayWrapper } from './ExerciseForm.style';
 import { ImgUpload } from '../imgUpload/ImgUpload';
 import { Input } from '../input/Input';
@@ -34,7 +35,8 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
         handleUpdateExercise,
         isClearImgForm,
         onClearFormCB,
-        setClosePopup
+        setClosePopup,
+        isLoading
     } = exerciseFormState;
 
     return (
@@ -75,7 +77,8 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
                         />
                     </div>
                 </ExerciseFormFieldsWrapper>
-                <Button width='full' onClick={isEditMode ? handleUpdateExercise : handleCreateExercise}>
+                <Button width='full' isDisabled={isLoading} onClick={isEditMode ? handleUpdateExercise : handleCreateExercise}>
+                    {isLoading && <Spinner />}
                     {isEditMode ? 'UPDATE EXERCISE' : 'CREATE EXERCISE'}
                 </Button>
             </ExerciseFormWrapper>

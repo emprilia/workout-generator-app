@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { TimerSettingsState } from './TimerSettingsState';
 import { Input } from '../input/Input';
 import { Button } from '../button/Button';
+import { Spinner } from '../loader/Loader.style';
 import { DiskIconWrapper } from '../common/common.style';
 import {
     InputWrapper,
@@ -35,7 +36,8 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
         onBlur,
         openInfo,
         setOpenInfo,
-        saveTimer
+        saveTimer,
+        isLoading
     } = timerSettingState;
 
     return (
@@ -85,7 +87,8 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
                     </TimerInputWrapper>
                 ))}
             </TimerSettingsWrapper>
-            <Button onClick={saveTimer}>
+            <Button isDisabled={isLoading} onClick={saveTimer}>
+                {isLoading && <Spinner />}
                 <DiskIconWrapper />
                 SAVE SETTINGS
             </Button>
