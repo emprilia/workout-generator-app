@@ -85,6 +85,7 @@ export class WorkoutGeneratorState {
             if (data !== null && currentData !== null) {
                 this.timerSettingsState.setTimerSettings(data);
                 this.timerSettingsState.setCurrentSettings(currentData);
+                this.exercisesState.setMinMaxRoundsLimits(currentData.minRounds, currentData.maxRounds);
             }
         } catch (error) {
             console.log('Error fetching user timer settings')
