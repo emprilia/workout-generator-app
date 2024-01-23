@@ -1,3 +1,4 @@
+import { PostgrestError } from '@supabase/supabase-js';
 import { supabase } from './supabase';
 
 export interface TimerSettingType {
@@ -16,11 +17,11 @@ export type TimerSettingsInitialCreateType = Omit<TimerSettingType, 'id'>;
 
 export const getCurrentTimerSettings = async (): Promise<TimerSettingType | null> => {
     const { data, error } = await supabase
-    .from('timer-settings')
-    .select('*')
-    .eq('isActive', true)
-    .returns<TimerSettingType>()
-    .single();
+        .from('timer-settings')
+        .select('*')
+        .eq('isActive', true)
+        .returns<TimerSettingType>()
+        .single();
 
     if (error) {
         console.log('Error', error);
@@ -32,7 +33,7 @@ export const getCurrentTimerSettings = async (): Promise<TimerSettingType | null
 
 export const getInitialTimerSettings = async (): Promise<Array<TimerSettingType> | null> => {
     const { data, error } = await supabase
-    .from('initial-timer-settings')
+        .from('initial-timer-settings')
         .select('*')
         .returns<Array<TimerSettingType>>();
 
@@ -46,7 +47,7 @@ export const getInitialTimerSettings = async (): Promise<Array<TimerSettingType>
 
 export const getTimerSettings = async (): Promise<Array<TimerSettingType> | null> => {
     const { data, error } = await supabase
-    .from('timer-settings')
+        .from('timer-settings')
         .select('*')
         .returns<Array<TimerSettingType>>();
 
@@ -58,7 +59,7 @@ export const getTimerSettings = async (): Promise<Array<TimerSettingType> | null
     }
 };
 
-export const createTimerSettings = async (data: TimerSettingsInitialCreateType): Promise<void> => {
+export const createInitialTimerSettings = async (data: TimerSettingsInitialCreateType): Promise<void> => {
     const createData = {
         label: data.label,
         prepTime: data.prepTime,
@@ -67,21 +68,19 @@ export const createTimerSettings = async (data: TimerSettingsInitialCreateType):
         minRounds: data.minRounds,
         maxRounds: data.maxRounds,
         isActive: data.isActive,
-        user_id: data.user_id,
+        user_id: data.user_id
     };
 
-    const { error } = await supabase
-        .from('timer-settings')
-        .insert(createData);
+    const { error } = await supabase.from('timer-settings').insert(createData);
 
     if (error) throw new Error(`Failed to update exercise: ${error.message}`);
 };
 
-export const updateTimerSettings = async (id: number, data: TimerSettingType): Promise<void> => {
+export const updateTimerSettings = async (id: number, data: TimerSettingType): Promise<PostgrestError | null> => {
     const { error } = await supabase
         .from('timer-settings')
         .update({ ...data, user_id: data.user_id })
         .match({ id });
 
-    if (error) throw new Error(`Failed to update exercise: ${error.message}`);
+    return error;
 };

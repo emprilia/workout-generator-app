@@ -16,7 +16,8 @@ export const UserForm = observer((props: ExerciseFormPropsType) => {
         signInUser,
         signUpUser,
         formType,
-        setFormType
+        setFormType,
+        formError
     } = userState;
 
     // TODO input style internal autofill selected
@@ -33,7 +34,8 @@ export const UserForm = observer((props: ExerciseFormPropsType) => {
                         placeholder='Password'
                         stateValue={password}
                         type='password'
-                    />
+                />
+                {formError && <span>{formError}</span>}
                 <Button width='full' onClick={formType === 'login' ? signInUser : signUpUser}>
                     {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign up' : 'Reset password'}
                 </Button>
