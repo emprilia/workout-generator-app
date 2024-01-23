@@ -35,6 +35,7 @@ export class TimerSettingState {
 
     @observable public focusedInput: string = '';
     @observable public openInfo: string = '';
+    @observable public formError: string | null = null;
     @observable public isLoading: boolean = false;
 
     public constructor(
@@ -108,10 +109,18 @@ export class TimerSettingState {
         try {
             this.setIsLoading();
 
-            await updateTimerSettings(this.id, data);
-            await this.timerSettingsState.getTimerSettings();
+            const error = await updateTimerSettings(this.id, data);
+
+            if (error) {
+                this.setError(error.message);
+            } else {
+                await this.timerSettingsState.getTimerSettings();
+                this.setError(null);
+            }
+
         } catch (error) {
             console.log('Error fetching data')
+            this.setError('Something went wrong');
         } finally {
             this.setIsLoading();
         }
@@ -135,5 +144,9 @@ export class TimerSettingState {
 
     @action private setIsLoading = (): void => {
         this.isLoading = !this.isLoading;
+    }
+
+    @action private setError = (error: string | null): void => {
+        this.formError = error;
     }
 }

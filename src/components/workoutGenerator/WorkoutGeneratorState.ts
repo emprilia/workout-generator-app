@@ -2,7 +2,7 @@ import { makeAutoObservable, observable, action } from 'mobx';
 import { ExercisesState } from '../exerciseList/ExercisesState';
 import { TimerSettingsState } from '../timerSettings/TimerSettingsState';
 import { ExerciseType, getInitialExercises, getUserExercises, createInitialExercise } from '../../api/supabaseExercises';
-import { TimerSettingType, getInitialTimerSettings, getTimerSettings, getCurrentTimerSettings, createTimerSettings } from '../../api/supabaseTimerSettings';
+import { TimerSettingType, getInitialTimerSettings, getTimerSettings, getCurrentTimerSettings, createInitialTimerSettings } from '../../api/supabaseTimerSettings';
 
 export class WorkoutGeneratorState {
     @observable public exercisesState: ExercisesState;
@@ -100,7 +100,7 @@ export class WorkoutGeneratorState {
                 user_id: this.userId
             }
             try {
-                await createTimerSettings(settingData);
+                await createInitialTimerSettings(settingData);
             } catch (error) {
                 console.log('Error creating initial timer settings')
             }

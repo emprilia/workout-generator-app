@@ -14,11 +14,12 @@ export class ExercisesState {
     @observable public generatedWorkout: Array<ExerciseType> = [];
     @observable public isAddNewView: boolean = false;
     @observable public isEditMode: boolean = false;
+    @observable public actionError: string | null = null;
     @observable public isLoading: boolean = false;
 
     public constructor(
         private readonly userId: string,
-        private readonly getExerciseList: () => Promise<void>,
+        private readonly getExerciseList: () => Promise<void>
     ) {
         makeAutoObservable(this);
     }
@@ -30,7 +31,7 @@ export class ExercisesState {
         this.showingExercises = this.allExercises;
         this.maxRounds = this.activeExercises.length;
         this.generateWorkout();
-    }
+    };
 
     @action setMinMaxRoundsLimits = (minRounds: number, maxRounds: number) => {
         if (minRounds !== this.minRounds || maxRounds !== this.maxRounds) {
@@ -40,7 +41,7 @@ export class ExercisesState {
             this.minRounds = minRounds;
             this.generateWorkout();
         }
-    }
+    };
 
     @computed public get allExercises(): Array<ExerciseType> {
         return this.exercises === null ? [] : this.exercises;
@@ -69,14 +70,14 @@ export class ExercisesState {
                 return [
                     {
                         ...exercise,
-                        label: `${exercise.label} (RIGHT)`,
+                        label: `${exercise.label} (RIGHT)`
                     },
                     {
                         ...exercise,
                         label: `${exercise.label} (LEFT)`,
-                        bothSides: false,
+                        bothSides: false
                     }
-                ]
+                ];
             }
             return exercise;
         });
@@ -101,17 +102,16 @@ export class ExercisesState {
 
     @action generateWorkout = (): void => {
         this.generatedWorkout = this.initialExerciseSuggestions;
-        // TODO: fix generating empty array
-    }
+    };
 
     @action setAddNew = (): void => {
         this.isAddNewView = !this.isAddNewView;
-    }
+    };
 
     @action setEditMode = (): void => {
         this.isEditMode = !this.isEditMode;
         this.selectedExercises = [];
-    }
+    };
 
     @action setSelectCheckbox = (type: 'all' | 'none') => {
         if (type === 'all') {
@@ -137,11 +137,11 @@ export class ExercisesState {
                 }
             }
         }
-    }
+    };
 
     @action setSelectedExercises = (id: number): void => {
         this.selectedExercises.push(id);
-    }
+    };
 
     @action updateShowing = (showing: Array<ExerciseType>, type?: TabType) => {
         this.showingExercises = showing;
@@ -149,7 +149,7 @@ export class ExercisesState {
         if (type === 'filter') {
             this.selectedExercises = [];
         }
-    }
+    };
 
     @action setChanged = (exercise: ExerciseType) => {
         const showingIndex = this.showingExercises.findIndex(e => e.id === exercise.id);
@@ -183,34 +183,52 @@ export class ExercisesState {
                 const data = {
                     isActive: exercise.isActive,
                     isFavorite: exercise.isFavorite
-                }
+                };
                 try {
-                    await quickUpdate(exercise.id, data);
+                    const error = await quickUpdate(exercise.id, data);
+                    if (error) {
+                        this.setError('Something went wrong, please try again.');
+                        console.log('Quick update error:', error);
+                    } else {
+                        await this.getExerciseList();
+                        this.handleChangeDelete();
+                        this.setError(null);
+                    }
                 } catch (error) {
-                    console.log('Error fetching data')
+                    console.log('Error updating exercise');
+                    this.setError('Something went wrong');
                 }
             }
         }
-        await this.getExerciseList();
-        this.handleChangeDelete();
-    }
+    };
 
     @action handleDeleteExercises = async (exercises: Array<number>): Promise<void> => {
         this.isLoading = true;
         for (const id of exercises) {
             try {
-                await deleteExercise(id, this.userId);
+                const error = await deleteExercise(id, this.userId);
+                if (error) {
+                    this.setError('Something went wrong, please try again.');
+                    console.log('Quick update error:', error);
+                } else {
+                    await this.getExerciseList();
+                    this.handleChangeDelete();
+                    this.setError(null);
+                }
             } catch (error) {
-                console.log('Error fetching data')
+                console.log('Error deleting exercise');
+                this.setError('Something went wrong');
             }
         }
-        await this.getExerciseList();
-        this.handleChangeDelete();
-    }
+    };
 
     @action private handleChangeDelete = (): void => {
         this.changedExercises = [];
         this.selectedExercises = [];
         this.isLoading = false;
-    }
+    };
+
+    @action private setError = (error: string | null): void => {
+        this.actionError = error;
+    };
 }

@@ -9,6 +9,8 @@ export class UserState {
     @observable public isSignedUp: boolean = false;
     @observable public userId: string | null = null;
     @observable public formType: 'login' | 'signup' | 'reset-password' = 'login';
+    @observable public formError: string | null = null;
+    @observable public isLoading: boolean = true;
 
     public constructor() {
         makeAutoObservable(this);
@@ -20,25 +22,27 @@ export class UserState {
             const response = await isUserAuth();
             if (response) {
                 this.setIsAuth();
-                this.setUserId(response.user.id)
+                this.setUserId(response.user.id);
+                this.setIsLoading();
             }
         } catch (error) {
-            console.log('Error signing up')
+            console.log('Error authenticating user')
         }
     };
 
-    @action private setSignedUp = () => {
-        this.isSignedUp = true;
-    }
-
     @action public signUpUser = async (): Promise<void> => {
         try {
-            const response = await signUpUser(this.email.value, this.password.value);
+            const { session, error } = await signUpUser(this.email.value, this.password.value);
 
-            if (response) {
+            if (error) {
+                this.setError(error.message);
+            } else if (session) {
                 this.setSignedUp();
-                this.setUserId(response.user.id);
+                this.setUserId(session.user.id);
                 this.setIsAuth();
+                this.setError(null);
+            } else {
+                console.log('Something went wrong...')
             }
         } catch (error) {
             console.log('Error signing up')
@@ -47,22 +51,33 @@ export class UserState {
 
     @action public signInUser = async (): Promise<void> => {
         try {
-            const data = await signInUser(this.email.value, this.password.value);
-            if (data !== null) {
+            const { session, error } = await signInUser(this.email.value, this.password.value);
+
+            if (error) {
+                this.setError(error.message);
+            } else if (session) {
                 this.setIsAuth();
-                this.setUserId(data.user.id);
+                this.setUserId(session.user.id);
+                this.setError(null);
             } else {
-                console.log(data)
+                console.log('Something went wrong...');
             }
-        } catch (error) {
-            console.log('Error logging in')
+        } catch (err) {
+            console.log('Something went wrong...');
         }
     };
 
     @action public signOutUser = async (): Promise<void> => {
         try {
-            await signOutUser();
-            this.setIsAuth();
+            const error = await signOutUser();
+
+            if (error) {
+                console.log('Error logging out: ', error);
+            } else {
+                this.setIsAuth();
+                this.setUserId(null);
+                this.setError(null);
+            }
         } catch (error) {
             console.log('Error logging out')
         }
@@ -70,13 +85,26 @@ export class UserState {
 
     @action public setFormType = (formType: 'signup' | 'login' | 'reset-password') => {
         this.formType = formType;
+        this.setError(null);
     }
 
-    @action public setIsAuth = () => {
+    @action private setSignedUp = (): void => {
+        this.isSignedUp = true;
+    }
+
+    @action public setIsLoading = (): void => {
+        this.isLoading = !this.isLoading;
+    }
+
+    @action private setIsAuth = (): void => {
         this.isAuth = !this.isAuth;
     }
 
-    @action public setUserId = (userId: string) => {
+    @action private setUserId = (userId: string | null): void => {
         this.userId = userId;
+    }
+
+    @action private setError = (error: string | null): void => {
+        this.formError = error;
     }
 }

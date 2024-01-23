@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { MainLoaderWrapper, MainLoader, MainEmojiWrapper } from './Loader.style';
 
 interface LoaderAppPropsType {
-    isSignedUp: boolean;
+    isSignedUp?: boolean;
 }
 
 export const LoaderApp = observer((props: LoaderAppPropsType) => {

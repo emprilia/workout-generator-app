@@ -12,6 +12,7 @@ export class ExerciseFormState {
     @observable public isActive: boolean = this.exercise?.isActive ?? true;
     @observable public isFavorite: boolean = this.exercise?.isFavorite ?? false;
     @observable public isClearImgForm: boolean = false;
+    @observable public formError: string | null = null;
     @observable public isLoading: boolean = false;
 
     public constructor(
@@ -25,15 +26,15 @@ export class ExerciseFormState {
 
     @action setActive = () => {
         this.isActive = !this.isActive;
-    }
+    };
 
     @action setFavorite = () => {
         this.isFavorite = !this.isFavorite;
-    }
+    };
 
     @action setBothSides = () => {
         this.isBothSides = !this.isBothSides;
-    }
+    };
 
     @action onImgChangeCB = (file: File | null) => {
         const formData = new FormData();
@@ -42,11 +43,11 @@ export class ExerciseFormState {
             formData.append('file', file);
             this.imgFile.setValue(file);
         }
-    }
+    };
 
     @action onClearFormCB = () => {
         this.isClearImgForm = false;
-    }
+    };
 
     @action clearForm = () => {
         this.label.setValue('');
@@ -55,12 +56,13 @@ export class ExerciseFormState {
         this.isActive = true;
         this.isFavorite = false;
         this.isClearImgForm = true;
-    }
+    };
 
     @action setClosePopup = () => {
         this.clearForm();
         this.closePopup();
-    }
+        this.setError(null);
+    };
 
     @action handleCreateExercise = async (): Promise<void> => {
         const data = {
@@ -70,21 +72,30 @@ export class ExerciseFormState {
             isActive: this.isActive,
             isFavorite: this.isFavorite,
             userId: this.userId
-        }
+        };
 
         try {
             this.setIsLoading();
+            const error = await createExercise(data);
 
-            await createExercise(data);
-            this.clearForm();
-            this.getExerciseList();
-            this.closePopup();
+            if (error) {
+                if (error.code === '23505') {
+                    this.setError('Exercise with this name already exists');
+                } else {
+                    this.setError(error.message);
+                    console.log(error.message);
+                }
+            } else {
+                this.getExerciseList();
+                this.setClosePopup();
+            }
         } catch (error) {
-            console.log('Error fetching data')
+            console.log('Error creating exercise');
+            this.setError('Something went wrong');
         } finally {
             this.setIsLoading();
         }
-    }
+    };
 
     @action handleUpdateExercise = async (): Promise<void> => {
         const data = {
@@ -94,25 +105,37 @@ export class ExerciseFormState {
             isActive: this.isActive,
             isFavorite: this.isFavorite,
             userId: this.userId
-        }
+        };
 
         if (this.id !== null) {
             this.setIsLoading();
 
             try {
-                await updateExercise(this.id, data);
-                this.clearForm();
-                this.getExerciseList();
-                this.closePopup();
+                const error = await updateExercise(this.id, data);
+                if (error) {
+                    if (error.code === '23505') {
+                        this.setError('Exercise with this name already exists');
+                    } else {
+                        this.setError(error.message);
+                    }
+                } else {
+                    this.getExerciseList();
+                    this.setClosePopup();
+                }
             } catch (error) {
-                console.log('Error fetching data')
+                console.log('Error updating exercise');
+                this.setError('Something went wrong');
             } finally {
                 this.setIsLoading();
             }
         }
-    }
+    };
 
     @action private setIsLoading = (): void => {
         this.isLoading = !this.isLoading;
-    }
+    };
+
+    @action private setError = (error: string | null): void => {
+        this.formError = error;
+    };
 }
