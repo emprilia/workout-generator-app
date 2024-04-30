@@ -24,12 +24,14 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
 
     const {
         timerSettingsState,
-        exercisesState
+        exercisesState,
+        createdExercisesCount,
+        initialExercisesCount
     } = workoutGeneratorState;
 
     return (
         <>
-            {timerSettingsState.currentSetting === null || exercisesState.allExercises.length === 0 ? <LoaderApp isSignedUp={isSignedUp} /> : <>
+            {timerSettingsState.currentSetting === null || exercisesState.allExercises.length === 0 ? <LoaderApp isSignedUp={isSignedUp} createdExercisesCount={createdExercisesCount} initialExercisesCount={initialExercisesCount}/> : <>
                 <MenuWrapper>
                     <Button size='small' version={`${currentView === 'generator' ? 'secondary' : 'primary'}`} onClick={() => setView('generator')}>Main</Button>
                     <Button size='small' version={`${currentView === 'timer-settings' ? 'secondary' : 'primary'}`} onClick={() => setView('timer-settings')}>Timer</Button>

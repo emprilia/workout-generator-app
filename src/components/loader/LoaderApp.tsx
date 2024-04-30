@@ -1,17 +1,23 @@
-import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { MainLoaderWrapper, MainLoader, MainEmojiWrapper } from './Loader.style';
 
 interface LoaderAppPropsType {
     isSignedUp: boolean;
+    createdExercisesCount?: number;
+    initialExercisesCount?: number;
 }
 
 export const LoaderApp = observer((props: LoaderAppPropsType) => {
-    const { isSignedUp } = props;
+    const { isSignedUp, createdExercisesCount, initialExercisesCount } = props;
 
     return (
         <MainLoaderWrapper>
-            {isSignedUp ? 'Setting you up...' : 'Loading your workout...'}
+            {isSignedUp ?
+                <>
+                    Setting you up...
+                    <div>Creating exercise {createdExercisesCount} out of {initialExercisesCount}</div>
+                </> : 'Loading your workout...'
+            }
             <MainLoader>
                 <MainEmojiWrapper>🏋🏻‍♀️</MainEmojiWrapper>
                 <MainEmojiWrapper>🚴🏻</MainEmojiWrapper>
