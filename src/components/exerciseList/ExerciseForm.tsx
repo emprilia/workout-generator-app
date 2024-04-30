@@ -36,7 +36,8 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
         isClearImgForm,
         onClearFormCB,
         setClosePopup,
-        isLoading
+        isLoading,
+        formError
     } = exerciseFormState;
 
     return (
@@ -77,6 +78,7 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
                         />
                     </div>
                 </ExerciseFormFieldsWrapper>
+                {formError && <span>{formError}</span>}
                 <Button width='full' isDisabled={isLoading} onClick={isEditMode ? handleUpdateExercise : handleCreateExercise}>
                     {isLoading && <Spinner />}
                     {isEditMode ? 'UPDATE EXERCISE' : 'CREATE EXERCISE'}

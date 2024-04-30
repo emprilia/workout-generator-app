@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { InputState } from './InputState';
 import { InputWrapper, InputElement, InputLabel } from './Input.style';
@@ -7,7 +7,7 @@ type InputType = 'text' | 'number' | 'file' | 'url' | 'password';
 
 interface InputPropsType {
     className?: string;
-    stateValue: InputState<string | number>;
+    stateValue: InputState;
     type?: InputType;
     label?: string;
     placeholder?: string;
@@ -36,12 +36,6 @@ export const Input = observer((props: InputPropsType) => {
         value
     } = props;
 
-    const [inputState] = useState(() => new InputState(stateValue));
-
-    React.useEffect(() => {
-        inputState.setValue(stateValue);
-    }, [stateValue, inputState]);
-
     return (
         <InputWrapper className={className}>
             {label === undefined ? null : <InputLabel htmlFor={value}>{label}</InputLabel>}
@@ -56,11 +50,9 @@ export const Input = observer((props: InputPropsType) => {
                 min={min}
                 max={max}
                 maxLength={maxLength}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    const value = type === 'number' ? +e.target.value : e.target.value;
-                    stateValue.setValue(e.target.value !== '' ? value : '');
-                }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value)}
             />
+            {stateValue.error && <>{stateValue.error}</>}
         </InputWrapper>
     );
 });

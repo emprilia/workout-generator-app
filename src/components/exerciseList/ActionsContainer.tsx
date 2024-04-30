@@ -61,6 +61,7 @@ export const ActionsContainer = observer((props: ActionsContainerPropsType) => {
                     </Button>
                 }
             </ActionsWrapper>
+            {exercisesState.actionError && <>{exercisesState.actionError}</>}
         </ExerciseListActionsWrapper>
     );
 });
