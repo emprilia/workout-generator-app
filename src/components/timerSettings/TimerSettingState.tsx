@@ -14,27 +14,22 @@ interface InputDataPropsType {
     value: string;
     icon: JSX.Element;
     info: string;
-    stateValue: InputState<number>;
+    stateValue: InputState;
 }
 
 export class TimerSettingState {
     @observable public label: string = this.timerSetting.label;
     @observable public id: number = this.timerSetting.id;
 
-    @observable public savedPrepTime: number = this.timerSetting.prepTime;
-    @observable public savedWorkoutTime: number = this.timerSetting.workoutTime;
-    @observable public savedBreakTime: number = this.timerSetting.breakTime;
-    @observable public savedMinRounds: number = this.timerSetting.minRounds;
-    @observable public savedMaxRounds: number = this.timerSetting.maxRounds;
-
-    @observable public prepTime: InputState<number> = new InputState(this.timerSetting.prepTime);
-    @observable public workoutTime: InputState<number> = new InputState(this.timerSetting.workoutTime);
-    @observable public breakTime: InputState<number> = new InputState(this.timerSetting.breakTime);
-    @observable public minRounds: InputState<number> = new InputState(this.timerSetting.minRounds);
-    @observable public maxRounds: InputState<number> = new InputState(this.timerSetting.maxRounds);
+    @observable public prepTime: InputState = new InputState(this.timerSetting.prepTime.toString());
+    @observable public workoutTime: InputState = new InputState(this.timerSetting.workoutTime.toString());
+    @observable public breakTime: InputState = new InputState(this.timerSetting.breakTime.toString());
+    @observable public minRounds: InputState;
+    @observable public maxRounds: InputState = new InputState(this.timerSetting.maxRounds.toString());
 
     @observable public focusedInput: string = '';
     @observable public openInfo: string = '';
+    @observable public formError: string | null = null;
     @observable public isLoading: boolean = false;
 
     public constructor(
@@ -42,10 +37,11 @@ export class TimerSettingState {
         private readonly timerSettingsState: TimerSettingsState,
     ) {
         makeAutoObservable(this);
+        this.minRounds = new InputState(this.timerSetting.minRounds.toString()).checkError(this.minRoundsError);
     }
 
     @computed public get totalRoundTime(): number {
-        return this.workoutTime.value + this.breakTime.value;
+        return parseInt(this.workoutTime.value, 10) + parseInt(this.breakTime.value, 10);
     }
 
     @computed public get inputData(): Array<InputDataPropsType> {
@@ -90,28 +86,30 @@ export class TimerSettingState {
     }
 
     @action saveTimer = async (): Promise<void> => {
-        this.savedPrepTime = this.prepTime.value;
-        this.savedWorkoutTime = this.workoutTime.value;
-        this.savedBreakTime = this.breakTime.value;
-        this.savedMinRounds = this.minRounds.value;
-        this.savedMaxRounds = this.maxRounds.value;
-
         const data = {
             ...this.timerSetting,
-            prepTime: this.savedPrepTime,
-            workoutTime: this.savedWorkoutTime,
-            breakTime: this.savedBreakTime,
-            minRounds: this.savedMinRounds,
-            maxRounds: this.savedMaxRounds
+            prepTime: parseInt(this.prepTime.value, 10),
+            workoutTime: parseInt(this.workoutTime.value, 10),
+            breakTime: parseInt(this.breakTime.value, 10),
+            minRounds: parseInt(this.minRounds.value, 10),
+            maxRounds: parseInt(this.maxRounds.value, 10)
         }
 
         try {
             this.setIsLoading();
 
-            await updateTimerSettings(this.id, data);
-            await this.timerSettingsState.getTimerSettings();
+            const error = await updateTimerSettings(this.id, data);
+
+            if (error) {
+                this.setError(error.message);
+            } else {
+                await this.timerSettingsState.getTimerSettings();
+                this.setError(null);
+            }
+
         } catch (error) {
             console.log('Error fetching data')
+            this.setError('Something went wrong');
         } finally {
             this.setIsLoading();
         }
@@ -136,4 +134,13 @@ export class TimerSettingState {
     @action private setIsLoading = (): void => {
         this.isLoading = !this.isLoading;
     }
+
+    @action private setError = (error: string | null): void => {
+        this.formError = error;
+    }
+
+    minRoundsError = (value: string): string | null => {
+        const numberValue = parseInt(value, 10);
+        return numberValue > this.timerSettingsState.activeCount ? 'Min rounds cannot be higher than max rounds' : null;
+    };
 }

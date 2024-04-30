@@ -4,6 +4,7 @@ import { AppState } from './AppState.state';
 import { AppWrapper } from './App.style';
 import { UserForm } from './components/users/UserForm';
 import { WorkoutGenerator } from './components/workoutGenerator/WorkoutGenerator';
+import { LoaderApp } from './components/loader/LoaderApp';
 
 export const App = observer(() => {
     const [appState] = React.useState(() => new AppState());
@@ -12,9 +13,11 @@ export const App = observer(() => {
 
     return (
         <AppWrapper>
-            {userState.isAuth && userState.userId ? <>
-                <WorkoutGenerator userId={userState.userId} isSignedUp={userState.isSignedUp} signOutUser={userState.signOutUser} currentView={currentView} setView={setView}/>
-            </> : <UserForm userState={userState} />}
+            {userState.isLoading ? <LoaderApp isSignedUp={false} /> : <>
+                {userState.isAuth && userState.userId ? <>
+                    <WorkoutGenerator userId={userState.userId} isSignedUp={userState.isSignedUp} signOutUser={userState.signOutUser} currentView={currentView} setView={setView}/>
+                </> : <UserForm userState={userState} />}
+            </>}
         </AppWrapper>
     );
 });
