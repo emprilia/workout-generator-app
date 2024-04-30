@@ -7,6 +7,8 @@ import { TimerSettingType, getInitialTimerSettings, getTimerSettings, getCurrent
 export class WorkoutGeneratorState {
     @observable public exercisesState: ExercisesState;
     @observable public timerSettingsState: TimerSettingsState;
+    @observable public initialExercisesCount: number;
+    @observable public createdExercisesCount: number;
 
     public constructor(
         private readonly userId: string,
@@ -16,6 +18,8 @@ export class WorkoutGeneratorState {
         this.getWorkoutGeneratorData();
         this.exercisesState = new ExercisesState(this.userId, this.getUserExerciseList);
         this.timerSettingsState = new TimerSettingsState(this.getUserTimerSettings);
+        this.initialExercisesCount = 0;
+        this.createdExercisesCount = 0;
     }
 
     @action public getWorkoutGeneratorData = async (): Promise<void> => {
@@ -28,10 +32,19 @@ export class WorkoutGeneratorState {
         }
     }
 
+    @action private updateCreatedExercisesCount = () => {
+        this.createdExercisesCount++;
+    }
+
+    @action private setInitialExercisesCount = (value: number) => {
+        this.initialExercisesCount = value;
+    }
+
     getInitialExerciseList = async (): Promise<void> => {
         try {
             const data = await getInitialExercises();
             if (data !== null) {
+                this.setInitialExercisesCount(data.length);
                 await this.handleCreateInitialExercises(data);
                 await this.getUserExerciseList();
             }
@@ -47,6 +60,7 @@ export class WorkoutGeneratorState {
                 userId: this.userId
             }
             try {
+                this.updateCreatedExercisesCount();
                 await createInitialExercise(exeData);
             } catch (error) {
                 console.log('Error creating initial exercises')
