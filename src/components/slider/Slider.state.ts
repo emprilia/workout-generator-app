@@ -57,6 +57,10 @@ export class SliderState {
     public get translateThumbnailMobile(): string {
         const lastTwo = this.sliderThumbnails.slice(-2);
 
+        if (this.exercisesState.generatedWorkout.length <= 4) {
+            return ``;
+        }
+
         if (this.exercisesState.currentExercise <= 3) {
             return ``;
         }

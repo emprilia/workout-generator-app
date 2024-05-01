@@ -1,6 +1,7 @@
 import { SerializedStyles, css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { PlayIcon } from '../../../assets/icons/PlayIcon';
+import { PauseIcon } from '../../../assets/icons/PauseIcon';
 import { SquareIcon } from '../../../assets/icons/SquareIcon';
 import { RefreshIcon } from '../../../assets/icons/RefreshIcon';
 import { SpeakerIcon } from '../../../assets/icons/SpeakerIcon';
@@ -70,7 +71,7 @@ export const ExerciseLabel = styled('span')`
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
 `;
 
-export const NextLabel = styled('span')`
+export const RoundLabel = styled('span')`
     font-size: 24px;
     font-weight: 700;
     color: var(--shade1);
@@ -101,7 +102,12 @@ export const PlayIconWrapper = styled(PlayIcon)`
 
 export const StopIconWrapper = styled(SquareIcon)`
     ${(): SerializedStyles => setIcon()};
-    margin-left: 0;
+`;
+
+export const PauseIconWrapper = styled(PauseIcon)`
+    ${(): SerializedStyles => setIcon()};
+    stroke: currentcolor;
+    fill: transparent;
 `;
 
 export const RefreshIconWrapper = styled(RefreshIcon)`
