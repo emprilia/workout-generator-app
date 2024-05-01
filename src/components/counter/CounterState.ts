@@ -11,8 +11,12 @@ import { TimerSettingType } from '../../api/supabaseTimerSettings';
 export class CounterState {
     @observable public currentSlide: number = 1;
     @observable public hasStarted: boolean = false;
+    @observable public hasPaused: boolean = false;
+    @observable public hasResumed: boolean = false;
+    @observable public hasStopped: boolean = false;
     @observable public isWorkoutTime: boolean = false;
     @observable public isBreakTime: boolean = false;
+    @observable public isPrepTime: boolean = false;
     @observable public isMuted: boolean = false;
     @observable public prepTime: number = this.currentSetting.prepTime;
     @observable public workoutTime: number = this.currentSetting.workoutTime;
@@ -63,8 +67,8 @@ export class CounterState {
         this.time = value;
     }
 
-    @action private setHasStarted = (): void => {
-        this.hasStarted = !this.hasStarted;
+    @action private setIsPrepTime = (): void => {
+        this.isPrepTime = !this.isPrepTime;
     }
 
     @action private setIsBreakTime = (): void => {
@@ -75,16 +79,21 @@ export class CounterState {
         this.isWorkoutTime = !this.isWorkoutTime;
     }
 
-    @action public stopTimer = (): void => {
-        this.hasStarted = false;
+    @action private clearIntervals = (): void => {
         clearInterval(this.prepTimeCounterReference);
         clearInterval(this.workoutTimeCounterReference);
         clearInterval(this.breakTimeCounterReference);
-        this.time = this.prepTime;
         this.prepTimeCounterReference = undefined;
         this.workoutTimeCounterReference = undefined;
         this.breakTimeCounterReference = undefined;
+    }
 
+    @action public stopTimer = (): void => {
+        this.clearIntervals();
+        this.hasStarted = false;
+        this.hasResumed = false;
+        this.hasPaused = false;
+        this.time = this.prepTime;
         this.currentSlide = 1;
         this.exercisesState.currentExercise = 1;
         this.isBreakTime = false;
@@ -92,82 +101,112 @@ export class CounterState {
     }
 
     @action public runTimer = async (): Promise<void> => {
-        this.setHasStarted();
-
-        if (this.hasStarted === false) {
-            this.stopTimer();
-            return;
-        }
+        this.hasStarted = true;
 
         await this.startOfCountdown(this.prepTime);
 
-        for (let i = 0; i < this.exercisesState.generatedWorkout.length + 1; i++) {
-            if (this.hasStarted === true) {
-                await this.workoutTimer(i, this.workoutTime);
+        for (let i = 0; i <= this.exercisesState.generatedWorkout.length - 1; i++) {
+            if (this.hasStarted && this.hasPaused === false) {
+                await this.timer(this.workoutTime);
             }
 
-            if (i !== this.exercisesState.generatedWorkout.length) {
-                    if (this.hasStarted === true) {
-                        await this.breakTimer(this.breakTime);
-                    }
+            if (i !== this.exercisesState.generatedWorkout.length - 1) {
+                if (this.hasStarted && this.hasPaused === false) {
+                    await this.timer(this.breakTime);
                 }
+            }
         }
     }
 
-    @action private startOfCountdown(prepTime: number): Promise<number> {
-        const prepDuration = prepTime * 1000;
+    @action public pauseTimer = (): void => {
+        this.hasPaused = true;
+        this.hasResumed = false;
+        this.clearIntervals();
+    }
 
-        setTimeout(() => {
-            this.setIsBreakTime();
-        }, 1000);
+    @action public resumeTimer = async (): Promise<void> => {
+        this.hasResumed = true;
+        this.hasPaused = false;
+
+        const currentSlide = this.isWorkoutTime ? this.currentSlide - 1 : this.currentSlide - 2;
+
+        for (let i = currentSlide; i <= this.exercisesState.generatedWorkout.length; i++) {
+            if (this.isWorkoutTime) {
+                if (this.hasResumed === false) {
+                    if (this.hasPaused === false && this.hasStopped === false) {
+                        await this.timer(this.workoutTime);
+                    }
+                } else if (this.hasPaused === false && this.hasStopped === false) {
+                    await this.timer(this.time);
+                    this.hasResumed = false;
+                }
+            }
+
+            if (this.isBreakTime) {
+                if (i !== this.exercisesState.generatedWorkout.length - 1) {
+                    if (this.hasResumed === false) {
+                        if (this.hasPaused === false && this.hasStopped === false) {
+                            await this.timer(this.breakTime);
+                        }
+                    } else if (this.hasPaused === false && this.hasStopped === false) {
+                        await this.timer(this.time);
+                        this.hasResumed = false;
+                    }
+                }
+            }
+        }
+    }
+
+    @action private counterInterval(time: number): Promise<number> {
+        const timeDuration = time * 1000;
 
         return new Promise((resolve) => {
             const timer = setInterval(() => {
-                this.setTime(prepTime--);
+                this.setTime(time--);
                 this.playSound();
             }, 1000);
-            this.prepTimeCounterReference = timer;
-            setTimeout(() => { clearInterval(timer); resolve(prepTime) }, prepDuration);
+
+            if (this.isPrepTime) {
+                this.prepTimeCounterReference = timer;
+            } else if (this.isBreakTime) {
+                this.breakTimeCounterReference = timer;
+            } else {
+                this.workoutTimeCounterReference = timer;
+            }
+
+            setTimeout(() => { clearInterval(timer); resolve(time) }, timeDuration);
         });
     }
 
-    @action private workoutTimer(i: number, workoutTime: number): Promise<number> {
-        const workoutDuration = workoutTime * 1000;
-        this.nextSlide();
+    @action private startOfCountdown(prepTime: number): Promise<number> {
+        this.setIsPrepTime();
+        return this.counterInterval(prepTime);
+    }
 
-        setTimeout(() => {
+    @action private timer(time: number): Promise<number> {
+        if (this.hasResumed === false) {
+            if (this.isPrepTime) {
+                this.setIsBreakTime();
+                this.setIsPrepTime();
+            }
             this.setIsBreakTime();
             this.setIsWorkoutTime();
-        }, 1000);
 
-        return new Promise((resolve) => {
-            const timer = setInterval(() => {
-                this.setTime(workoutTime--);
-                this.playSound();
-            }, 1000);
-            this.workoutTimeCounterReference = timer;
-            setTimeout(() => { clearInterval(timer); resolve(workoutTime) }, workoutDuration);
-        });
+            if (this.isBreakTime) {
+                this.nextSlide();
+            }
+        }
+
+        return this.counterInterval(time);
     }
 
-    @action private breakTimer(breakTime: number): Promise<number> {
-        const breakDuration = breakTime * 1000;
-        this.setIsBreakTime();
-        this.nextSlide();
+    @action public generateWorkout = (): void => {
+        this.stopTimer();
+        this.exercisesState.generateWorkout();
+    };
 
-        return new Promise((resolve) => {
-            const timer = setInterval(() => {
-                this.setTime(breakTime--);
-                this.playSound();
-            }, 1000);
-            this.breakTimeCounterReference = timer;
-            setTimeout(() => { clearInterval(timer); resolve(breakTime) }, breakDuration);
-        });
-    }
-
-    @action public nextSlide = (): void => {
+    @action private nextSlide = (): void => {
         this.currentSlide = this.currentSlide + 1;
         this.exercisesState.currentExercise = this.currentSlide;
      };
 }
-

@@ -16,7 +16,8 @@ import {
     SpeakerIconWrapper,
     SpeakerMuteIconWrapper,
     ImgPlaceholder,
-    NextLabel
+    RoundLabel,
+    PauseIconWrapper
 } from './ExerciseSlider.style';
 import { CounterIconWrapper } from '../../counter/Counter.style';
 
@@ -33,13 +34,20 @@ export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
         time,
         runTimer,
         hasStarted,
+        pauseTimer,
+        hasPaused,
+        stopTimer,
+        resumeTimer,
         isMuted,
-        setIsMuted
+        setIsMuted,
+        isPrepTime,
+        isBreakTime,
+        isWorkoutTime,
+        generateWorkout
     } = counterState;
 
     const {
         generatedWorkout,
-        generateWorkout
     } = exercisesState;
 
     const {
@@ -51,9 +59,20 @@ export const ExerciseSlider = observer((props: ExerciseSliderPropsType) => {
         <ExerciseContainer width={sliderWidth}>
             <ExerciseHeader>
                 <CounterIconWrapper time={time} />
-                {counterState.isBreakTime ? <NextLabel>NEXT</NextLabel>: null}
+                {
+                    isPrepTime ? <RoundLabel>GET READY</RoundLabel> :
+                    isBreakTime ? <RoundLabel>NEXT</RoundLabel> :
+                    isWorkoutTime ? <RoundLabel>GO</RoundLabel> :
+                    null
+                }
                 <ControlsWrapper>
-                    {hasStarted ? <StopIconWrapper onClick={runTimer} /> : <PlayIconWrapper onClick={runTimer} />}
+                    {hasPaused ? <>
+                        <PlayIconWrapper onClick={resumeTimer} />
+                        <StopIconWrapper onClick={stopTimer} />
+                    </> : hasStarted ? <>
+                        {isPrepTime ? null : <PauseIconWrapper onClick={pauseTimer} />}
+                        <StopIconWrapper onClick={stopTimer} />
+                    </> : <PlayIconWrapper onClick={runTimer} />}
                     <RefreshIconWrapper onClick={generateWorkout} />
                     {isMuted ? <SpeakerMuteIconWrapper onClick={setIsMuted} /> : <SpeakerIconWrapper onClick={setIsMuted} />}
                 </ControlsWrapper>
