@@ -5,8 +5,8 @@ import ding from '../../assets/audio/ding.mp3';
 import longDing from '../../assets/audio/longDing.mp3';
 // @ts-expect-error
 import tick from '../../assets/audio/tick.mp3'
-import { ExercisesState } from '../exerciseList/ExercisesState';
 import { TimerSettingType } from '../../api/supabaseTimerSettings';
+import { ExercisesState } from '../exerciseList/ExercisesState';
 
 export class CounterState {
     @observable public currentSlide: number = 1;
@@ -31,6 +31,9 @@ export class CounterState {
         private exercisesState: ExercisesState
     ) {
         makeAutoObservable(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        window.addEventListener('keydown', this.handleKeyDown);
+
     }
 
     @action public setIsMuted = (): void => {
@@ -115,6 +118,43 @@ export class CounterState {
                     await this.timer(this.breakTime);
                 }
             }
+        }
+    }
+
+    public handleKeyDown = (event: KeyboardEvent): void => {
+        switch (event.code) {
+            case 'KeyM':
+                event.preventDefault();
+                this.setIsMuted();
+            break;
+            case 'KeyR':
+                event.preventDefault();
+                this.generateWorkout();
+            break;
+            case 'ArrowLeft':
+                event.preventDefault();
+                this.previousSlide();
+            break;
+            case 'ArrowRight':
+                event.preventDefault();
+                this.nextSlide();
+            break;
+            case 'Space':
+                event.preventDefault();
+                if (this.hasStarted) {
+                    if (this.isPrepTime) {
+                        this.stopTimer();
+                    } else {
+                        if (this.hasPaused) {
+                            this.resumeTimer();
+                        } else {
+                            this.pauseTimer();
+                        }
+                    }
+                } else {
+                    this.runTimer();
+                }
+            break;
         }
     }
 
@@ -208,5 +248,10 @@ export class CounterState {
     @action private nextSlide = (): void => {
         this.currentSlide = this.currentSlide + 1;
         this.exercisesState.currentExercise = this.currentSlide;
-     };
+    };
+
+    @action private previousSlide = (): void => {
+        this.currentSlide = this.currentSlide - 1;
+        this.exercisesState.currentExercise = this.currentSlide;
+    };
 }
