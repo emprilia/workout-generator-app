@@ -12,7 +12,7 @@ import {
     StopwatchIconWrapper,
     FakeInput,
     FakeInputWrapper,
-    InfoWrapper,
+    TimerInfoWrapper,
     InfoIconWrapper
 } from './TimerSettings.style';
 import { TimerSettingState } from './TimerSettingState';
@@ -55,7 +55,7 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
                             <InfoIconWrapper />
                         </div>
                     </FakeInputWrapper>
-                    {openInfo !== 'totalRounds' ? null : <InfoWrapper>Total round time is the combined workout and break time, calculated automatically.</InfoWrapper>}
+                    {openInfo !== 'totalRounds' ? null : <TimerInfoWrapper>Total round time is the combined workout and break time, calculated automatically.</TimerInfoWrapper>}
                 </TimerInputWrapper>
                 {inputData.map((input) => (
                     <TimerInputWrapper
@@ -83,7 +83,7 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
                                 onBlur={() => setOpenInfo(input.value)}>
                                 <InfoIconWrapper />
                             </div>
-                            {openInfo !== input.value ? null : <InfoWrapper>{input.info}</InfoWrapper>}
+                            {openInfo !== input.value ? null : <TimerInfoWrapper>{input.info}</TimerInfoWrapper>}
                     </TimerInputWrapper>
                 ))}
             </TimerSettingsWrapper>

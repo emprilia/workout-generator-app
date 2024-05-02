@@ -8,6 +8,8 @@ import tick from '../../assets/audio/tick.mp3'
 import { TimerSettingType } from '../../api/supabaseTimerSettings';
 import { ExercisesState } from '../exerciseList/ExercisesState';
 
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
 export class CounterState {
     @observable public currentSlide: number = 1;
     @observable public hasStarted: boolean = false;
@@ -25,6 +27,8 @@ export class CounterState {
     @observable private prepTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable private breakTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable private workoutTimeCounterReference: NodeJS.Timeout | undefined = undefined;
+    @observable public isVoiceCommandOn: boolean = false;
+    private recognition: SpeechRecognition;
 
     public constructor(
         private currentSetting: TimerSettingType,
@@ -33,7 +37,47 @@ export class CounterState {
         makeAutoObservable(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         window.addEventListener('keydown', this.handleKeyDown);
+        this.recognition = new SpeechRecognition();
+        this.recognition.lang = 'en-US';
+        this.recognition.continuous = true;
+        this.recognition.onresult = this.handleVoiceResult;
+        this.recognition.onerror = this.handleVoiceError;
+        this.recognition.onstart = this.handleVoiceStart;
+    }
 
+    @action public startListening = (): void => {
+        this.recognition.start();
+    }
+
+    @action public abortListening = (): void => {
+        this.recognition.abort();
+        this.isVoiceCommandOn = false;
+    }
+
+    private handleVoiceResult = (event: SpeechRecognitionEvent): void => {
+        const command = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+
+        if (this.hasStarted) {
+            if (this.hasPaused && command === 'start') {
+                this.resumeTimer();
+            }
+            if (command === 'stop') {
+                this.stopTimer();
+            }
+            if (this.isPrepTime === false && command === 'pause') {
+                this.pauseTimer();
+            }
+        } else if (command === 'start') {
+            this.runTimer();
+        }
+    }
+
+    @action private handleVoiceStart = (): void => {
+        this.isVoiceCommandOn = true;
+    }
+
+    @action private handleVoiceError = (event: SpeechRecognitionErrorEvent): void => {
+        this.isVoiceCommandOn = false;
     }
 
     @action public setIsMuted = (): void => {

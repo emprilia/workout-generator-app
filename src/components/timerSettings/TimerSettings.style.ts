@@ -6,6 +6,7 @@ import { WorkoutIcon } from '../../assets/icons/WorkoutIcon';
 import { BreakIcon } from '../../assets/icons/BreakIcon';
 import { MinMaxIcon } from '../../assets/icons/MinMaxIcon';
 import { InfoIcon } from '../../assets/icons/InfoIcon';
+import { InfoWrapper } from '../common/common.style';
 
 interface InputWrapperPropsType {
     isFocused: boolean;
@@ -89,16 +90,11 @@ export const MinMaxIconWrapper = styled(MinMaxIcon)<{isMin?: boolean}>`
     ${({ isMin }): string => isMin === true ? 'transform: scaleX(-1)' : ''};
 `
 
-export const InfoWrapper = styled('div')`
-    font-size: 10px;
+export const TimerInfoWrapper = styled(InfoWrapper)`
     position: absolute;
     top: 8px;
     right: 20px;
-    background: var(--shade3);
-    border-radius: 4px;
     margin: 0 8px;
-    padding: 8px;
-    color: var(--white);
 `;
 
 export const InfoIconWrapper = styled(InfoIcon)`

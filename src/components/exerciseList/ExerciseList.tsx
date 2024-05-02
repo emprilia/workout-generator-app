@@ -1,8 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { ExercisesState } from './ExercisesState';
-import { InfoWrapper } from './ExerciseList.style';
-import { Header } from '../common/common.style';
+import { Header, InfoWrapper } from '../common/common.style';
 import { ExerciseForm } from './ExerciseForm';
 import { Filters } from '../filters/Filters';
 import { ActionsContainer } from './ActionsContainer';
