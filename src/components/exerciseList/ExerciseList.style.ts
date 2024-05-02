@@ -45,15 +45,6 @@ export const BackButton = styled(Button)`
     z-index: 2;
 `;
 
-export const InfoWrapper = styled('div')`
-    font-size: 10px;
-    background: var(--shade3);
-    border-radius: 4px;
-    padding: 8px;
-    color: var(--white);
-    margin: 16px 0;
-`;
-
 const setIcon = (): SerializedStyles => {
     return css`
         width: 20px;

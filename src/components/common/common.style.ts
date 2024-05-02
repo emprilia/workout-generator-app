@@ -12,3 +12,12 @@ export const DiskIconWrapper = styled(DiskIcon)`
     width: 20px;
     fill: currentColor;
 `;
+
+export const InfoWrapper = styled('div')`
+    font-size: 10px;
+    background: var(--shade3);
+    border-radius: 4px;
+    padding: 8px;
+    color: var(--white);
+    margin: 16px 0;
+`;
