@@ -1,16 +1,18 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
-import { VoiceOptionsWrapper, SpeakIconWrapper, VoiceInfoWrapper } from "./VoiceOptions.style";
+import { VoiceOptionsWrapper, SpeakIconWrapper, VoiceInfoWrapper, AnnouncementIconWrapper } from "./VoiceOptions.style";
 
 interface WorkoutGeneratorWrapperPropsType {
     isVoiceCommandOn: boolean;
     startListening: () => void;
     abortListening: () => void;
+    isTextToSpeechOn: boolean;
+    setTextToSpeech: () => void;
 }
 
 export const VoiceOptions = observer(
   (props: WorkoutGeneratorWrapperPropsType) => {
-    const { isVoiceCommandOn, startListening, abortListening } = props;
+    const { isVoiceCommandOn, startListening, abortListening, isTextToSpeechOn, setTextToSpeech } = props;
 
     return (
         <VoiceOptionsWrapper>
@@ -19,7 +21,14 @@ export const VoiceOptions = observer(
                 <span>PAUSE to pause workout</span>
                 <span>STOP to end workout</span>
             </VoiceInfoWrapper> : null}
-            <SpeakIconWrapper onClick={isVoiceCommandOn ? abortListening : startListening} />
+            <div  onClick={isVoiceCommandOn ? abortListening : startListening}>
+                <SpeakIconWrapper />
+                {isVoiceCommandOn ? <>ON</> : <>OFF</>}
+            </div>
+            <div onClick={setTextToSpeech}>
+                <AnnouncementIconWrapper/>
+                {isTextToSpeechOn ? <>ON</> : <>OFF</>}
+            </div>
         </VoiceOptionsWrapper>
     );
   }

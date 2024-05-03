@@ -28,6 +28,8 @@ export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperP
                 isVoiceCommandOn={counterState.isVoiceCommandOn}
                 startListening={counterState.startListening}
                 abortListening={counterState.abortListening}
+                isTextToSpeechOn={counterState.isTextToSpeechOn}
+                setTextToSpeech={counterState.setTextToSpeech}
             />
         </>
     );

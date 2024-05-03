@@ -9,6 +9,7 @@ import { TimerSettingType } from '../../api/supabaseTimerSettings';
 import { ExercisesState } from '../exerciseList/ExercisesState';
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synthesis = window.speechSynthesis;
 
 export class CounterState {
     @observable public currentSlide: number = 1;
@@ -16,6 +17,7 @@ export class CounterState {
     @observable public hasPaused: boolean = false;
     @observable public hasResumed: boolean = false;
     @observable public hasStopped: boolean = false;
+    @observable public isWorkoutFinished: boolean = false;
     @observable public isWorkoutTime: boolean = false;
     @observable public isBreakTime: boolean = false;
     @observable public isPrepTime: boolean = false;
@@ -27,6 +29,7 @@ export class CounterState {
     @observable private prepTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable private breakTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable private workoutTimeCounterReference: NodeJS.Timeout | undefined = undefined;
+    @observable public isTextToSpeechOn: boolean = false;
     @observable public isVoiceCommandOn: boolean = false;
     private recognition: SpeechRecognition;
 
@@ -40,9 +43,20 @@ export class CounterState {
         this.recognition = new SpeechRecognition();
         this.recognition.lang = 'en-US';
         this.recognition.continuous = true;
+        this.recognition.onstart = this.handleVoiceStart;
         this.recognition.onresult = this.handleVoiceResult;
         this.recognition.onerror = this.handleVoiceError;
-        this.recognition.onstart = this.handleVoiceStart;
+    }
+
+    @action public setTextToSpeech = (): void => {
+        this.isTextToSpeechOn = !this.isTextToSpeechOn;
+    }
+
+    private readText = (text: string): void => {
+        if (this.isTextToSpeechOn) {
+            const read = new SpeechSynthesisUtterance(text);
+            synthesis.speak(read);
+        }
     }
 
     @action public startListening = (): void => {
@@ -76,7 +90,7 @@ export class CounterState {
         this.isVoiceCommandOn = true;
     }
 
-    @action private handleVoiceError = (event: SpeechRecognitionErrorEvent): void => {
+    @action private handleVoiceError = (): void => {
         this.isVoiceCommandOn = false;
     }
 
@@ -148,18 +162,21 @@ export class CounterState {
     }
 
     @action public runTimer = async (): Promise<void> => {
+        this.isWorkoutFinished = false;
         this.hasStarted = true;
 
         await this.startOfCountdown(this.prepTime);
+        this.isPrepTime = false;
+        this.isWorkoutTime = true;
 
         for (let i = 0; i <= this.exercisesState.generatedWorkout.length - 1; i++) {
-            if (this.hasStarted && this.hasPaused === false) {
-                await this.timer(this.workoutTime);
+            if (this.hasStarted && this.hasPaused === false && this.isWorkoutTime) {
+                await this.timer(this.workoutTime, i);
             }
 
-            if (i !== this.exercisesState.generatedWorkout.length - 1) {
+            if (this.isWorkoutFinished === false && this.isBreakTime) {
                 if (this.hasStarted && this.hasPaused === false) {
-                    await this.timer(this.breakTime);
+                    await this.timer(this.breakTime, i);
                 }
             }
         }
@@ -214,28 +231,26 @@ export class CounterState {
 
         const currentSlide = this.isWorkoutTime ? this.currentSlide - 1 : this.currentSlide - 2;
 
-        for (let i = currentSlide; i <= this.exercisesState.generatedWorkout.length; i++) {
+        for (let i = currentSlide; i <= this.exercisesState.generatedWorkout.length - 1; i++) {
             if (this.isWorkoutTime) {
                 if (this.hasResumed === false) {
                     if (this.hasPaused === false && this.hasStopped === false) {
-                        await this.timer(this.workoutTime);
+                        await this.timer(this.workoutTime, i);
                     }
                 } else if (this.hasPaused === false && this.hasStopped === false) {
-                    await this.timer(this.time);
+                    await this.timer(this.time, i);
                     this.hasResumed = false;
                 }
             }
 
-            if (this.isBreakTime) {
-                if (i !== this.exercisesState.generatedWorkout.length - 1) {
-                    if (this.hasResumed === false) {
-                        if (this.hasPaused === false && this.hasStopped === false) {
-                            await this.timer(this.breakTime);
-                        }
-                    } else if (this.hasPaused === false && this.hasStopped === false) {
-                        await this.timer(this.time);
-                        this.hasResumed = false;
+            if (this.isWorkoutFinished === false && this.isBreakTime) {
+                if (this.hasResumed === false) {
+                    if (this.hasPaused === false && this.hasStopped === false) {
+                        await this.timer(this.breakTime, i);
                     }
+                } else if (this.hasPaused === false && this.hasStopped === false) {
+                    await this.timer(this.time, i);
+                    this.hasResumed = false;
                 }
             }
         }
@@ -264,24 +279,34 @@ export class CounterState {
 
     @action private startOfCountdown(prepTime: number): Promise<number> {
         this.setIsPrepTime();
+        const exerciseLabel = this.exercisesState.generatedWorkout[0].label;
+        this.readText(exerciseLabel);
         return this.counterInterval(prepTime);
     }
 
-    @action private timer(time: number): Promise<number> {
+    @action private timer = async (time: number, i?: number) => {
         if (this.hasResumed === false) {
-            if (this.isPrepTime) {
-                this.setIsBreakTime();
-                this.setIsPrepTime();
-            }
-            this.setIsBreakTime();
-            this.setIsWorkoutTime();
-
             if (this.isBreakTime) {
                 this.nextSlide();
+
+                if (i !== undefined) {
+                    const exerciseLabel = this.exercisesState.generatedWorkout[i + 1].label;
+                    this.readText(exerciseLabel);
+                }
             }
         }
 
-        return this.counterInterval(time);
+        await this.counterInterval(time);
+
+        if (i === this.exercisesState.generatedWorkout.length - 1) {
+            this.setIsWorkoutTime();
+            this.isWorkoutFinished = true;
+        } else {
+            if (this.hasPaused === false) {
+                this.setIsBreakTime();
+                this.setIsWorkoutTime();
+            }
+        }
     }
 
     @action public generateWorkout = (): void => {
