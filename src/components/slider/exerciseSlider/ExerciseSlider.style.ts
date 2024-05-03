@@ -7,6 +7,7 @@ import { RefreshIcon } from '../../../assets/icons/RefreshIcon';
 import { SpeakerIcon } from '../../../assets/icons/SpeakerIcon';
 import { SpeakerMuteIcon } from '../../../assets/icons/SpeakerMuteIcon';
 import { ImgIcon } from '../../../assets/icons/ImgIcon';
+import { SuccessIcon } from '../../../assets/icons/SuccessIcon';
 
 interface ExercisePropsType {
     width: number;
@@ -14,6 +15,7 @@ interface ExercisePropsType {
 
 export const ExerciseContainer = styled('div')<ExercisePropsType>`
     width:  ${({ width }): string => `${width}px`};
+    height: 369px;
     overflow: hidden;
     margin-bottom: 16px;
     border-radius: 8px;
@@ -84,6 +86,25 @@ export const ControlsWrapper = styled('div')`
     align-items: center;
 `;
 
+export const FinishedWrapper = styled('div')`
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    padding: 8px 48px 0;
+    font-size: 14px;
+`;
+
+export const FinishedText = styled(RoundLabel)`
+    font-size: 36px;
+    margin-bottom: 24px;
+`;
+
+export const FinishedControlsWrapper = styled(ControlsWrapper)`
+    justify-content: space-between;
+    width: 228px;
+    margin: 24px 0 56px;
+`;
+
 const setIcon = (): SerializedStyles => {
     return css`
         flex: 0 0 20px;
@@ -120,6 +141,14 @@ export const SpeakerIconWrapper = styled(SpeakerIcon)`
 
 export const SpeakerMuteIconWrapper = styled(SpeakerMuteIcon)`
     ${(): SerializedStyles => setIcon()};
+`;
+
+export const SuccessIconWrapper = styled(SuccessIcon)`
+    flex: 0 0 124px;
+    width: 124px;
+    height: 124px;
+    fill: var(--success);
+    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.6));
 `;
 
 export const ImgPlaceholder = styled(ImgIcon)`

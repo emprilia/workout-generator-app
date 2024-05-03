@@ -16,7 +16,6 @@ export class CounterState {
     @observable public hasStarted: boolean = false;
     @observable public hasPaused: boolean = false;
     @observable public hasResumed: boolean = false;
-    @observable public hasStopped: boolean = false;
     @observable public isWorkoutFinished: boolean = false;
     @observable public isWorkoutTime: boolean = false;
     @observable public isBreakTime: boolean = false;
@@ -72,14 +71,23 @@ export class CounterState {
         const command = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
 
         if (this.hasStarted) {
-            if (this.hasPaused && command === 'start') {
+            if (command === 'start' && this.hasPaused) {
                 this.resumeTimer();
             }
             if (command === 'stop') {
                 this.stopTimer();
             }
-            if (this.isPrepTime === false && command === 'pause') {
+            if (command === 'pause' && this.isPrepTime === false) {
                 this.pauseTimer();
+            }
+            if (command === 'again' && this.isWorkoutFinished) {
+                this.handleGoAgain();
+            }
+            if (command === 'new workout' && this.isWorkoutFinished) {
+                this.handleGoNew();
+            }
+            if (command === 'end' && this.isWorkoutFinished) {
+                this.handleGoNew();
             }
         } else if (command === 'start') {
             this.runTimer();
@@ -92,6 +100,64 @@ export class CounterState {
 
     @action private handleVoiceError = (): void => {
         this.isVoiceCommandOn = false;
+    }
+
+    public handleKeyDown = (event: KeyboardEvent): void => {
+        switch (event.code) {
+            case 'KeyA':
+                event.preventDefault();
+                this.handleGoAgain();
+            break;
+            case 'KeyN':
+                event.preventDefault();
+                this.handleGoNew();
+            break;
+            case 'Escape':
+                event.preventDefault();
+                this.handleGoNew();
+            break;
+            case 'KeyM':
+                event.preventDefault();
+                this.setIsMuted();
+            break;
+            case 'KeyR':
+                event.preventDefault();
+                this.generateWorkout();
+            break;
+            case 'ArrowLeft':
+                event.preventDefault();
+                this.previousSlide();
+            break;
+            case 'ArrowRight':
+                event.preventDefault();
+                this.nextSlide();
+            break;
+            case 'Space':
+                event.preventDefault();
+                if (this.hasStarted) {
+                    if (this.isPrepTime) {
+                        this.stopTimer();
+                    } else {
+                        if (this.hasPaused) {
+                            this.resumeTimer();
+                        } else {
+                            this.pauseTimer();
+                        }
+                    }
+                } else {
+                    this.runTimer();
+                }
+            break;
+        }
+    }
+
+    @action public handleGoAgain = (): void => {
+        this.isWorkoutFinished = false;
+    }
+
+    @action public handleGoNew = (): void => {
+        this.isWorkoutFinished = false;
+        this.generateWorkout();
     }
 
     @action public setIsMuted = (): void => {
@@ -182,43 +248,6 @@ export class CounterState {
         }
     }
 
-    public handleKeyDown = (event: KeyboardEvent): void => {
-        switch (event.code) {
-            case 'KeyM':
-                event.preventDefault();
-                this.setIsMuted();
-            break;
-            case 'KeyR':
-                event.preventDefault();
-                this.generateWorkout();
-            break;
-            case 'ArrowLeft':
-                event.preventDefault();
-                this.previousSlide();
-            break;
-            case 'ArrowRight':
-                event.preventDefault();
-                this.nextSlide();
-            break;
-            case 'Space':
-                event.preventDefault();
-                if (this.hasStarted) {
-                    if (this.isPrepTime) {
-                        this.stopTimer();
-                    } else {
-                        if (this.hasPaused) {
-                            this.resumeTimer();
-                        } else {
-                            this.pauseTimer();
-                        }
-                    }
-                } else {
-                    this.runTimer();
-                }
-            break;
-        }
-    }
-
     @action public pauseTimer = (): void => {
         this.hasPaused = true;
         this.hasResumed = false;
@@ -234,10 +263,10 @@ export class CounterState {
         for (let i = currentSlide; i <= this.exercisesState.generatedWorkout.length - 1; i++) {
             if (this.isWorkoutTime) {
                 if (this.hasResumed === false) {
-                    if (this.hasPaused === false && this.hasStopped === false) {
+                    if (this.hasPaused === false) {
                         await this.timer(this.workoutTime, i);
                     }
-                } else if (this.hasPaused === false && this.hasStopped === false) {
+                } else if (this.hasPaused === false) {
                     await this.timer(this.time, i);
                     this.hasResumed = false;
                 }
@@ -245,10 +274,10 @@ export class CounterState {
 
             if (this.isWorkoutFinished === false && this.isBreakTime) {
                 if (this.hasResumed === false) {
-                    if (this.hasPaused === false && this.hasStopped === false) {
+                    if (this.hasPaused === false) {
                         await this.timer(this.breakTime, i);
                     }
-                } else if (this.hasPaused === false && this.hasStopped === false) {
+                } else if (this.hasPaused === false) {
                     await this.timer(this.time, i);
                     this.hasResumed = false;
                 }
@@ -301,6 +330,7 @@ export class CounterState {
         if (i === this.exercisesState.generatedWorkout.length - 1) {
             this.setIsWorkoutTime();
             this.isWorkoutFinished = true;
+            this.stopTimer();
         } else {
             if (this.hasPaused === false) {
                 this.setIsBreakTime();
