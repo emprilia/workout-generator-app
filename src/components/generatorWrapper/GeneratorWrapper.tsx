@@ -4,7 +4,6 @@ import { ExercisesState } from '../exerciseList/ExercisesState';
 import { SliderState } from '../slider/Slider.state';
 import { CounterState } from '../counter/CounterState';
 import { TimerSettingType } from '../../api/supabaseTimerSettings';
-import { Header } from '../common/common.style';
 import { ExerciseSlider } from '../slider/exerciseSlider/ExerciseSlider';
 import { ExerciseSliderThumbnails } from '../slider/exerciseThumbnailsSlider/ExerciseSliderThumbnails';
 import { VoiceOptions } from '../voiceOptions/VoiceOptions';
@@ -21,7 +20,6 @@ export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperP
 
     return (
         <>
-            <Header>WORKOUT GENERATOR</Header>
             <ExerciseSlider exercisesState={exercisesState} counterState={counterState}  sliderState={sliderState} />
             <ExerciseSliderThumbnails exercisesState={exercisesState} sliderState={sliderState} />
             <VoiceOptions

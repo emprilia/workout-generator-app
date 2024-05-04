@@ -1,9 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { WorkoutGeneratorState } from './WorkoutGeneratorState';
-import { LogoutIconWrapper, MenuWrapper } from '../../App.style';
+import { AppWrapper, MenuHeader, AppLogoWrapper, MenuWrapper, MenuItem, LogoutIconWrapper } from '../../App.style';
 import { LoaderApp } from '../loader/LoaderApp';
-import { Button } from '../button/Button';
 import { TimerSettings } from '../timerSettings/TimerSettings';
 import { ExerciseList } from '../exerciseList/ExerciseList';
 import { WorkoutGeneratorWrapper } from '../generatorWrapper/GeneratorWrapper';
@@ -32,15 +31,20 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
     return (
         <>
             {timerSettingsState.currentSetting === null || exercisesState.allExercises.length === 0 ? <LoaderApp isSignedUp={isSignedUp} createdExercisesCount={createdExercisesCount} initialExercisesCount={initialExercisesCount}/> : <>
-                <MenuWrapper>
-                    <Button size='small' version={`${currentView === 'generator' ? 'secondary' : 'primary'}`} onClick={() => setView('generator')}>Main</Button>
-                    <Button size='small' version={`${currentView === 'timer-settings' ? 'secondary' : 'primary'}`} onClick={() => setView('timer-settings')}>Timer</Button>
-                    <Button size='small' version={`${currentView === 'exercises-list' ? 'secondary' : 'primary'}`} onClick={() => setView('exercises-list')}>Exercises</Button>
-                    <Button size='small' onClick={signOutUser}><LogoutIconWrapper /> Logout</Button>
-                </MenuWrapper>
-                {currentView === 'timer-settings' && <TimerSettings timerSettingsState={timerSettingsState} />} 
-                {currentView === 'exercises-list' && <ExerciseList getExerciseList={workoutGeneratorState.getUserExerciseList} userId={userId} exercisesState={exercisesState} />}
-                {currentView === 'generator' && <WorkoutGeneratorWrapper currentSetting={timerSettingsState.currentSetting} exercisesState={exercisesState} />}
+                <MenuHeader>
+                    <AppLogoWrapper onClick={() => setView('generator')} />
+                        <MenuWrapper>
+                            <MenuItem isActive={currentView === 'generator'} onClick={() => setView('generator')}>MAIN</MenuItem>
+                            <MenuItem isActive={currentView === 'timer-settings'} onClick={() => setView('timer-settings')}>TIMER</MenuItem>
+                            <MenuItem isActive={currentView === 'exercises-list'} onClick={() => setView('exercises-list')}>EXERCISES</MenuItem>
+                        </MenuWrapper>
+                        <LogoutIconWrapper onClick={signOutUser} />
+                </MenuHeader>
+                <AppWrapper>
+                    {currentView === 'timer-settings' && <TimerSettings timerSettingsState={timerSettingsState} />}
+                    {currentView === 'exercises-list' && <ExerciseList getExerciseList={workoutGeneratorState.getUserExerciseList} userId={userId} exercisesState={exercisesState} />}
+                    {currentView === 'generator' && <WorkoutGeneratorWrapper currentSetting={timerSettingsState.currentSetting} exercisesState={exercisesState} />}
+                </AppWrapper>
             </>}
         </>
   )
