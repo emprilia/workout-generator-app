@@ -30,11 +30,12 @@ export class CounterState {
     @observable private workoutTimeCounterReference: NodeJS.Timeout | undefined = undefined;
     @observable public isTextToSpeechOn: boolean = false;
     @observable public isVoiceCommandOn: boolean = false;
+    @observable public isKeyboardCommandOn: boolean = false;
     private recognition: SpeechRecognition;
 
     public constructor(
         private currentSetting: TimerSettingType,
-        private exercisesState: ExercisesState
+        private exercisesState: ExercisesState,
     ) {
         makeAutoObservable(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -46,6 +47,7 @@ export class CounterState {
         this.recognition.onresult = this.handleVoiceResult;
         this.recognition.onerror = this.handleVoiceError;
     }
+
 
     @action public setTextToSpeech = (): void => {
         this.isTextToSpeechOn = !this.isTextToSpeechOn;
@@ -71,7 +73,7 @@ export class CounterState {
         const command = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
 
         if (this.hasStarted) {
-            if (command === 'start' && this.hasPaused) {
+            if (command === 'go' && this.hasPaused) {
                 this.resumeTimer();
             }
             if (command === 'stop') {
@@ -89,7 +91,10 @@ export class CounterState {
             if (command === 'end' && this.isWorkoutFinished) {
                 this.handleGoNew();
             }
-        } else if (command === 'start') {
+            if (command === 'mute') {
+                this.setIsMuted();
+            }
+        } else if (command === 'go') {
             this.runTimer();
         }
     }
@@ -102,52 +107,56 @@ export class CounterState {
         this.isVoiceCommandOn = false;
     }
 
+    @action public setKeyboardCommandOn = (): void => {
+        this.isKeyboardCommandOn = !this.isKeyboardCommandOn;
+    }
+
     public handleKeyDown = (event: KeyboardEvent): void => {
-        switch (event.code) {
-            case 'KeyA':
-                event.preventDefault();
-                this.handleGoAgain();
-            break;
-            case 'KeyN':
-                event.preventDefault();
-                this.handleGoNew();
-            break;
-            case 'Escape':
-                event.preventDefault();
-                this.handleGoNew();
-            break;
-            case 'KeyM':
-                event.preventDefault();
-                this.setIsMuted();
-            break;
-            case 'KeyR':
-                event.preventDefault();
-                this.generateWorkout();
-            break;
-            case 'ArrowLeft':
-                event.preventDefault();
-                this.previousSlide();
-            break;
-            case 'ArrowRight':
-                event.preventDefault();
-                this.nextSlide();
-            break;
-            case 'Space':
-                event.preventDefault();
-                if (this.hasStarted) {
-                    if (this.isPrepTime) {
-                        this.stopTimer();
+        if (this.isKeyboardCommandOn) {
+            switch (event.code) {
+                case 'KeyA':
+                    event.preventDefault();
+                    if (this.isWorkoutFinished) {
+                        this.handleGoAgain();
+                    }
+                break;
+                case 'Escape':
+                    event.preventDefault();
+                    this.stopTimer();
+                break;
+                case 'KeyM':
+                    event.preventDefault();
+                    this.setIsMuted();
+                break;
+                case 'KeyR':
+                    event.preventDefault();
+                    if (this.isWorkoutFinished) {
+                        this.handleGoNew();
                     } else {
+                        this.generateWorkout();
+                    }
+                break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    this.previousSlide();
+                break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    this.nextSlide();
+                break;
+                case 'Space':
+                    event.preventDefault();
+                    if (this.hasStarted) {
                         if (this.hasPaused) {
                             this.resumeTimer();
                         } else {
                             this.pauseTimer();
                         }
+                    } else {
+                        this.runTimer();
                     }
-                } else {
-                    this.runTimer();
-                }
-            break;
+                break;
+            }
         }
     }
 

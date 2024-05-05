@@ -12,11 +12,11 @@ import {
     StopwatchIconWrapper,
     FakeInput,
     FakeInputWrapper,
-    TimerInfoWrapper,
-    InfoIconWrapper
+    TooltipWrapper
 } from './TimerSettings.style';
 import { TimerSettingState } from './TimerSettingState';
 import { TimerSettingType } from '../../api/supabaseTimerSettings';
+import { Tooltip, TooltipState } from '../tooltip/Tooltip';
 
 interface TimerSettingsPropsType {
     timerSetting: TimerSettingType;
@@ -27,6 +27,8 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
     const { timerSetting, timerSettingsState } = props;
 
     const [timerSettingState] = React.useState(() => new TimerSettingState(timerSetting, timerSettingsState));
+    const [tooltipState] = React.useState(() => new TooltipState());
+
 
     const {
         totalRoundTime,
@@ -34,8 +36,6 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
         focusedInput,
         onDivFocus,
         onBlur,
-        openInfo,
-        setOpenInfo,
         saveTimer,
         isLoading
     } = timerSettingState;
@@ -48,14 +48,12 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
                         <StopwatchIconWrapper />
                         <FakeInput>{totalRoundTime}</FakeInput>
                         Total round time
-                        <div
-                            tabIndex={0}
-                            onClick={() => setOpenInfo('totalRounds')}
-                            onBlur={() => setOpenInfo('totalRounds')}>
-                            <InfoIconWrapper />
-                        </div>
+                        <TooltipWrapper>
+                            <Tooltip openInfo='totalRounds' state={tooltipState}>
+                                Total round time is the combined workout and break time, calculated automatically.
+                            </Tooltip>
+                        </TooltipWrapper>
                     </FakeInputWrapper>
-                    {openInfo !== 'totalRounds' ? null : <TimerInfoWrapper>Total round time is the combined workout and break time, calculated automatically.</TimerInfoWrapper>}
                 </TimerInputWrapper>
                 {inputData.map((input) => (
                     <TimerInputWrapper
@@ -77,13 +75,11 @@ export const TimerSettingForm = observer((props: TimerSettingsPropsType) => {
                                 />
                                 {input.label}
                             </InputWrapper>
-                            <div
-                                tabIndex={0}
-                                onClick={() => setOpenInfo(input.value)}
-                                onBlur={() => setOpenInfo(input.value)}>
-                                <InfoIconWrapper />
-                            </div>
-                            {openInfo !== input.value ? null : <TimerInfoWrapper>{input.info}</TimerInfoWrapper>}
+                            <TooltipWrapper>
+                                <Tooltip openInfo={input.value} state={tooltipState}>
+                                    {input.info}
+                                </Tooltip>
+                                </TooltipWrapper>
                     </TimerInputWrapper>
                 ))}
             </TimerSettingsWrapper>

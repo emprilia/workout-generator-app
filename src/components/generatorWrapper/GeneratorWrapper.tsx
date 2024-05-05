@@ -6,15 +6,16 @@ import { CounterState } from '../counter/CounterState';
 import { TimerSettingType } from '../../api/supabaseTimerSettings';
 import { ExerciseSlider } from '../slider/exerciseSlider/ExerciseSlider';
 import { ExerciseSliderThumbnails } from '../slider/exerciseThumbnailsSlider/ExerciseSliderThumbnails';
-import { VoiceOptions } from '../voiceOptions/VoiceOptions';
+import { CommandOptions } from '../commandOptions/CommandOptions';
 
 interface WorkoutGeneratorWrapperPropsType {
     exercisesState: ExercisesState;
     currentSetting: TimerSettingType;
+    isMobile: boolean;
 }
 
 export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperPropsType) => {
-    const { exercisesState, currentSetting } = props;
+    const { exercisesState, currentSetting, isMobile } = props;
     const [sliderState] = React.useState(() => new SliderState(exercisesState));
     const [counterState] = React.useState(() => new CounterState(currentSetting, exercisesState));
 
@@ -22,12 +23,15 @@ export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperP
         <>
             <ExerciseSlider exercisesState={exercisesState} counterState={counterState}  sliderState={sliderState} />
             <ExerciseSliderThumbnails exercisesState={exercisesState} sliderState={sliderState} />
-            <VoiceOptions
+            <CommandOptions
                 isVoiceCommandOn={counterState.isVoiceCommandOn}
                 startListening={counterState.startListening}
                 abortListening={counterState.abortListening}
                 isTextToSpeechOn={counterState.isTextToSpeechOn}
                 setTextToSpeech={counterState.setTextToSpeech}
+                isKeyboardCommandOn={counterState.isKeyboardCommandOn}
+                setKeyboardCommandOn={counterState.setKeyboardCommandOn}
+                isMobile={isMobile}
             />
         </>
     );
