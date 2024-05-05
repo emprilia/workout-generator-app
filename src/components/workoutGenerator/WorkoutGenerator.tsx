@@ -12,12 +12,13 @@ interface WorkoutGeneratorPropsType {
     userId: string;
     isSignedUp: boolean;
     signOutUser: () => Promise<void>;
+    isMobile: boolean;
     currentView: ViewType;
     setView: (value: ViewType) => void;
 }
 
 export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
-    const { userId, isSignedUp, signOutUser, currentView, setView } = props;
+    const { userId, isSignedUp, signOutUser, isMobile, currentView, setView } = props;
 
     const [workoutGeneratorState] = React.useState(() => new WorkoutGeneratorState(userId, isSignedUp));
 
@@ -43,7 +44,7 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
                 <AppWrapper>
                     {currentView === 'timer-settings' && <TimerSettings timerSettingsState={timerSettingsState} />}
                     {currentView === 'exercises-list' && <ExerciseList getExerciseList={workoutGeneratorState.getUserExerciseList} userId={userId} exercisesState={exercisesState} />}
-                    {currentView === 'generator' && <WorkoutGeneratorWrapper currentSetting={timerSettingsState.currentSetting} exercisesState={exercisesState} />}
+                    {currentView === 'generator' && <WorkoutGeneratorWrapper currentSetting={timerSettingsState.currentSetting} exercisesState={exercisesState} isMobile={isMobile} />}
                 </AppWrapper>
             </>}
         </>

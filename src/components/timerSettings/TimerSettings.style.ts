@@ -5,8 +5,6 @@ import { PrepIcon } from '../../assets/icons/PrepIcon';
 import { WorkoutIcon } from '../../assets/icons/WorkoutIcon';
 import { BreakIcon } from '../../assets/icons/BreakIcon';
 import { MinMaxIcon } from '../../assets/icons/MinMaxIcon';
-import { InfoIcon } from '../../assets/icons/InfoIcon';
-import { InfoWrapper } from '../common/common.style';
 
 interface InputWrapperPropsType {
     isFocused: boolean;
@@ -34,6 +32,13 @@ export const InputWrapper = styled('label')<InputWrapperPropsType>`
     text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.6);
     text-transform: lowercase;
     transition: opacity .2 ease;
+`;
+
+export const TooltipWrapper = styled('div')`
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-left: 8px;
 `;
 
 export const TimerInputWrapper = styled('div')<InputWrapperPropsType>`
@@ -88,22 +93,4 @@ export const BreakIconWrapper = styled(BreakIcon)`
 export const MinMaxIconWrapper = styled(MinMaxIcon)<{isMin?: boolean}>`
     ${(): SerializedStyles => setIcon()};
     ${({ isMin }): string => isMin === true ? 'transform: scaleX(-1)' : ''};
-`
-
-export const TimerInfoWrapper = styled(InfoWrapper)`
-    position: absolute;
-    top: 8px;
-    right: 20px;
-    margin: 0 8px;
-`;
-
-export const InfoIconWrapper = styled(InfoIcon)`
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 16px;
-    height: 16px;
-    fill: currentcolor;
-    padding: 8px;
-    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
 `

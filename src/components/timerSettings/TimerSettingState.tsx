@@ -28,7 +28,6 @@ export class TimerSettingState {
     @observable public maxRounds: InputState = new InputState(this.timerSetting.maxRounds.toString());
 
     @observable public focusedInput: string = '';
-    @observable public openInfo: string = '';
     @observable public formError: string | null = null;
     @observable public isLoading: boolean = false;
 
@@ -121,14 +120,6 @@ export class TimerSettingState {
 
     @action onBlur = () => {
         this.focusedInput = '';
-    }
-
-    @action setOpenInfo = (value: string) => {
-        if (this.openInfo === value) {
-            this.openInfo = ''
-        } else {
-            this.openInfo = value;
-        }
     }
 
     @action private setIsLoading = (): void => {

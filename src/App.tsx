@@ -8,7 +8,7 @@ import { LoaderApp } from './components/loader/LoaderApp';
 export const App = observer(() => {
     const [appState] = React.useState(() => new AppState());
 
-    const { userState, currentView, setView } = appState;
+    const { userState, isMobile, currentView, setView } = appState;
 
     return (
         <>
@@ -18,6 +18,7 @@ export const App = observer(() => {
                         userId={userState.userId}
                         isSignedUp={userState.isSignedUp}
                         signOutUser={userState.signOutUser}
+                        isMobile={isMobile}
                         currentView={currentView}
                         setView={setView}
                     />
