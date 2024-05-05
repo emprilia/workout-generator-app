@@ -20,7 +20,7 @@ export const InputElement = styled('input')<InputElementPropsType>`
     line-height: 1.4;
     padding: 8px 0;
     text-align: center;
-    width: 100%;
+    color-scheme: dark;
 
     &::placeholder {
         color: var(--shade2);
@@ -29,7 +29,16 @@ export const InputElement = styled('input')<InputElementPropsType>`
 `;
 
 export const InputLabel = styled('label')`
-    font-size: 14;
+    font-size: 14px;
     font-weight: 500;
     margin: 0;
+`;
+
+export const ErrorMessage = styled('div')`
+    font-size: 14px;
+    padding-left: 8px;
+    padding: 8px;
+    border-radius: 0 0 4px 4px;
+    background: var(--warning);
+    color: var(--white);
 `;

@@ -1,12 +1,13 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { WorkoutGeneratorState } from './WorkoutGeneratorState';
-import { AppWrapper, MenuHeader, AppLogoWrapper, MenuWrapper, MenuItem, LogoutIconWrapper } from '../../App.style';
+import { AppWrapper, MenuHeader, MenuWrapper, MenuItem, LogoutIconWrapper } from '../../App.style';
 import { LoaderApp } from '../loader/LoaderApp';
 import { TimerSettings } from '../timerSettings/TimerSettings';
 import { ExerciseList } from '../exerciseList/ExerciseList';
 import { WorkoutGeneratorWrapper } from '../generatorWrapper/GeneratorWrapper';
 import { ViewType } from '../../AppState.state';
+import { AppLogoSmall } from '../common/common.style';
 
 interface WorkoutGeneratorPropsType {
     userId: string;
@@ -33,7 +34,7 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
         <>
             {timerSettingsState.currentSetting === null || exercisesState.allExercises.length === 0 ? <LoaderApp isSignedUp={isSignedUp} createdExercisesCount={createdExercisesCount} initialExercisesCount={initialExercisesCount}/> : <>
                 <MenuHeader>
-                    <AppLogoWrapper onClick={() => setView('generator')} />
+                    <AppLogoSmall onClick={() => setView('generator')} />
                         <MenuWrapper>
                             <MenuItem isActive={currentView === 'generator'} onClick={() => setView('generator')}>MAIN</MenuItem>
                             <MenuItem isActive={currentView === 'timer-settings'} onClick={() => setView('timer-settings')}>TIMER</MenuItem>

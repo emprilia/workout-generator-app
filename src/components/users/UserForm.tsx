@@ -1,14 +1,14 @@
 import { observer } from 'mobx-react-lite';
-import { Input } from '../input/Input';
 import { Button } from '../button/Button';
 import { UserState } from './UserState';
-import { ExerciseFormHeader, ExerciseFormWrapper } from '../exerciseList/ExerciseForm.style';
+import { AppLogoWrapper, UserFormHeader, UserFormWrapper, UserInputWrapper, FormFooter } from './UserForm.style';
+import { Header } from '../common/common.style';
 
-interface ExerciseFormPropsType {
+interface UserFormPropsType {
     userState: UserState;
 }
 
-export const UserForm = observer((props: ExerciseFormPropsType) => {
+export const UserForm = observer((props: UserFormPropsType) => {
     const { userState } = props;
     const {
         email,
@@ -21,27 +21,28 @@ export const UserForm = observer((props: ExerciseFormPropsType) => {
         isSubmitDisabled
     } = userState;
 
-    // TODO input style internal autofill selected
-
     return (
-        <>
-            <ExerciseFormWrapper>
-                <ExerciseFormHeader>{formType === 'login' ? 'LOGIN' : 'SIGN UP'}</ExerciseFormHeader>
-                    <Input
-                        placeholder='E-mail'
-                        stateValue={email}
-                    />
-                    <Input
-                        placeholder='Password'
-                        stateValue={password}
-                        type='password'
-                    />
-                    {formError && <span>{formError}</span>}
-                    <Button isDisabled={isSubmitDisabled} width='full' onClick={formType === 'login' ? signInUser : signUpUser}>
-                        {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign up' : 'Reset password'}
-                    </Button>
-            </ExerciseFormWrapper>
-            {formType === 'login' ? <span onClick={() => setFormType('signup')}>Sign up</span> : <span onClick={() => setFormType('login')}>Login</span>}
-        </>
-  );
+        <UserFormWrapper>
+            <Header>WORKOUT GENERATOR</Header>
+            <AppLogoWrapper />
+            <UserFormHeader>{formType === 'login' ? 'LOGIN' : 'SIGN UP'}</UserFormHeader>
+            <UserInputWrapper
+                placeholder='E-mail'
+                stateValue={email}
+            />
+            <UserInputWrapper
+                placeholder='Password'
+                stateValue={password}
+                type='password'
+            />
+            {formError && <span>{formError}</span>}
+            <Button isDisabled={isSubmitDisabled} width='full' onClick={formType === 'login' ? signInUser : signUpUser}>
+                {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign up' : 'Reset password'}
+            </Button>
+            <FormFooter>
+                {formType === 'login' ? <span onClick={() => setFormType('signup')}>Or sign up</span> : <span onClick={() => setFormType('login')}>Login</span>}
+                <span>Test access credentials: test@test.com, Test1234!</span>
+            </FormFooter>
+        </UserFormWrapper>
+    );
 });
