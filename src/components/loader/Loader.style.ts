@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react'
+import { AppLogoLarge } from '../common/common.style';
 
 export const MainLoaderWrapper = styled('div')`
     position: absolute;
@@ -10,6 +11,7 @@ export const MainLoaderWrapper = styled('div')`
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
+    text-align: center;
 `;
 
 export const MainLoader = styled('div')`
@@ -75,3 +77,6 @@ export const Spinner = styled('div')`
     animation: ${spinnerAnimation} 1s infinite linear;
 `;
 
+export const AppLogoWrapper = styled(AppLogoLarge)`
+    margin-bottom: 32px;
+`;

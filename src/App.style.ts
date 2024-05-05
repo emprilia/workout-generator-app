@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { LogoutIcon } from './assets/icons/LogoutIcon';
-import { AppLogo } from './assets/icons/Logo';
 
 export const AppWrapper = styled('div')`
     display: flex;
@@ -42,9 +41,4 @@ export const LogoutIconWrapper = styled(LogoutIcon)`
     width: 20px;
     height: 20px;
     fill: currentcolor;
-`;
-
-export const AppLogoWrapper = styled(AppLogo)`
-    width: 48px;
-    height: 48px;
 `;

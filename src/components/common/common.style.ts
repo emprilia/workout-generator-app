@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { DiskIcon } from '../../assets/icons/DiskIcon';
+import { AppLogo } from '../../assets/icons/Logo';
 
 export const Header = styled('span')`
     font-size: 28px;
@@ -20,4 +21,15 @@ export const InfoWrapper = styled('div')`
     padding: 8px;
     color: var(--white);
     margin: 16px 0;
+`;
+
+export const AppLogoSmall = styled(AppLogo)`
+    width: 48px;
+    height: 48px;
+`;
+
+export const AppLogoLarge = styled(AppLogo)`
+    width: 148px;
+    height: 148px;
+    margin-bottom: 32px;
 `;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import { InputState } from './InputState';
-import { InputWrapper, InputElement, InputLabel } from './Input.style';
+import { InputWrapper, InputElement, InputLabel, ErrorMessage } from './Input.style';
 
 type InputType = 'text' | 'number' | 'file' | 'url' | 'password';
 
@@ -52,7 +52,7 @@ export const Input = observer((props: InputPropsType) => {
                 maxLength={maxLength}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value)}
             />
-            {stateValue.error && <>{stateValue.error}</>}
+            {stateValue.error && <ErrorMessage>{stateValue.error}</ErrorMessage>}
         </InputWrapper>
     );
 });
