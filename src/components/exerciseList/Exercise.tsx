@@ -36,10 +36,10 @@ export const Exercise = observer((props: ExercisePropsType) => {
     return (
         <>
             {isEditExercise && <ExerciseForm userId={userId} exercise={exercise} isEditMode={true} getExerciseList={getExerciseList} closePopup={setEditExercise} />}
-            <ExerciseWrapper isActive={isActive} isEditMode={isEditMode} isSelected={isSelected}>
-                <ExerciseInfo isActive={isActive} isEditMode={isEditMode} isSelected={isSelected} onClick={setSelected}>
+            <ExerciseWrapper isActive={isActive} isEditMode={isEditMode} isSelected={isSelected} data-test={`exercise-wrapper-${label}`}>
+                <ExerciseInfo isActive={isActive} isEditMode={isEditMode} isSelected={isSelected} onClick={setSelected} data-test={`exercise-container`}>
                     {imgUrl === null ? <ImgPlaceholder /> : <ExerciseImg src={imgUrl} alt={`Picture of ${label} exercise`} />}
-                    <ExerciseLabel>{label}</ExerciseLabel>
+                    <ExerciseLabel data-test='created-exercise-label'>{label}</ExerciseLabel>
                 </ExerciseInfo>
                 {isEditMode ? <EditIconWrapper onClick={setEditExercise} /> : <StarIconWrapper isFilled={isFavorite} onClick={setFavorite} />}
             </ExerciseWrapper>

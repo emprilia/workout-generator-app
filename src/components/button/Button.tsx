@@ -11,7 +11,8 @@ export interface ButtonPropsType {
     size?: 'small' | 'default' | 'large';
     width?: 'full' | 'default';
     isDisabled?: boolean,
-    onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+    onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void,
+    dataTest?: string;
 }
 
 export const Button = observer((props: ButtonPropsType) => {
@@ -23,6 +24,7 @@ export const Button = observer((props: ButtonPropsType) => {
         width = 'default',
         isDisabled,
         onClick,
+        dataTest
     } = props;
 
     return (
@@ -33,6 +35,7 @@ export const Button = observer((props: ButtonPropsType) => {
             width={width}
             size={size}
             version={version}
+            data-test={dataTest}
         >
             {children}
         </ButtonWrapper>

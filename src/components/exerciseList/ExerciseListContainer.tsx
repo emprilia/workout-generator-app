@@ -27,7 +27,7 @@ export const ExerciseListContainer = observer((props: ExerciseListContainerProps
     return (
         <ExerciseListWrapper>
             <CreateExerciseWrapper>
-                <Button onClick={setAddNew}>
+                <Button onClick={setAddNew} dataTest="create-new-button">
                     + Create new
                 </Button>
             </CreateExerciseWrapper>

@@ -49,6 +49,7 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
                     <Input
                         placeholder='Exercise name'
                         stateValue={label}
+                        dataTest='exercise-label'
                     />
                 </ExerciseInputWrapper>
                 <ExerciseFormFieldsWrapper>
@@ -79,7 +80,7 @@ export const ExerciseForm = observer((props: ExerciseFormPropsType) => {
                     </div>
                 </ExerciseFormFieldsWrapper>
                 {formError && <span>{formError}</span>}
-                <Button width='full' isDisabled={isLoading} onClick={isEditMode ? handleUpdateExercise : handleCreateExercise}>
+                <Button width='full' isDisabled={isLoading} onClick={isEditMode ? handleUpdateExercise : handleCreateExercise} dataTest='submit-exercise'>
                     {isLoading && <Spinner />}
                     {isEditMode ? 'UPDATE EXERCISE' : 'CREATE EXERCISE'}
                 </Button>

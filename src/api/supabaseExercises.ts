@@ -221,7 +221,9 @@ export const deleteExercise = async (id: number, userId: string): Promise<Postgr
 
     if (deleteExerciseError) return deleteExerciseError;
 
-    deleteImage(data.imgUrl, userId);
+    if (data.imgUrl) {
+        deleteImage(data.imgUrl, userId);
+    }
 
     return null;
 };
