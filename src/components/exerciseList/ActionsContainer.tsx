@@ -48,10 +48,10 @@ export const ActionsContainer = observer((props: ActionsContainerPropsType) => {
                 {isEditMode ? `Delete: ${selectedExercises.length}/${showingExercises.length}` : `Active: ${activeExercises.length}/${showingExercises.length}`}
             </ActionsWrapper>
             <ActionsWrapper>
-                <Button isDisabled={isLoading} width='full' size='small' onClick={setEditMode}>
+                <Button isDisabled={isLoading} width='full' size='small' onClick={setEditMode} dataTest='edit-mode-button'>
                     {isEditMode ? <><ExitIconWrapper /> Exit edit mode</> : <><EditIconWrapper /> Enter edit mode</>}
                 </Button>
-                {isEditMode ? <Button width='full' isDisabled={isLoading || selectedExercises.length === 0} size='small' onClick={() => handleDeleteExercises(selectedExercises)}>
+                {isEditMode ? <Button width='full' isDisabled={isLoading || selectedExercises.length === 0} size='small' onClick={() => handleDeleteExercises(selectedExercises)} dataTest='delete-button'>
                     {isLoading && <Spinner />}
                     <TrashIconWrapper />Delete selected
                 </Button> :

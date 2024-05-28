@@ -18,6 +18,7 @@ interface InputPropsType {
     max?: string;
     maxLength?: number;
     value?: string;
+    dataTest?: string;
 }
 
 export const Input = observer((props: InputPropsType) => {
@@ -33,7 +34,8 @@ export const Input = observer((props: InputPropsType) => {
         min,
         max,
         maxLength,
-        value
+        value,
+        dataTest
     } = props;
 
     return (
@@ -51,6 +53,7 @@ export const Input = observer((props: InputPropsType) => {
                 max={max}
                 maxLength={maxLength}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => stateValue.setValue(e.target.value)}
+                data-test={dataTest}
             />
             {stateValue.error && <ErrorMessage>{stateValue.error}</ErrorMessage>}
         </InputWrapper>

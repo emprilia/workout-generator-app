@@ -36,9 +36,9 @@ export const WorkoutGenerator = observer((props: WorkoutGeneratorPropsType) => {
                 <MenuHeader>
                     <AppLogoSmall onClick={() => setView('generator')} />
                         <MenuWrapper>
-                            <MenuItem isActive={currentView === 'generator'} onClick={() => setView('generator')}>MAIN</MenuItem>
-                            <MenuItem isActive={currentView === 'timer-settings'} onClick={() => setView('timer-settings')}>TIMER</MenuItem>
-                            <MenuItem isActive={currentView === 'exercises-list'} onClick={() => setView('exercises-list')}>EXERCISES</MenuItem>
+                            <MenuItem isActive={currentView === 'generator'} onClick={() => setView('generator')} data-test='main-section'>MAIN</MenuItem>
+                            <MenuItem isActive={currentView === 'timer-settings'} onClick={() => setView('timer-settings')} data-test='timer-section'>TIMER</MenuItem>
+                            <MenuItem isActive={currentView === 'exercises-list'} onClick={() => setView('exercises-list')} data-test='exercises-section'>EXERCISES</MenuItem>
                         </MenuWrapper>
                         <LogoutIconWrapper onClick={signOutUser} />
                 </MenuHeader>
