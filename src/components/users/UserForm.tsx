@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { Button } from '../button/Button';
 import { UserState } from './UserState';
-import { AppLogoWrapper, UserFormHeader, UserFormWrapper, UserInputWrapper, FormFooter } from './UserForm.style';
+import { AppLogoWrapper, UserFormHeader, UserFormWrapper, UserInputWrapper, FormFooter, FormError } from './UserForm.style';
 import { Header } from '../common/common.style';
 
 interface UserFormPropsType {
@@ -16,7 +16,7 @@ export const UserForm = observer((props: UserFormPropsType) => {
         signInUser,
         signUpUser,
         formType,
-        setFormType,
+        // setFormType,
         formError,
         isSubmitDisabled
     } = userState;
@@ -35,12 +35,12 @@ export const UserForm = observer((props: UserFormPropsType) => {
                 stateValue={password}
                 type='password'
             />
-            {formError && <span>{formError}</span>}
+            {formError && <FormError>{formError}</FormError>}
             <Button isDisabled={isSubmitDisabled} width='full' onClick={formType === 'login' ? signInUser : signUpUser}>
                 {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign up' : 'Reset password'}
             </Button>
             <FormFooter>
-                {formType === 'login' ? <span onClick={() => setFormType('signup')}>Or sign up</span> : <span onClick={() => setFormType('login')}>Login</span>}
+                {/* {formType === 'login' ? <span onClick={() => setFormType('signup')}>Or sign up</span> : <span onClick={() => setFormType('login')}>Login</span>} */}
                 <span>Test access credentials: test@test.com, Test1234!</span>
             </FormFooter>
         </UserFormWrapper>

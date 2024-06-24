@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { AppLogoLarge, Header } from '../common/common.style';
 import { Input } from '../input/Input';
+import { ErrorMessage } from '../input/Input.style';
 
 export const UserFormWrapper = styled('div')`
     position: fixed;
@@ -33,6 +34,12 @@ export const FormFooter = styled('span')`
     flex-flow: column nowrap;
     gap: 16px;
     width: 100%;
+`;
+
+export const FormError = styled(ErrorMessage)`
+    width: 100%;
+    border-radius: 4px;
+    box-sizing: border-box;
 `;
 
 export const AppLogoWrapper = styled(AppLogoLarge)`
