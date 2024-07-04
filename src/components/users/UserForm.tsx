@@ -25,7 +25,7 @@ export const UserForm = observer((props: UserFormPropsType) => {
         <UserFormWrapper>
             <Header>WORKOUT GENERATOR</Header>
             <AppLogoWrapper />
-            <UserFormHeader>{formType === 'login' ? 'LOGIN' : 'SIGN UP'}</UserFormHeader>
+            {/* <UserFormHeader>{formType === 'login' ? 'LOGIN' : 'SIGN UP'}</UserFormHeader>
             <UserInputWrapper
                 placeholder='E-mail'
                 stateValue={email}
@@ -35,14 +35,14 @@ export const UserForm = observer((props: UserFormPropsType) => {
                 stateValue={password}
                 type='password'
             />
-            {formError && <FormError>{formError}</FormError>}
+            {formError && <FormError>{formError}</FormError>} */}
             <Button isDisabled={isSubmitDisabled} width='full' onClick={formType === 'login' ? signInUser : signUpUser}>
                 {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign up' : 'Reset password'}
             </Button>
-            <FormFooter>
+            {/* <FormFooter> */}
                 {/* {formType === 'login' ? <span onClick={() => setFormType('signup')}>Or sign up</span> : <span onClick={() => setFormType('login')}>Login</span>} */}
-                <span>Test access credentials: test@test.com, Test1234!</span>
-            </FormFooter>
+                {/* <span>Test access credentials: test@test.com, Test1234!</span> */}
+            {/* </FormFooter> */}
         </UserFormWrapper>
     );
 });
