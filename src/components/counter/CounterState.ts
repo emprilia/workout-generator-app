@@ -8,7 +8,7 @@ import tick from '../../assets/audio/tick.mp3'
 import { TimerSettingType } from '../../api/supabaseTimerSettings';
 import { ExercisesState } from '../exerciseList/ExercisesState';
 
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+// const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 const synthesis = window.speechSynthesis;
 
 export class CounterState {
@@ -31,7 +31,7 @@ export class CounterState {
     @observable public isTextToSpeechOn: boolean = false;
     @observable public isVoiceCommandOn: boolean = false;
     @observable public isKeyboardCommandOn: boolean = false;
-    private recognition: SpeechRecognition;
+    // private recognition: SpeechRecognition;
 
     public constructor(
         private currentSetting: TimerSettingType,
@@ -40,12 +40,12 @@ export class CounterState {
         makeAutoObservable(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         window.addEventListener('keydown', this.handleKeyDown);
-        this.recognition = new SpeechRecognition();
-        this.recognition.lang = 'en-US';
-        this.recognition.continuous = true;
-        this.recognition.onstart = this.handleVoiceStart;
-        this.recognition.onresult = this.handleVoiceResult;
-        this.recognition.onerror = this.handleVoiceError;
+        // this.recognition = new SpeechRecognition();
+        // this.recognition.lang = 'en-US';
+        // this.recognition.continuous = true;
+        // this.recognition.onstart = this.handleVoiceStart;
+        // this.recognition.onresult = this.handleVoiceResult;
+        // this.recognition.onerror = this.handleVoiceError;
     }
 
 
@@ -61,11 +61,11 @@ export class CounterState {
     }
 
     @action public startListening = (): void => {
-        this.recognition.start();
+        // this.recognition.start();
     }
 
     @action public abortListening = (): void => {
-        this.recognition.abort();
+        // this.recognition.abort();
         this.isVoiceCommandOn = false;
     }
 

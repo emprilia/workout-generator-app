@@ -21,7 +21,7 @@ export const CommandOptions = observer( (props: CommandOptionsPropsType) => {
 
     return (
         <CommandOptionsWrapper>
-            <OptionWrapper>
+            {/* <OptionWrapper>
                 <TooltipWrapper>
                     <Tooltip openInfo='voice' state={tooltipState}>
                         <span>Enable/disable voice commands:</span>
@@ -37,7 +37,7 @@ export const CommandOptions = observer( (props: CommandOptionsPropsType) => {
                     <SpeakIconWrapper />
                     {isVoiceCommandOn ? <>ON</> : <>OFF</>}
                 </OptionWrapper>
-            </OptionWrapper>
+            </OptionWrapper> */}
             <OptionWrapper>
                 <TooltipWrapper>
                     <Tooltip openInfo='text-to-speech' state={tooltipState}>

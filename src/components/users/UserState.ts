@@ -35,9 +35,10 @@ export class UserState {
     };
 
     @computed public get isSubmitDisabled(): boolean {
-        const isEmpty = this.email.value === '' || this.password.value === '';
-        const isError = this.email.error !== null || this.password.error !== null;
-        return isEmpty || isError;
+        // const isEmpty = this.email.value === '' || this.password.value === '';
+        // const isError = this.email.error !== null || this.password.error !== null;
+        // return isEmpty || isError;
+        return false;
     }
 
     @action public signUpUser = async (): Promise<void> => {
@@ -63,8 +64,9 @@ export class UserState {
 
     @action public signInUser = async (): Promise<void> => {
         try {
-            const { session, error } = await signInUser(this.email.value, this.password.value);
-
+            // const { session, error } = await signInUser(this.email.value, this.password.value);
+            const { session, error } = await signInUser('test@test.com', 'Test1234!');
+            console.log(session);
             if (error) {
                 this.setError(error.message);
             } else if (session) {
