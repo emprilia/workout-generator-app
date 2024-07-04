@@ -63,7 +63,8 @@ export class UserState {
 
     @action public signInUser = async (): Promise<void> => {
         try {
-            const { session, error } = await signInUser(this.email.value, this.password.value);
+            // const { session, error } = await signInUser(this.email.value, this.password.value);
+            const { session, error } = await signInUser('test@test.com', 'Test1234!');
 
             if (error) {
                 this.setError(error.message);

@@ -1,21 +1,23 @@
-import React from 'react';
+import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 import { AppState } from './AppState.state';
-import { UserForm } from './components/users/UserForm';
 import { WorkoutGenerator } from './components/workoutGenerator/WorkoutGenerator';
 import { LoaderApp } from './components/loader/LoaderApp';
 
 export const App = observer(() => {
     const currentView = useLocation().pathname;
-    const [appState] = React.useState(() => new AppState());
+    const [appState] = useState(() => new AppState());
 
     const { userState, isMobile } = appState;
+
+    // temporary for recruitment purposes
+    userState.signInUser();
 
     return (
         <>
             {userState.isLoading ? <LoaderApp isSignedUp={false} /> : <>
-                {userState.isAuth && userState.userId ? <>
+                {userState.userId ? <>
                     <WorkoutGenerator
                         userId={userState.userId}
                         isSignedUp={userState.isSignedUp}
@@ -23,7 +25,8 @@ export const App = observer(() => {
                         isMobile={isMobile}
                         currentView={currentView}
                     />
-               </> : <UserForm userState={userState} />}
+               </> : null }
+               {/* </> : <UserForm userState={userState} />} */}
             </>}
         </>
     );
