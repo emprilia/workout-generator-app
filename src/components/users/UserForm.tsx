@@ -37,7 +37,7 @@ export const UserForm = observer((props: UserFormPropsType) => {
             />
             {formError && <FormError>{formError}</FormError>} */}
             <Button isDisabled={isSubmitDisabled} width='full' onClick={formType === 'login' ? signInUser : signUpUser}>
-                {formType === 'login' ? 'Login' : formType === 'signup' ? 'Sign up' : 'Reset password'}
+                {formType === 'login' ? 'Start your first workout' : formType === 'signup' ? 'Sign up' : 'Reset password'}
             </Button>
             {/* <FormFooter> */}
                 {/* {formType === 'login' ? <span onClick={() => setFormType('signup')}>Or sign up</span> : <span onClick={() => setFormType('login')}>Login</span>} */}

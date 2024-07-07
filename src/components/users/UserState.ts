@@ -66,7 +66,6 @@ export class UserState {
         try {
             // const { session, error } = await signInUser(this.email.value, this.password.value);
             const { session, error } = await signInUser('test@test.com', 'Test1234!');
-            console.log(session);
             if (error) {
                 this.setError(error.message);
             } else if (session) {
@@ -127,7 +126,6 @@ export class UserState {
     }
 
     checkPassword = (): ValidationFunction => {
-        console.log(this.formType)
         return (value) => {
             const hasMinLength = value.length >= 8;
             const hasNumber = /[0-9]/.test(value);
