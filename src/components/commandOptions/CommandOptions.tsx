@@ -2,6 +2,7 @@ import React from "react";
 import { observer } from "mobx-react-lite";
 import { CommandOptionsWrapper, SpeakIconWrapper, AnnouncementIconWrapper, KeyboardIconWrapper, OptionWrapper, TooltipWrapper } from "./CommandOptions.style";
 import { Tooltip, TooltipState } from "../tooltip/Tooltip";
+import { useAppStateContext } from "../../AppStateContext";
 
 interface CommandOptionsPropsType {
     isVoiceCommandOn: boolean;
@@ -11,13 +12,14 @@ interface CommandOptionsPropsType {
     setTextToSpeech: () => void;
     isKeyboardCommandOn: boolean;
     setKeyboardCommandOn: () => void;
-    isMobile: boolean;
 }
 
 export const CommandOptions = observer( (props: CommandOptionsPropsType) => {
-    const { isVoiceCommandOn, startListening, abortListening, isTextToSpeechOn, setTextToSpeech, isKeyboardCommandOn, setKeyboardCommandOn, isMobile } = props;
+    const { isVoiceCommandOn, startListening, abortListening, isTextToSpeechOn, setTextToSpeech, isKeyboardCommandOn, setKeyboardCommandOn } = props;
 
     const [tooltipState] = React.useState(() => new TooltipState());
+
+    const appState = useAppStateContext();
 
     return (
         <CommandOptionsWrapper>
@@ -49,7 +51,7 @@ export const CommandOptions = observer( (props: CommandOptionsPropsType) => {
                     {isTextToSpeechOn ? <>ON</> : <>OFF</>}
                 </OptionWrapper>
             </OptionWrapper>
-            {isMobile ? null : <OptionWrapper>
+            {appState.isMobile ? null : <OptionWrapper>
                 <TooltipWrapper>
                     <Tooltip openInfo='keyboard' state={tooltipState}>
                         <span>Enable/disable keyboard controls</span>

@@ -11,11 +11,10 @@ import { CommandOptions } from '../commandOptions/CommandOptions';
 interface WorkoutGeneratorWrapperPropsType {
     exercisesState: ExercisesState;
     currentSetting: TimerSettingType;
-    isMobile: boolean;
 }
 
 export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperPropsType) => {
-    const { exercisesState, currentSetting, isMobile } = props;
+    const { exercisesState, currentSetting } = props;
     const [sliderState] = React.useState(() => new SliderState(exercisesState));
     const [counterState] = React.useState(() => new CounterState(currentSetting, exercisesState));
 
@@ -31,7 +30,6 @@ export const WorkoutGeneratorWrapper = observer((props: WorkoutGeneratorWrapperP
                 setTextToSpeech={counterState.setTextToSpeech}
                 isKeyboardCommandOn={counterState.isKeyboardCommandOn}
                 setKeyboardCommandOn={counterState.setKeyboardCommandOn}
-                isMobile={isMobile}
             />
         </>
     );
